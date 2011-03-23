@@ -1,0 +1,34 @@
+#ifndef __QUAFF__CORE__LANGUAGE__SEMANTIC__APPLY_RULE_HPP__INCLUDED__
+#define __QUAFF__CORE__LANGUAGE__SEMANTIC__APPLY_RULE_HPP__INCLUDED__
+
+////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2003-2008 LASMEA UMR 6602 du CNRS.
+// Copyright (c) 2007-2008 IEF    UMR 8622 du CNRS.
+// All rights reserved.
+//
+// License information are available in the LICENSE file.
+// Additionnal informations are available in the INFOS file.
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
+/// @file quaff/core/language/semantic/apply_rule.hpp
+////////////////////////////////////////////////////////////////////////////////
+#include <boost/proto/proto.hpp>
+
+namespace quaff
+{
+  namespace bp = boost::proto;
+
+  //////////////////////////////////////////////////////////////////////////////
+  /// @brief Apply a semantic rule as a semantic action
+  /// proto tansform that apply a given rule to a given node of the AST
+  //////////////////////////////////////////////////////////////////////////////
+  template<class Type, class Dummy = bp::callable>
+  struct apply_rule;
+}
+
+#endif
+
+
+
+
