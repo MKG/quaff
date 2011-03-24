@@ -20,12 +20,12 @@ namespace quaff { namespace dsl
 {
   template<class Expr>
   struct  skeleton_expression
-        : boost:proto::extends<Expr,skeleton_expression<Expr>,skeleton_domain>
+        : boost::proto::extends<Expr,skeleton_expression<Expr>,skeleton_domain>
   {
     ////////////////////////////////////////////////////////////////////////////
     // Internal typedefs
     ////////////////////////////////////////////////////////////////////////////
-    typedef boost:proto
+    typedef boost::proto
             ::extends<Expr,skeleton_expression<Expr>,skeleton_domain> parent;
 
     ////////////////////////////////////////////////////////////////////////////
