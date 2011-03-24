@@ -53,7 +53,7 @@ build
 ################################################################################
 # Ignore local bootstrap file
 ################################################################################
-include/nt2/sdk/config/bootstrap.hpp
+include/quaff/sdk/bootstrap.hpp
 
 ################################################################################
 # Ignore buidl files and python compilation
