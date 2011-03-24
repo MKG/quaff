@@ -14,8 +14,9 @@
 /// @file quaff/core/language/grammar/definition.hpp
 ////////////////////////////////////////////////////////////////////////////////
 #include <boost/proto/proto.hpp>
+#include <quaff/sdk/meta/is_callable.hpp>
 
-namespace quaff { namespace dsl
+namespace quaff { namespace tag
 {
   //////////////////////////////////////////////////////////////////////////////
   // tags for quaff specific functions
@@ -33,11 +34,16 @@ namespace quaff { namespace dsl
   // TODO: - Add a arity check on comma
   //////////////////////////////////////////////////////////////////////////////
   struct  sequential_skeleton
-        : boost::proto::or_ < boost::proto::terminal< boost::function<bp::_> >
-                            , boost::proto::comma < sequential_skeleton
-                                                  , sequential_skeleton
-                                                  >
-                            >
+        : boost::proto
+          ::or_ < boost::proto
+                  ::and_< boost::proto::terminal<boost::proto::_>
+                        , boost::proto
+                          ::if_< meta::is_callable<boost::proto::_value>() >
+                        >
+                , boost::proto::comma < sequential_skeleton
+                                      , sequential_skeleton
+                                      >
+                >
   {};
 
   //////////////////////////////////////////////////////////////////////////////
@@ -46,11 +52,11 @@ namespace quaff { namespace dsl
   // - a map using a sequential skeleton
   //////////////////////////////////////////////////////////////////////////////
   struct  data_parallel_skeleton
-        : boost:proto::or_< sequential_skeleton
-                          , boost::proto::unary_expr< tag::map_
-                                                    , sequential_skeleton
-                                                    >
-                          >
+        : boost::proto::or_ < sequential_skeleton
+                            , boost::proto::unary_expr< tag::map_
+                                                      , sequential_skeleton
+                                                      >
+                            >
   {};
 
   //////////////////////////////////////////////////////////////////////////////
@@ -60,9 +66,10 @@ namespace quaff { namespace dsl
   //  - a pipelined execution using operator |
   //////////////////////////////////////////////////////////////////////////////
   struct  skeleton
-        : boost::proto::or_ < data_parallel_skeleton
+        : boost::proto::or_ < sequential_skeleton
+                            , data_parallel_skeleton
                             , boost::proto::bitwise_and<skeleton,skeleton>
-                            , boost::proto::bitwise_and<skeleton,skeleton>
+                            , boost::proto::bitwise_or<skeleton,skeleton>
                             >
   {};
 } }
