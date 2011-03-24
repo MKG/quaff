@@ -1,6 +1,6 @@
 #ifndef BOOST_PP_IS_ITERATING
 /*******************************************************************************
- *               Copyright 2010 Thomas Heller
+ *                        Copyright 2010 Thomas Heller
  *
  *          Distributed under the Boost Software License, Version 1.0.
  *                 See accompanying file LICENSE.txt or copy at

@@ -1,6 +1,6 @@
-/*******************************************************************************
- *         Copyright 2003-2010 LASMEA UMR 6602 CNRS/U.B.P
- *         Copyright 2009-2010 LRI    UMR 8623 CNRS/Univ Paris Sud XI
+/******************************************************************************
+ *         Copyright 2003 & onward LASMEA UMR 6602 CNRS/Univ. Clermont II
+ *         Copyright 2008 & onward LRI    UMR 8623 CNRS/Univ Paris Sud XI
  *
  *          Distributed under the Boost Software License, Version 1.0.
  *                 See accompanying file LICENSE.txt or copy at
@@ -16,17 +16,17 @@
 ////////////////////////////////////////////////////////////////////////////////
 namespace quaff
 {
-	namespace tag { struct from_domain_ {}; }
-	
-	template<class Expression>
-	typename	boost::proto::result_of::
-						make_expr < tag::from_domain_
-	                    , typename boost::proto::uncvref<Expression>::type const&
-	                    >::type
-	from_domain( Expression const& xpr )
-	{
-		return boost::proto::make_expr<tag::from_domain_>( boost::cref(xpr) );
-	}
+  namespace tag { struct from_domain_ {}; }
+
+  template<class Expression>
+  typename  boost::proto::result_of::
+            make_expr < tag::from_domain_
+                      , typename boost::proto::uncvref<Expression>::type const&
+                      >::type
+  from_domain( Expression const& xpr )
+  {
+    return boost::proto::make_expr<tag::from_domain_>( boost::cref(xpr) );
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
