@@ -80,4 +80,4 @@ INSTALL( TARGETS quaff
 ################################################################################
 ENABLE_TESTING()
 ADD_CUSTOM_TARGET(unit)
-#ADD_SUBDIRECTORY(unit EXCLUDE_FROM_ALL)
+ADD_SUBDIRECTORY(unit EXCLUDE_FROM_ALL)
