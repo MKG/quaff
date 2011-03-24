@@ -65,6 +65,6 @@ namespace quaff { namespace dsl
                             , boost::proto::bitwise_and<skeleton,skeleton>
                             >
   {};
-}
+} }
 
 #endif
