@@ -15,6 +15,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #include <boost/utility/enable_if.hpp>
 #include <quaff/core/dsl/terminal.hpp>
+#include <boost/proto/proto_typeof.hpp>
 #include <quaff/sdk/meta/is_callable.hpp>
 #include <boost/type_traits/is_function.hpp>
 #include <boost/type_traits/remove_pointer.hpp>
@@ -43,6 +44,13 @@ namespace quaff
     dsl::skeleton_terminal< boost::function<Function> > that( them );
     return that;
   }
+
+  /////////////////////////////////////////////////////////////////////////////
+  // Macro for declaring global seq object
+  /////////////////////////////////////////////////////////////////////////////
+  #define QUAFF_TASK(Name,Function)             \
+  BOOST_PROTO_AUTO(Name, quaff::seq(Function) ) \
+  /**/
 }
 
 #endif

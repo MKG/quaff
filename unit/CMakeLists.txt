@@ -12,6 +12,7 @@ SET(SOURCES
     grammar.cpp
     is_input.cpp
     is_output.cpp
+    seq.cpp
     )
 
 ################################################################################
