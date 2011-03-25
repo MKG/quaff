@@ -22,7 +22,6 @@ boost::function<int()> f;
 QUAFF_TASK(g_, &g);
 QUAFF_TASK(f_, f);
 QUAFF_TASK(foo_, foo());
-QUAFF_TASK(bar_, &i);
 
 int main()
 {
