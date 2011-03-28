@@ -13,6 +13,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 /// @file quaff/core/skeleton/seq.hpp
 ////////////////////////////////////////////////////////////////////////////////
+#include <quaff/sdk/meta/action.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <quaff/core/dsl/terminal.hpp>
 #include <boost/proto/proto_typeof.hpp>
@@ -22,26 +23,33 @@
 
 namespace quaff
 {
+  /////////////////////////////////////////////////////////////////////////////
+  // Turn Callable types into seq skeleton
+  /////////////////////////////////////////////////////////////////////////////
   template<class Function>
   typename boost::enable_if_c < meta::is_callable<Function>::value
-                              , dsl::skeleton_terminal<Function>
+                              , dsl::skeleton_terminal< meta::action<Function> >
                               >::type
 
   seq( Function const& f )
   {
-    dsl::skeleton_terminal< Function > that( f );
+    meta::action<Function> them = f;
+    dsl::skeleton_terminal< meta::action<Function> > that( them );
     return that;
   }
 
+  /////////////////////////////////////////////////////////////////////////////
+  // Turn function pointer into seq skeleton
+  /////////////////////////////////////////////////////////////////////////////
   template<class Function>
   typename
   boost::enable_if_c< boost::is_function<Function>::value
-                    , dsl::skeleton_terminal< boost::function<Function> >
+                    , dsl::skeleton_terminal< meta::action<Function*> >
                     >::type
   seq( Function* f )
   {
-    boost::function<Function> them = f;
-    dsl::skeleton_terminal< boost::function<Function> > that( them );
+    meta::action<Function*> them = f;
+    dsl::skeleton_terminal< meta::action<Function*> > that( them );
     return that;
   }
 
