@@ -28,18 +28,17 @@ namespace quaff
   /////////////////////////////////////////////////////////////////////////////
   template<class Function>
   typename boost::enable_if_c < meta::is_callable<Function>::value
-                              , dsl::skeleton_terminal< meta::action<Function> >
+                              , dsl::skeleton_terminal< Function >
                               >::type
 
   seq( Function const& f )
   {
-    meta::action<Function> them = f;
-    dsl::skeleton_terminal< meta::action<Function> > that( them );
+    dsl::skeleton_terminal< Function > that( f );
     return that;
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  // Turn function pointer into seq skeleton
+  // Turn function pointer into seq skeleton usign action<>
   /////////////////////////////////////////////////////////////////////////////
   template<class Function>
   typename

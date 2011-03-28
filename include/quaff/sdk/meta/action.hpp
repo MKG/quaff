@@ -11,6 +11,7 @@
 #define QUAFF_SDK_META_ACTION_HPP_INCLUDED
 
 #include <quaff/sdk/meta/is_callable.hpp>
+#include <boost/function_types/result_type.hpp>
 #include <boost/preprocessor/repetition/enum_params.hpp>
 #include <boost/preprocessor/repetition/repeat_from_to.hpp>
 #include <boost/preprocessor/repetition/enum_binary_params.hpp>
@@ -29,13 +30,14 @@
 namespace quaff { namespace meta
 {
   /*****************************************************************************
-   * Turns Callable Object into Callable Action by reinjecting their return
-   * type as a reference argument. All seq(x) basically builds action<>
+   * Turns builtin Callable Object into Callable Action by reinjecting their
+   * return type as a reference argument.
    ****************************************************************************/
   template<class Function>
   struct  action : callable
   {
-    typedef void result_type;
+    typedef Function  function_type;
+    typedef void      result_type;
 
     action() {}
     action(Function const& f) : callee(f) {}
@@ -45,8 +47,6 @@ namespace quaff { namespace meta
       callee = f;
       return *this;
     }
-
-    template<class R> inline void operator()(R& r) const { r = callee(); }
 
     /***************************************************************************
      * Don't handle perfect forwarding fully to avoid 2^n PP stuff
@@ -61,8 +61,11 @@ namespace quaff { namespace meta
     }                                                               \
     /**/
 
+    template<class R> inline void operator()(R& r) const { r = callee(); }
     BOOST_PP_REPEAT_FROM_TO(1,QUAFF_MAX_FUNCTION_ARITY,M0,~)
+
     #undef M0
+
 
     private:
     Function callee;
