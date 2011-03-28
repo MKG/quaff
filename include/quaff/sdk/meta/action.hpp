@@ -61,7 +61,9 @@ namespace quaff { namespace meta
     }                                                               \
     /**/
 
-    template<class R> inline void operator()(R& r) const { r = callee(); }
+    template<class R>
+    inline void operator()(R& r) const { r = callee(); }
+    inline void operator()() const { callee(); }
     BOOST_PP_REPEAT_FROM_TO(1,QUAFF_MAX_FUNCTION_ARITY,M0,~)
 
     #undef M0
