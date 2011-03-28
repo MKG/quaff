@@ -17,13 +17,15 @@
 
 namespace quaff { namespace model
 {
-  template<class Tag> struct apply_rule;
+  template<class Tag,class BackEnd,class Dummy = void>
+  struct apply_rule;
 } }
 
 namespace boost { namespace proto
 {
-  template<class Tag>
-  struct is_callable< quaff::model::apply_rule<Tag> > : boost::mpl::true_ {};
+  template<class Tag,class BackEnd,class Dummy>
+  struct  is_callable< quaff::model::apply_rule<Tag,BackEnd,Dummy> >
+        : boost::mpl::true_ {};
 } }
 
 #endif

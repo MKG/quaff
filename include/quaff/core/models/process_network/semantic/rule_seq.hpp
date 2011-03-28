@@ -20,6 +20,7 @@
 #include <quaff/core/models/process_network/process.hpp>
 #include <quaff/core/models/process_network/descriptor.hpp>
 #include <quaff/core/models/process_network/semantic/apply_rule.hpp>
+#include <quaff/core/backend/instructions.hpp>
 
 namespace quaff { namespace tag
 {
@@ -28,7 +29,8 @@ namespace quaff { namespace tag
 
 namespace quaff { namespace model
 {
-  template<>  struct apply_rule<tag::seq_>
+  template<class BackEnd, class Dummy>
+  struct apply_rule<tag::seq_, BackEnd, Dummy>
   {
     template<class Sig> struct result;
 
@@ -38,15 +40,14 @@ namespace quaff { namespace model
       typedef typename boost::proto::detail::uncvref<Function>::type  function;
       typedef typename boost::proto::detail::uncvref<Pid>::type       pid;
 
-      //typedef instruction::call<function>  instr_type;
-      typedef function  instr_type;
+      typedef instruction::call<function,BackEnd>  instr_type;
 
       typedef descriptor< boost::fusion::vector<>
                         , boost::fusion::vector<>
                         , boost::fusion::vector<instr_type>
                         >                   descriptor_type;
 
-      typedef process<pid,descriptor_type>  process_type;
+      typedef process<pid,descriptor_type,BackEnd>  process_type;
 
       typedef network < boost::fusion::vector<process_type>
                       , boost::mpl::vector<pid>
@@ -58,14 +59,10 @@ namespace quaff { namespace model
     typename result<apply_rule(Function&, Pid&)>::type
     operator()(Function& f, Pid&) const
     {
-      typedef result<apply_rule(Function&, Pid&)> result_;
+      typename result<apply_rule(Function&, Pid&)>::type  that;
 
-      typename result_::instr_type      instr(f);
-      typename result_::descriptor_type desc( boost::fusion::make_vector(instr) );
-      typename result_::process_type proc( desc );
-
-      typename result_::type that( proc );
-
+      // Seek the call_ and feed it with the actual function
+      instr_<0>(process_<0>(that).descriptor()) = f;
       return that;
     }
   };

@@ -18,16 +18,17 @@
 
 namespace quaff { namespace model
 {
+  template<class BackEnd>
   struct  make_network
         : boost::proto::
           when< boost::proto::terminal<boost::proto::_>
-              , environment < apply_rule<tag::seq_> ( boost::proto::_value
-                                                    , pid_(boost::proto::_state)
-                                                    )
+              , environment < apply_rule<tag::seq_,BackEnd> ( boost::proto::_value
+                                                            , pid_(boost::proto::_state)
+                                                            )
                             , pid_(boost::proto::_state)
-                            >(  apply_rule<tag::seq_> ( boost::proto::_value
-                                                      , pid_(boost::proto::_state)
-                                                      )
+                            >(  apply_rule<tag::seq_,BackEnd> ( boost::proto::_value
+                                                              , pid_(boost::proto::_state)
+                                                              )
                              )
               >
   {};
