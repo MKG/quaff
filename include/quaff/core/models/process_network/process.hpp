@@ -24,12 +24,16 @@ namespace quaff { namespace model
   // - a process code Descriptor
   // - an execution BackEnd
   /////////////////////////////////////////////////////////////////////////////
-  template<class Pid,class Descriptor> struct process
+  template<class Pid,class Descriptor,class BackEnd> struct process
   {
     typedef Pid         pid_type;
     typedef Descriptor  descriptor_type;
 
+    process() {}
     process(Descriptor const& d) : code(d) {}
+
+    Descriptor&       descriptor()       { return code; }
+    Descriptor const& descriptor() const { return code; }
 
     void operator()() const
     {

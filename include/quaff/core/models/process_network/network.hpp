@@ -16,6 +16,7 @@
 #include <boost/mpl/vector.hpp>
 #include <boost/fusion/include/vector.hpp>
 #include <boost/fusion/include/for_each.hpp>
+#include <boost/fusion/include/at.hpp>
 
 namespace quaff { namespace model
 {
@@ -38,6 +39,20 @@ namespace quaff { namespace model
     network() {}
     network(Processes const& n) : nodes(n) {}
 
+    template<std::size_t N>
+    typename boost::fusion::result_of::at_c<Processes const, N>::type
+    get() const
+    {
+      return boost::fusion::at_c<N>(nodes);
+    }
+
+    template<std::size_t N>
+    typename boost::fusion::result_of::at_c<Processes, N>::type
+    get()
+    {
+      return boost::fusion::at_c<N>(nodes);
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     // Run each process in a process network using for_each.
     ////////////////////////////////////////////////////////////////////////////
@@ -53,6 +68,20 @@ namespace quaff { namespace model
 
     Processes nodes;
   };
+
+  template<std::size_t N,class P, class I, class O>
+  typename boost::fusion::result_of::at_c<P const, N>::type
+  process_(network<P,I,O> const & n)
+  {
+    return n.template get<N>();
+  }
+
+  template<std::size_t N,class P, class I, class O>
+  typename boost::fusion::result_of::at_c<P, N>::type
+  process_(network<P,I,O>& n)
+  {
+    return n.template get<N>();
+  }
 
   //////////////////////////////////////////////////////////////////////////////
   /// empty process network - to be used in process network transform
