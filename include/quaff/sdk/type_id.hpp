@@ -56,7 +56,7 @@ namespace quaff { namespace details
   }
 } }
 
-namespace quaf
+namespace quaff
 {
   //////////////////////////////////////////////////////////////////////////////
   // Return a string containing the demangled typename of a given variable
