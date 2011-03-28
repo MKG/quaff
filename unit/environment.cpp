@@ -8,25 +8,32 @@
  *                     http://www.boost.org/LICENSE_1_0.txt
  ******************************************************************************/
 #include <iostream>
-#include <boost/function.hpp>
-#include <boost/utility/result_of.hpp>
 #include <quaff/core/models/process_network/transform.hpp>
+#include <quaff/core/backend/sequential/backend.hpp>
+#include <quaff/core/backend/debug/backend.hpp>
 #include <quaff/core/skeleton/seq.hpp>
 #include <quaff/sdk/type_id.hpp>
 
 void g() { std::cout << "Hello from g" << "\n"; }
-typedef void (*ptrfun)();
 
-template<class X> void run(X const& x)
+template<class X> void probe(X const& x)
 {
-  quaff::model::make_network mn;
+  quaff::model::make_network<quaff::backend::debug_> mn;
   quaff::model::empty_environment en;
 
-  std::cout << quaff::type_id(mn( x, en )) << "\n";
   mn( x, en )();
+}
+
+template<class X> void debug(X const& x)
+{
+  quaff::model::make_network<quaff::backend::sequential_> mn;
+  quaff::model::empty_environment en;
+
+  mn( x, en )   ();
 }
 
 int main()
 {
-  run( quaff::seq(&g) );
+  probe( quaff::seq(&g) );
+  debug( quaff::seq(&g) );
 }
