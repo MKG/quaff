@@ -59,10 +59,16 @@ namespace quaff { namespace model
     typename result<apply_rule(Function&, Pid&)>::type
     operator()(Function& f, Pid&) const
     {
-      typename result<apply_rule(Function&, Pid&)>::type  that;
+		typedef result<apply_rule(Function&, Pid&)> result_;
+	
+	  typename result_::instr_type i(f);
+	  typename result_::descriptor_type d(boost::fusion::make_vector(i));
+	  typename result_::process_type p(d);
+	  typename result_::type that(boost::fusion::make_vector(p));
+      //typename result<apply_rule(Function&, Pid&)>::type  that;
 
       // Seek the call_ and feed it with the actual function
-      instr_<0>(process_<0>(that).descriptor()) = f;
+      //instr_<0>(process_<0>(that).descriptor()) = f;
       return that;
     }
   };

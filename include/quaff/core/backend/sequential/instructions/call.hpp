@@ -18,13 +18,8 @@ namespace quaff { namespace instruction
 {
   template<class Function>
   struct call<Function,backend::sequential_>
-  {
-    call() {}
-    call(call const& src)   : mFunction(src.mFunction) {}
+  {   
     call(Function const& f) : mFunction(f) {}
-
-    call& operator=(call const& s)      { mFunction = s.mFunction; return *this; }
-    call& operator=(Function const& f)  { mFunction = f; return *this; }
 
     void operator()() const { mFunction(); }
 
