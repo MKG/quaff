@@ -28,7 +28,6 @@ namespace quaff { namespace model
     typedef Network network_type;
     typedef PID     pid_type;
 
-    environment() {}
     environment(Network const& n) : network(n) {}
 
     void operator()() const
@@ -37,6 +36,17 @@ namespace quaff { namespace model
     }
 
     Network network;
+  };
+  
+  /*****************************************************************************
+   * specialisation for empty environment
+   ****************************************************************************/
+  template<> struct environment<empty_network, boost::mpl::int_<0> >
+  {
+    typedef empty_network network_type;
+    typedef boost::mpl::int_<0>     pid_type;
+
+		environment() {}
   };
 
   /*****************************************************************************
