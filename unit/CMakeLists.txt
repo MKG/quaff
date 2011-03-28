@@ -9,6 +9,8 @@
 
 INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/include/)
 SET(SOURCES
+    #process_network.cpp
+    action.cpp
     grammar.cpp
     is_input.cpp
     is_output.cpp

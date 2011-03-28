@@ -7,6 +7,7 @@
  *                 See accompanying file LICENSE.txt or copy at
  *                     http://www.boost.org/LICENSE_1_0.txt
  ******************************************************************************/
+#include <vector>
 #include <boost/mpl/assert.hpp>
 #include <quaff/core/skeleton/seq.hpp>
 
@@ -22,11 +23,8 @@ int main()
   boost::function<int()> f;
   foo h;
 
-    (quaff::seq(f) | quaff::seq(&g) | quaff::seq(h))
-  & (quaff::seq(f) | quaff::seq(&g) )
-  & (   (quaff::seq(f) | quaff::seq(&g) )
-      , (quaff::seq(f) | quaff::seq(&g) )
-    );
+  std::vector<int> in,out;
+  (quaff::seq(f) | quaff::seq(&g) | quaff::seq(h));
 
   return 0;
 }
