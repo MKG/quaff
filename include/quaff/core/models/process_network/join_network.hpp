@@ -7,44 +7,56 @@
  *                 See accompanying file LICENSE.txt or copy at
  *                     http://www.boost.org/LICENSE_1_0.txt
  ******************************************************************************/
-#ifndef QUAFF_CORE_MODELS_PROCESS_NETWORK_NETWORK_HPP_INCLUDED
-#define QUAFF_CORE_MODELS_PROCESS_NETWORK_NETWORK_HPP_INCLUDED
+#ifndef QUAFF_CORE_MODELS_PROCESS_NETWORK_JOIN_NETWORK_HPP_INCLUDED
+#define QUAFF_CORE_MODELS_PROCESS_NETWORK_JOIN_NETWORK_HPP_INCLUDED
 
 ////////////////////////////////////////////////////////////////////////////////
-/// @file quaff/core/models/network.hpp
+/// @file quaff/core/models/process_network/join_network.hpp
 ////////////////////////////////////////////////////////////////////////////////
 #include <boost/mpl/vector.hpp>
-#include <boost/mpl/set.hpp>
 #include <boost/fusion/include/vector.hpp>
 #include <boost/fusion/include/for_each.hpp>
 #include <boost/fusion/include/at.hpp>
+#include <boost/fusion/include/joint_view.hpp>
 
 namespace quaff { namespace model
 {
   //////////////////////////////////////////////////////////////////////////////
-  ///network structure
+  ///join network structure
   ///
-  /// Static datatype representing a process network. In this representation,
-  /// a process network is defined by a triplet <P,I,O>:
-  /// - Process     : a list of processus
-  /// - InputNodes  : a list of input nodes
-  /// - OutputNodes : a list of outputs node
+  /// Static datatype representing the union of two process networks. 
   //////////////////////////////////////////////////////////////////////////////
-  template<class Processes,class InputNodes,class OutputNodes>
-  struct network
+  template<class Network1,class Network2>
+  struct join_network
   {
-    typedef Processes processes;
-    typedef InputNodes  inputs;
-    typedef OutputNodes outputs;
+    typedef typename boost::fusion::result_of::
+                     joint_view< typename Network1::processes
+                               , typename Network2::processes
+                               >::type              processes;
+                               
+                               
+    typedef typename boost::fusion::result_of::
+                     joint_view< typename Network1::inputs
+                               , typename Network2::inputs
+                               >::type              inputs;
+                               
+                               
+    typedef typename boost::fusion::result_of::
+                     joint_view< typename Network1::outputs
+                               , typename Network2::outputs
+                               >::type              outputs;
 
-    network(Processes const& n) : nodes(n) {}
+    join_network(Network1 const& n1, Network2 const& n2) 
+                  : nodes1(n1)
+                  , nodes2(n2) 
+    {}
 
     ////////////////////////////////////////////////////////////////////////////
     // Run each process in a process network using for_each.
     ////////////////////////////////////////////////////////////////////////////
     void operator()() const
     {
-      boost::fusion::for_each(nodes,runner());
+      boost::fusion::for_each(boost::fusion::joint_view(nodes1, nodes2),runner());
     }
 
     struct runner
@@ -52,16 +64,9 @@ namespace quaff { namespace model
       template<class P> void operator()(P& proc) const { proc(); }
     };
 
-    Processes nodes;
+    Network1 nodes1;
+    Network2 nodes2;
   };
-
-  //////////////////////////////////////////////////////////////////////////////
-  /// empty process network - to be used in process network transform
-  //////////////////////////////////////////////////////////////////////////////
-  typedef network< boost::fusion::vector<>
-                 , boost::mpl::set<>
-                 , boost::mpl::set<>
-                 >                                  empty_network;
 } }
 
 #endif
