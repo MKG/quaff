@@ -20,17 +20,43 @@ namespace quaff { namespace model
 {
   template<class BackEnd>
   struct  make_network
-        : boost::proto::
-          when< boost::proto::terminal<boost::proto::_>
-              , environment < apply_rule<tag::seq_,BackEnd> ( boost::proto::_value
-                                                            , pid_(boost::proto::_state)
-                                                            )
-                            , pid_(boost::proto::_state)
-                            >(  apply_rule<tag::seq_,BackEnd> ( boost::proto::_value
-                                                              , pid_(boost::proto::_state)
-                                                              )
-                             )
-              >
+        : //boost::proto::
+        /*or_ <*/
+        boost::proto::
+              when< boost::proto::terminal<boost::proto::_>
+                  , environment < apply_rule<tag::seq_,BackEnd> 
+                                  ( boost::proto::_value
+                                  , pid_(boost::proto::_state)
+                                  )
+                                , pid_(boost::proto::_state)
+                                >(  apply_rule<tag::seq_,BackEnd> 
+                                    ( boost::proto::_value
+                                    , pid_(boost::proto::_state)
+                                    )
+                                 )
+                  >
+                  /*
+            , boost::proto::
+              when< boost::proto::bitwise_and < boost::proto::_
+                                              , boost::proto::_
+                                              >
+                  , environment < apply_rule<tag::pardo_,BackEnd> 
+                                ( make_network<BackEnd>
+                                  ( boost::proto::_right
+                                  , make_network<BackEnd>
+                                    ( boost::proto::_left
+                                    , boost::proto::_state
+                                    )
+                                  )
+                                )
+                                , pid_(boost::proto::_state)
+                                >(  apply_rule<tag::seq_,BackEnd> 
+                                    ( boost::proto::_value
+                                    , pid_(boost::proto::_state)
+                                    )
+                                 )
+                  >
+            >*/
   {};
 } }
 

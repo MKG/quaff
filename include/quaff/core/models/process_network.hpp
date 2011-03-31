@@ -11,6 +11,7 @@
 #define QUAFF_CORE_MODELS_PROCESS_NETWORK_HPP_INCLUDED
 
 #include <quaff/core/models/process_network/network.hpp>
+#include <quaff/core/models/process_network/join_network.hpp>
 #include <quaff/core/models/process_network/process.hpp>
 #include <quaff/core/models/process_network/descriptor.hpp>
 
