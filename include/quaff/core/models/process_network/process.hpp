@@ -33,6 +33,7 @@ namespace quaff { namespace model
 
     void operator()() const
     {
+      std::cout << "[" << Pid::value << "] :";
       // If our dynamic PID is correct
       //if( back_end.accept(pid::value) )
       {
@@ -48,6 +49,16 @@ namespace quaff { namespace model
 
     Descriptor  code;
   };
+
+  //////////////////////////////////////////////////////////////////////////////
+  // Build a process out of its components
+  //////////////////////////////////////////////////////////////////////////////
+  template<class PID,class D,class BE>
+  process<PID,D,BE> make_process( PID const&, D const& d, BE const& )
+  {
+    process<PID,D,BE> that(d);
+    return that;
+  }
 } }
 
 #endif

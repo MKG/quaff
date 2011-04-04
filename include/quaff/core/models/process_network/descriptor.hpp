@@ -35,6 +35,16 @@ namespace quaff { namespace model
 
     Code codelet;
   };
+  
+  //////////////////////////////////////////////////////////////////////////////
+  // Build a descriptor out of its components
+  //////////////////////////////////////////////////////////////////////////////
+  template<class P,class N,class C>
+  descriptor<P,N,C> make_descriptor( P const& , N const&, C const& c )
+  {
+    descriptor<P,N,C> that(c);
+    return that;
+  }
 } }
 
 #endif

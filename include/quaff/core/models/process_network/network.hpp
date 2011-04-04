@@ -33,7 +33,7 @@ namespace quaff { namespace model
   template<class Processes,class InputNodes,class OutputNodes>
   struct network
   {
-    typedef Processes processes;
+    typedef Processes   processes;
     typedef InputNodes  inputs;
     typedef OutputNodes outputs;
 
@@ -56,8 +56,26 @@ namespace quaff { namespace model
   };
 
   //////////////////////////////////////////////////////////////////////////////
+  // Build a network out of its components
+  //////////////////////////////////////////////////////////////////////////////
+  template<class P, class I,class O>
+  network<P,I,O> make_network( P const& n, I const&, O const& )
+  {
+    network<P,I,O> that(n);
+    return that;
+  }
+  
+  //////////////////////////////////////////////////////////////////////////////
   /// empty process network - to be used in process network transform
   //////////////////////////////////////////////////////////////////////////////
+  template<>
+  struct network<boost::fusion::vector<>, boost::mpl::set<>, boost::mpl::set<> >
+  {
+    typedef boost::fusion::vector<> processes;
+    typedef boost::mpl::set<>       inputs;
+    typedef boost::mpl::set<>       outputs;
+  };
+  
   typedef network< boost::fusion::vector<>
                  , boost::mpl::set<>
                  , boost::mpl::set<>

@@ -22,31 +22,31 @@
 namespace quaff { namespace model
 {
   //////////////////////////////////////////////////////////////////////////////
-  ///join network structure
+  ///joint network structure
   ///
   /// Static datatype representing the union of two process networks. 
   //////////////////////////////////////////////////////////////////////////////
   template<class Network1,class Network2>
-  struct join_network
+  struct joint_network
   {
-    typedef typename boost::fusion::result_of::
+    typedef boost::fusion::
                      joint_view< typename Network1::processes
                                , typename Network2::processes
-                               >::type              processes;
+                               >              processes;
                                
                                
-    typedef typename boost::fusion::result_of::
+    typedef boost::fusion::
                      joint_view< typename Network1::inputs
                                , typename Network2::inputs
-                               >::type              inputs;
+                               >              inputs;
                                
                                
-    typedef typename boost::fusion::result_of::
+    typedef boost::fusion::
                      joint_view< typename Network1::outputs
                                , typename Network2::outputs
-                               >::type              outputs;
+                               >              outputs;
 
-    join_network(Network1 const& n1, Network2 const& n2) 
+                               joint_network(Network1 const& n1, Network2 const& n2) 
                   : nodes1(n1)
                   , nodes2(n2) 
     {}
@@ -56,7 +56,7 @@ namespace quaff { namespace model
     ////////////////////////////////////////////////////////////////////////////
     void operator()() const
     {
-      boost::fusion::for_each(boost::fusion::joint_view(nodes1, nodes2),runner());
+      nodes1(); nodes2();
     }
 
     struct runner
@@ -67,6 +67,16 @@ namespace quaff { namespace model
     Network1 nodes1;
     Network2 nodes2;
   };
+
+  //////////////////////////////////////////////////////////////////////////////
+  // Join two networks 
+  //////////////////////////////////////////////////////////////////////////////
+  template<class LHS,class RHS> inline
+  joint_network<LHS,RHS> join_network( LHS const& n1, RHS const& n2 )
+  {
+    joint_network<LHS,RHS> that(n1,n2);
+    return that;
+  }
 } }
 
 #endif
