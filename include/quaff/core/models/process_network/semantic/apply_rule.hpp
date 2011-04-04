@@ -17,15 +17,9 @@
 
 namespace quaff { namespace model
 {
-  template<class Tag,class BackEnd,class Dummy = void>
-  struct apply_rule;
-} }
-
-namespace boost { namespace proto
-{
-  template<class Tag,class BackEnd,class Dummy>
-  struct  is_callable< quaff::model::apply_rule<Tag,BackEnd,Dummy> >
-        : boost::mpl::true_ {};
+  struct convert_seq;
+  struct convert_pardo;
+  struct  build_network;
 } }
 
 #endif

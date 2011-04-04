@@ -15,25 +15,36 @@
 #include <quaff/sdk/type_id.hpp>
 
 void g() { std::cout << "Hello from g" << "\n"; }
+void h() { std::cout << "Hello from h" << "\n"; }
 
 template<class X> void probe(X const& x)
 {
-  quaff::model::make_network<quaff::backend::debug_> mn;
+  quaff::model::build_network mn;
   quaff::model::empty_environment en;
-
-  mn( x, en )();
-}
-
+  quaff::backend::debug_ be;
+  
+  mn( x, en, be )();
+} 
+ 
 template<class X> void debug(X const& x)
 {
-  quaff::model::make_network<quaff::backend::sequential_> mn;
+  quaff::model::build_network mn;
   quaff::model::empty_environment en;
 
-  mn( x, en )   ();
+  quaff::backend::sequential_ be;
+  
+  mn( x, en, be )();
 }
+
+QUAFF_TASK(g_, &g);
+QUAFF_TASK(h_, &h);
 
 int main()
 {
-  probe( quaff::seq(&g) );
-  debug( quaff::seq(&g) );
+  probe( ( ( (g_ & h_) & h_) 
+           & (g_       & (g_ & h_) )
+         )         
+         & ( (g_ & h_) & (g_ & h_) )
+       );
 }
+

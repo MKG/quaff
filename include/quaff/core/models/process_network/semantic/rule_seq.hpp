@@ -13,59 +13,85 @@
 ////////////////////////////////////////////////////////////////////////////////
 /// @file quaff/core/models/process_network/semantic/environment.hpp
 ////////////////////////////////////////////////////////////////////////////////
+#include <boost/mpl/set.hpp>
 #include <boost/proto/proto.hpp>
 #include <boost/fusion/include/vector.hpp>
 #include <boost/fusion/include/make_vector.hpp>
 #include <quaff/core/models/process_network/network.hpp>
 #include <quaff/core/models/process_network/process.hpp>
 #include <quaff/core/models/process_network/descriptor.hpp>
-#include <quaff/core/models/process_network/semantic/apply_rule.hpp>
 #include <quaff/core/backend/instructions.hpp>
 
-namespace quaff { namespace tag
-{
-  struct seq_ {};
-} }
-
+////////////////////////////////////////////////////////////////////////////////
+// The seq skeleton adapt a single function of the form: Outputs f( Inputs )
+// into an entity able to be used in other skeletons
+//
+// Inputs  : the current function object f , the current PID p
+// Outputs : an environment containing f as the single process of the network
+////////////////////////////////////////////////////////////////////////////////
 namespace quaff { namespace model
 {
-  template<class BackEnd, class Dummy>
-  struct apply_rule<tag::seq_, BackEnd, Dummy>
+  struct convert_seq : boost::proto::callable
   {
     template<class Sig> struct result;
 
-    template<class This,class Function,class Pid>
-    struct result<This(Function,Pid)>
+    template<class This,class Function,class Pid, class BackEnd>
+    struct result<This(Function,Pid,BackEnd)>
     {
       typedef typename boost::proto::detail::uncvref<Function>::type  function;
       typedef typename boost::proto::detail::uncvref<Pid>::type       pid;
+      typedef typename boost::proto::detail::uncvref<BackEnd>::type   back_end;
 
-      typedef instruction::call<function,BackEnd>  instr_type;
+      static instruction::call<function,back_end>& f_;
 
-      typedef descriptor< boost::fusion::vector<>
-                        , boost::fusion::vector<>
-                        , boost::fusion::vector<instr_type>
-                        >                   descriptor_type;
-
-      typedef process<pid,descriptor_type,BackEnd>  process_type;
-
-      typedef network < boost::fusion::vector<process_type>
-                      , boost::mpl::vector<pid>
-                      , boost::mpl::vector<pid>
-                      >                     type;
+      BOOST_TYPEOF_NESTED_TYPEDEF_TPL
+      ( nested
+      , make_environment
+        (
+          make_network( boost::fusion::make_vector
+                        ( make_process
+                          ( pid()
+                          , make_descriptor ( boost::fusion::vector<>()
+                                            , boost::fusion::vector<>()
+                                            , boost::fusion::make_vector(f_)
+                                            )
+                          , back_end()
+                          )                         
+                        )
+                      , boost::mpl::set<pid>()
+                      , boost::mpl::set<pid>()
+                      ) 
+        , typename boost::mpl::next<pid>::type()
+        )
+      );
+      
+      typedef typename nested::type type;
     };
 
-    template<class Function,class Pid>
-    typename result<apply_rule(Function&, Pid&)>::type
-    operator()(Function& f, Pid&) const
+    template<class Function,class Pid, class BackEnd>
+    typename result<convert_seq(Function const&, Pid const&, BackEnd const&)>::type
+    operator()(Function const& f, Pid const& pid, BackEnd const& be) const
     {
-      typedef result<apply_rule(Function&, Pid&)> result_;
-      typename result_::instr_type      i(f);
-      typename result_::descriptor_type d(boost::fusion::make_vector(i));
-      typename result_::process_type    p(d);
-      typename result_::type            that(boost::fusion::make_vector(p));
-
-      return that;
+      instruction::call<Function,BackEnd> f_(f);
+      
+      return 
+      make_environment
+      (
+        make_network( boost::fusion::make_vector
+                      ( make_process
+                        ( pid
+                        , make_descriptor ( boost::fusion::vector<>()
+                                          , boost::fusion::vector<>()
+                                          , boost::fusion::make_vector(f_)
+                                          )
+                        , be
+                        )                         
+                      )
+                    , boost::mpl::set<Pid>()
+                    , boost::mpl::set<Pid>()
+                    ) 
+      , typename boost::mpl::next<Pid>::type()                    
+      );
     }
   };
 } }
