@@ -28,15 +28,28 @@ namespace quaff { namespace model
     typedef Network network_type;
     typedef PID     pid_type;
 
-    environment(Network const& n) : network(n) {}
+    environment(Network const& n) : network_(n) {}
 
     void operator()() const
     {
-      network();
+      network_();
     }
 
-    Network network;
+    Network const&  network() const { return network_; }
+    pid_type        pid()     const { return pid_type(); }
+    
+    Network network_;
   };
+  
+  /*****************************************************************************
+   * Build an environnement out of its component
+   ****************************************************************************/
+  template<class PID,class Network>
+  environment<Network,PID> make_environment(Network const& n, PID const&)
+  {
+    environment<Network,PID> that(n);
+    return that;
+  }
   
   /*****************************************************************************
    * specialisation for empty environment
@@ -45,8 +58,10 @@ namespace quaff { namespace model
   {
     typedef empty_network network_type;
     typedef boost::mpl::int_<0>     pid_type;
-
-		environment() {}
+    
+    network_type network()  const { return network_type(); }
+    pid_type     pid()      const { return pid_type(); }
+    
   };
 
   /*****************************************************************************
@@ -71,30 +86,6 @@ namespace quaff { namespace model
        return that;
      }
    };
-
-  /*****************************************************************************
-  * proto transforms retrieving the next pid of an environment
-  ****************************************************************************/
-  struct next_pid_ : boost::proto::callable
-  {
-    template<class Sig> struct result;
-
-    template<class This, class Env>
-    struct  result<This(Env)>
-          : boost::mpl
-                 ::next< typename  boost::proto::detail
-                                        ::uncvref<Env>::type::pid_type
-                       >
-    {};
-
-    template<class Env> inline
-    typename result<pid_(Env const&)>::type
-    operator()(Env const& ) const
-    {
-      typename result<pid_(Env const&)>::type that;
-      return that;
-    }
-  };
 
   typedef environment<empty_network, boost::mpl::int_<0> > empty_environment;
 } }
