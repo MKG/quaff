@@ -19,7 +19,10 @@ namespace quaff { namespace model
 {
   struct convert_seq;
   struct convert_pardo;
-  struct  build_network;
+  struct convert_pipe;
+  struct convert_map;
+  struct convert_farm;
+  struct build_network;
 } }
 
 #endif

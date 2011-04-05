@@ -30,9 +30,9 @@ namespace quaff { namespace model
 
     environment(Network const& n) : network_(n) {}
 
-    void operator()() const
+    template<class BackEnd> void operator()(BackEnd& be) const
     {
-      network_();
+      network_(be);
     }
 
     Network const&  network() const { return network_; }

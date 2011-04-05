@@ -23,7 +23,7 @@ namespace quaff { namespace instruction
 
     void operator()() const
     {
-      std::cout << "CALL " << (void*)(&mFunction) << "\n";
+      std::cout << "| CALL " << (void*)(&mFunction) << "\n";
     }
 
     Function  mFunction;

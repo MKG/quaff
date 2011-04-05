@@ -13,12 +13,31 @@
 ////////////////////////////////////////////////////////////////////////////////
 /// @file quaff/core/backend/debug/backend.hpp
 ////////////////////////////////////////////////////////////////////////////////
-
 namespace quaff { namespace backend
 {
   struct debug_
   {
-
+    // How to run a network
+    template<class N> void run_network( N const& n )
+    {
+      boost::fusion::for_each(n.nodes(),runner(*this));
+    }
+    
+    // How to run a process
+    template<class Proc> void run_process(Proc const& p)
+    {
+      std::cout << "[ Running process " << Proc::pid_type::value << "]\n";
+      p.code()();
+      std::cout << "[-------------------------------]\n";
+    }
+    
+    // Some helpers
+    struct runner
+    {
+      debug_& be;
+      runner(debug_& b) :be(b) {}
+      template<class P> void operator()(P& proc) const { proc(be); }
+    };
   };
 } }
 

@@ -33,12 +33,11 @@ namespace quaff { namespace model
                 when< boost::proto::bitwise_and < boost::proto::_
                                                 , boost::proto::_
                                                 >
-                    , convert_pardo 
-                      ( boost::proto::_left
-                      , boost::proto::_right
-                      , boost::proto::_state
-                      , boost::proto::_data
-                      )
+                    , convert_pardo ( boost::proto::_left
+                                    , boost::proto::_right
+                                    , boost::proto::_state
+                                    , boost::proto::_data
+                                    )
                     >
               >
   {};

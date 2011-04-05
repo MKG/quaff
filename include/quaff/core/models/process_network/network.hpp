@@ -37,14 +37,14 @@ namespace quaff { namespace model
     typedef InputNodes  inputs;
     typedef OutputNodes outputs;
 
-    network(Processes const& n) : nodes(n) {}
+    network(Processes const& n) : nodes_(n) {}
 
     ////////////////////////////////////////////////////////////////////////////
     // Run each process in a process network using for_each.
     ////////////////////////////////////////////////////////////////////////////
-    void operator()() const
-    {
-      boost::fusion::for_each(nodes,runner());
+    template<class BackEnd> void operator()(BackEnd& be) const 
+    { 
+      be.run_network(*this); 
     }
 
     struct runner
@@ -52,7 +52,9 @@ namespace quaff { namespace model
       template<class P> void operator()(P& proc) const { proc(); }
     };
 
-    Processes nodes;
+    Processes const& nodes() const { return nodes_; }
+    
+    Processes nodes_;
   };
 
   //////////////////////////////////////////////////////////////////////////////

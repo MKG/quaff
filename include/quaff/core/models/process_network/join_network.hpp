@@ -23,47 +23,38 @@ namespace quaff { namespace model
 {
   //////////////////////////////////////////////////////////////////////////////
   ///joint network structure
-  ///
   /// Static datatype representing the union of two process networks. 
   //////////////////////////////////////////////////////////////////////////////
   template<class Network1,class Network2>
   struct joint_network
   {
-    typedef boost::fusion::
-                     joint_view< typename Network1::processes
-                               , typename Network2::processes
-                               >              processes;
+    typedef boost::fusion::joint_view< typename Network1::processes
+                                     , typename Network2::processes
+                                     >                    processes;
                                
                                
-    typedef boost::fusion::
-                     joint_view< typename Network1::inputs
-                               , typename Network2::inputs
-                               >              inputs;
+    typedef boost::fusion::joint_view< typename Network1::inputs
+                                     , typename Network2::inputs
+                                     >                    inputs;
                                
                                
-    typedef boost::fusion::
-                     joint_view< typename Network1::outputs
-                               , typename Network2::outputs
-                               >              outputs;
+    typedef boost::fusion::joint_view< typename Network1::outputs
+                                     , typename Network2::outputs
+                                     >                    outputs;
 
-                               joint_network(Network1 const& n1, Network2 const& n2) 
-                  : nodes1(n1)
-                  , nodes2(n2) 
+    joint_network ( Network1 const& n1, Network2 const& n2 ) 
+                  : nodes1(n1), nodes2(n2) 
     {}
 
     ////////////////////////////////////////////////////////////////////////////
     // Run each process in a process network using for_each.
     ////////////////////////////////////////////////////////////////////////////
-    void operator()() const
-    {
-      nodes1(); nodes2();
+    template<class BackEnd> void operator()(BackEnd& be) const 
+    { 
+      nodes1(be);
+      nodes2(be);
     }
-
-    struct runner
-    {
-      template<class P> void operator()(P& proc) const { proc(); }
-    };
-
+    
     Network1 nodes1;
     Network2 nodes2;
   };

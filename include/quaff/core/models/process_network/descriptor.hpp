@@ -26,7 +26,6 @@ namespace quaff { namespace model
 
     descriptor(Code const& c) : codelet(c) {}
 
-
     void operator()() const
     {
       boost::fusion::at_c<0>(codelet)();

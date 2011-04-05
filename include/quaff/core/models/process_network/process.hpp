@@ -29,25 +29,13 @@ namespace quaff { namespace model
     typedef Pid         pid_type;
     typedef Descriptor  descriptor_type;
 
-    process(Descriptor const& d) : code(d) {}
+    process(Descriptor const& d) : code_(d) {}
 
-    void operator()() const
-    {
-      std::cout << "[" << Pid::value << "] :";
-      // If our dynamic PID is correct
-      //if( back_end.accept(pid::value) )
-      {
-        // Build local process variable tuples
+    void operator()(BackEnd& be) const { be.run_process(*this); }
 
-        //do
-        {
-          // Run code till their are invalid
-          code(); //(args,back_end);
-        } //while( back_end.is_running() );
-      }
-    }
-
-    Descriptor  code;
+    Descriptor const& code() const { return code_; }
+        
+    Descriptor  code_;
   };
 
   //////////////////////////////////////////////////////////////////////////////
