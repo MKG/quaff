@@ -29,50 +29,40 @@
 
 namespace quaff { namespace meta
 {
-  /*****************************************************************************
-   * Turns builtin Callable Object into Callable Action by reinjecting their
-   * return type as a reference argument.
-   ****************************************************************************/
-  template<class Function>
-  struct  action : callable
+  //////////////////////////////////////////////////////////////////////////////
+  // action takes some Callable and adapt it to the Concretized Function Object
+  // we require.
+  //////////////////////////////////////////////////////////////////////////////
+  template<class Callable> struct  action;
+
+  //////////////////////////////////////////////////////////////////////////////
+  // Plain C function of the form O (*)(I)
+  //////////////////////////////////////////////////////////////////////////////
+  template<class Output, class Input>
+  struct  action<Output (*) (Input) > : callable
   {
-    typedef Function  function_type;
-    typedef void      result_type;
+    typedef Output  (*function_type)(Input);
+
+    typedef Input     input_type;
+    typedef Output    output_type;
 
     action() {}
-    action(Function const& f) : callee(f) {}
+    action(function_type const& f) : callee(f) {}
 
-    action& operator=(Function const& f)
+    action& operator=(function_type const& f)
     {
       callee = f;
       return *this;
     }
 
-    /***************************************************************************
-     * Don't handle perfect forwarding fully to avoid 2^n PP stuff
-     * We basically play on the fact the arguments will never be temporaries
-     * but will leaves in some arguments fusion sequence.
-     **************************************************************************/
-    #define M0(z,n,t)                                               \
-    template<class R, BOOST_PP_ENUM_PARAMS(n,class A)> inline void  \
-    operator()(BOOST_PP_ENUM_BINARY_PARAMS(n, A, &a), R& r) const   \
-    {                                                               \
-      r = callee(BOOST_PP_ENUM_PARAMS(n,a));                        \
-    }                                                               \
-    /**/
-
-    template<class R>
-    inline void operator()(R& r) const { r = callee(); }
-    inline void operator()() const { callee(); }
-    BOOST_PP_REPEAT_FROM_TO(1,QUAFF_MAX_FUNCTION_ARITY,M0,~)
-
-    #undef M0
-
+    inline Output operator()(Input in) const
+    {
+      return callee(in);
+    }
 
     private:
-    Function callee;
+    function_type callee;
   };
-
 } }
 
 #endif

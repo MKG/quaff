@@ -24,31 +24,14 @@
 namespace quaff
 {
   /////////////////////////////////////////////////////////////////////////////
-  // Turn Callable types into seq skeleton
-  /////////////////////////////////////////////////////////////////////////////
-  template<class Function>
-  typename boost::enable_if_c < meta::is_callable<Function>::value
-                              , dsl::skeleton_terminal< Function >
-                              >::type
-
-  seq( Function const& f )
-  {
-    dsl::skeleton_terminal< Function > that( f );
-    return that;
-  }
-
-  /////////////////////////////////////////////////////////////////////////////
   // Turn function pointer into seq skeleton usign action<>
   /////////////////////////////////////////////////////////////////////////////
-  template<class Function>
-  typename
-  boost::enable_if_c< boost::is_function<Function>::value
-                    , dsl::skeleton_terminal< meta::action<Function*> >
-                    >::type
-  seq( Function* f )
+  template<class Out, class In>
+  dsl::skeleton_terminal< meta::action<Out(*)(In)> >
+  seq( Out(*f)(In) )
   {
-    meta::action<Function*> them = f;
-    dsl::skeleton_terminal< meta::action<Function*> > that( them );
+    meta::action<Out(*)(In)> them = f;
+    dsl::skeleton_terminal< meta::action<Out(*)(In)> > that( them );
     return that;
   }
 
