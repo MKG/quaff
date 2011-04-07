@@ -10,23 +10,7 @@
 #include <boost/mpl/assert.hpp>
 #include <quaff/core/skeleton/seq.hpp>
 
-void g(int) {}
-
-struct foo : quaff::callable
-{
-  void operator()() {}
-};
-
-boost::function<int()> f;
-
-QUAFF_TASK(g_, &g);
-QUAFF_TASK(f_, f);
-QUAFF_TASK(foo_, foo());
-
 int main()
 {
-
-  g_ | f_ | foo_;
-
   return 0;
 }

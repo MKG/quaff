@@ -8,43 +8,43 @@
  *                     http://www.boost.org/LICENSE_1_0.txt
  ******************************************************************************/
 #include <iostream>
-#include <quaff/core/models/process_network/transform.hpp>
-#include <quaff/core/backend/sequential/backend.hpp>
-#include <quaff/core/backend/debug/backend.hpp>
+#include <quaff/core/backend.hpp>
 #include <quaff/core/skeleton/seq.hpp>
-#include <quaff/sdk/type_id.hpp>
-
-void g() { std::cout << "Hello from g" << "\n"; }
-void h() { std::cout << "Hello from h" << "\n"; }
-
-template<class X> void probe(X const& x)
-{
-  quaff::model::build_network mn;
-  quaff::model::empty_environment en;
-  quaff::backend::debug_ be;
-  
-  mn( x, en, be )();
-} 
+#include <quaff/core/skeleton/source.hpp>
  
-template<class X> void debug(X const& x)
+template<class X> void run(X const& x)
 {
-  quaff::model::build_network mn;
+  quaff::semantic::convert<quaff::tag::process_network_> mn;
   quaff::model::empty_environment en;
-
-  quaff::backend::sequential_ be;
   
-  mn( x, en, be )();
+  mn( x, en, quaff::current_backend ).network().run(quaff::current_backend);
 }
 
-QUAFF_TASK(g_, &g);
-QUAFF_TASK(h_, &h);
+int g()
+{
+  static int i(0);
+  std::cout << "i: " << i << "\n";
+
+  if(i < 10) i++;
+  else
+  {
+    i = 0;
+    quaff::terminate();
+  }
+
+  return i;
+}
 
 int main()
 {
-  probe( ( ( (g_ & h_) & h_) 
-           & (g_       & (g_ & h_) )
-         )         
-         & ( (g_ & h_) & (g_ & h_) )
-       );
+  run(  ( quaff::source(g) & quaff::source(g) ) & quaff::source(g)
+      & ( quaff::source(g) & quaff::source(g) ) & quaff::source(g)
+      & (( quaff::source(g) & quaff::source(g) ) & quaff::source(g))
+     );
+
+  debug(  ( quaff::source(g) & quaff::source(g) ) & quaff::source(g)
+      & ( quaff::source(g) & quaff::source(g) ) & quaff::source(g)
+      & (( quaff::source(g) & quaff::source(g) ) & quaff::source(g))
+     );
 }
 
