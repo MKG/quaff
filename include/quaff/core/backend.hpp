@@ -7,17 +7,14 @@
  *                 See accompanying file LICENSE.txt or copy at
  *                     http://www.boost.org/LICENSE_1_0.txt
  ******************************************************************************/
-#ifndef QUAFF_CORE_BACKEND_INSTRUCTIONS_HPP_INCLUDED
-#define QUAFF_CORE_BACKEND_INSTRUCTIONS_HPP_INCLUDED
+#ifndef QUAFF_CORE_BACKEND_HPP_INCLUDED
+#define QUAFF_CORE_BACKEND_HPP_INCLUDED
 
 ////////////////////////////////////////////////////////////////////////////////
-/// @file quaff/core/backend/instructions.hpp
+/// @file quaff/core/backend.hpp
 ////////////////////////////////////////////////////////////////////////////////
+#include <quaff/core/models/process_network.hpp>
+#include <quaff/core/backend/backend.hpp>
 
-namespace quaff { namespace instruction
-{
-  template<class Function,class BackEnd>      struct call;
-  template<class F1, class F2,class BackEnd>  struct compose;
-} }
 
 #endif

@@ -22,66 +22,55 @@
 namespace quaff { namespace model
 {
   //////////////////////////////////////////////////////////////////////////////
-  ///network structure
-  ///
-  /// Static datatype representing a process network. In this representation,
-  /// a process network is defined by a triplet <P,I,O>:
-  /// - Process     : a list of processus
-  /// - InputNodes  : a list of input nodes
-  /// - OutputNodes : a list of outputs node
+  // a network is built from a:
+  //  - a FusionRandomAccessSequence of process (usually a fusion::vector)
+  //  - a MetaAssociativeSequence of input and output nodes (usually a mpl::set)
+  //  - an input Type
+  //  - an output Type
   //////////////////////////////////////////////////////////////////////////////
-  template<class Processes,class InputNodes,class OutputNodes>
+  template< class Nodes
+          , class InputSet  , class OutputSet
+          , class InputTypes, class OutputTypes
+          >
   struct network
   {
-    typedef Processes   processes;
-    typedef InputNodes  inputs;
-    typedef OutputNodes outputs;
-
-    network(Processes const& n) : nodes_(n) {}
+    typedef Nodes       nodes_type;
+    typedef InputSet    input_set;
+    typedef OutputSet   output_set;
+    typedef InputTypes  input_type;
+    typedef OutputTypes output_type;
 
     ////////////////////////////////////////////////////////////////////////////
-    // Run each process in a process network using for_each.
+    // Build a network form its Nodes sequence
     ////////////////////////////////////////////////////////////////////////////
-    template<class BackEnd> void operator()(BackEnd& be) const 
+    network(nodes_type const& n) : nodes_(n) {}
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Pass current network to a Back-End
+    ////////////////////////////////////////////////////////////////////////////
+    template<class BackEnd> void run(BackEnd& be) const
     { 
-      be.run_network(*this); 
+      // The BackEnd acts like a Visitor over the network
+      be.accept(*this);
     }
-
-    struct runner
-    {
-      template<class P> void operator()(P& proc) const { proc(); }
-    };
-
-    Processes const& nodes() const { return nodes_; }
     
-    Processes nodes_;
+    ////////////////////////////////////////////////////////////////////////////
+    // Acces to the network Nodes sequence
+    ////////////////////////////////////////////////////////////////////////////
+    nodes_type const& nodes() const { return nodes_; }
+
+    nodes_type nodes_;
   };
 
   //////////////////////////////////////////////////////////////////////////////
   // Build a network out of its components
   //////////////////////////////////////////////////////////////////////////////
-  template<class P, class I,class O>
-  network<P,I,O> make_network( P const& n, I const&, O const& )
+  template<class IT, class OT, class P, class I,class O>
+  network<P,I,O,IT,OT> make_network( P const& n, I const&, O const& )
   {
-    network<P,I,O> that(n);
+    network<P,I,O,IT,OT> that(n);
     return that;
   }
-  
-  //////////////////////////////////////////////////////////////////////////////
-  /// empty process network - to be used in process network transform
-  //////////////////////////////////////////////////////////////////////////////
-  template<>
-  struct network<boost::fusion::vector<>, boost::mpl::set<>, boost::mpl::set<> >
-  {
-    typedef boost::fusion::vector<> processes;
-    typedef boost::mpl::set<>       inputs;
-    typedef boost::mpl::set<>       outputs;
-  };
-  
-  typedef network< boost::fusion::vector<>
-                 , boost::mpl::set<>
-                 , boost::mpl::set<>
-                 >                                  empty_network;
 } }
 
 #endif

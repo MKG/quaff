@@ -14,12 +14,8 @@
 /// @file quaff/core/models/process_network/semantic/environment.hpp
 ////////////////////////////////////////////////////////////////////////////////
 #include <boost/mpl/set.hpp>
-#include <boost/proto/proto.hpp>
 #include <boost/fusion/include/vector.hpp>
 #include <boost/fusion/include/make_vector.hpp>
-#include <quaff/core/models/process_network/network.hpp>
-#include <quaff/core/models/process_network/process.hpp>
-#include <quaff/core/models/process_network/descriptor.hpp>
 #include <quaff/core/backend/instructions.hpp>
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -29,9 +25,30 @@
 // Inputs  : the current function object f , the current PID p
 // Outputs : an environment containing f as the single process of the network
 ////////////////////////////////////////////////////////////////////////////////
-namespace quaff { namespace model
+namespace quaff { namespace semantic
 {
-  struct convert_seq : boost::proto::callable
+  //////////////////////////////////////////////////////////////////////////////
+  // Handle seq node in the process_network IR
+  //////////////////////////////////////////////////////////////////////////////
+  template<>
+  struct  process_network_cases::case_<boost::proto::tag::terminal>
+        : boost::proto::
+          when< boost::proto::terminal<boost::proto::_>
+              , convert_seq<tag::process_network_>
+                ( boost::proto::_value
+                , model::pid_(boost::proto::_state)
+                , boost::proto::_data
+                )
+              >
+  {};
+} }
+
+namespace quaff { namespace semantic
+{
+  //////////////////////////////////////////////////////////////////////////////
+  // Conversion function
+  //////////////////////////////////////////////////////////////////////////////
+  template<> struct convert_seq<tag::process_network_>
   {
     template<class Sig> struct result;
 
@@ -42,25 +59,25 @@ namespace quaff { namespace model
       typedef typename boost::proto::detail::uncvref<Pid>::type       pid;
       typedef typename boost::proto::detail::uncvref<BackEnd>::type   back_end;
 
+      typedef typename function::input_type   input_type;
+      typedef typename function::output_type  output_type;
+
       static instruction::call<function,back_end>& f_;
 
       BOOST_TYPEOF_NESTED_TYPEDEF_TPL
       ( nested
-      , make_environment
+      , model::make_environment
         (
-          make_network( boost::fusion::make_vector
-                        ( make_process
-                          ( pid()
-                          , make_descriptor ( boost::fusion::vector<>()
-                                            , boost::fusion::vector<>()
-                                            , boost::fusion::make_vector(f_)
-                                            )
-                          , back_end()
-                          )                         
+            model::make_network< input_type
+                      , output_type
+                      > ( boost::fusion::make_vector
+                          ( model::make_process< input_type
+                              , output_type
+                              >( pid(), f_ )
+                          )
+                          , boost::mpl::set<pid>()
+                          , boost::mpl::set<pid>()
                         )
-                      , boost::mpl::set<pid>()
-                      , boost::mpl::set<pid>()
-                      ) 
         , typename boost::mpl::next<pid>::type()
         )
       );
@@ -74,23 +91,23 @@ namespace quaff { namespace model
     {
       instruction::call<Function,BackEnd> f_(f);
       
+      typedef typename Function::input_type   input_type;
+      typedef typename Function::output_type  output_type;
+
       return 
-      make_environment
+      model::make_environment
       (
-        make_network( boost::fusion::make_vector
-                      ( make_process
-                        ( pid
-                        , make_descriptor ( boost::fusion::vector<>()
-                                          , boost::fusion::vector<>()
-                                          , boost::fusion::make_vector(f_)
-                                          )
-                        , be
-                        )                         
-                      )
-                    , boost::mpl::set<Pid>()
-                    , boost::mpl::set<Pid>()
-                    ) 
-      , typename boost::mpl::next<Pid>::type()                    
+        model::make_network < input_type
+                            , output_type
+                            >
+        ( boost::fusion::make_vector
+          (
+            model::make_process<input_type, output_type>( pid, f_ )
+          )
+        , boost::mpl::set<Pid>()
+        , boost::mpl::set<Pid>()
+        )
+      , typename boost::mpl::next<Pid>::type()
       );
     }
   };

@@ -15,79 +15,66 @@
 ////////////////////////////////////////////////////////////////////////////////
 #include <boost/proto/proto.hpp>
 #include <boost/mpl/next_prior.hpp>
-#include <quaff/core/models/process_network/network.hpp>
 
 namespace quaff { namespace model
 {
-  /*****************************************************************************
-   * environment gathers network and current PID value inside proto transforms
-   ****************************************************************************/
-  template<class Network, class PID>
+  //////////////////////////////////////////////////////////////////////////////
+  // environment is used to capture required element of the IR while being built
+  //////////////////////////////////////////////////////////////////////////////
+  template< class Network
+          , class PIDState
+          >
   struct environment
   {
-    typedef Network network_type;
-    typedef PID     pid_type;
+    typedef Network   network_type;
+    typedef PIDState  pid_type;
 
-    environment(Network const& n) : network_(n) {}
+    ////////////////////////////////////////////////////////////////////////////
+    // Build an environnement from a network and a back-end
+    ////////////////////////////////////////////////////////////////////////////
+    environment ( network_type const& n ) : network_(n) {}
 
-    template<class BackEnd> void operator()(BackEnd& be) const
-    {
-      network_(be);
-    }
-
-    Network const&  network() const { return network_; }
-    pid_type        pid()     const { return pid_type(); }
+    ////////////////////////////////////////////////////////////////////////////
+    // Access to environment components
+    ////////////////////////////////////////////////////////////////////////////
+    network_type const&   network()   const { return network_;    }
+    pid_type              next_pid()  const { return pid_type();  }
     
-    Network network_;
+    network_type network_;
   };
   
-  /*****************************************************************************
-   * Build an environnement out of its component
-   ****************************************************************************/
+  //////////////////////////////////////////////////////////////////////////////
+  // Build an environnement from Network and PID
+  //////////////////////////////////////////////////////////////////////////////
   template<class PID,class Network>
-  environment<Network,PID> make_environment(Network const& n, PID const&)
+  inline environment<Network,PID> make_environment(Network const& n, PID const&)
   {
     environment<Network,PID> that(n);
     return that;
   }
-  
-  /*****************************************************************************
-   * specialisation for empty environment
-   ****************************************************************************/
-  template<> struct environment<empty_network, boost::mpl::int_<0> >
+
+  //////////////////////////////////////////////////////////////////////////////
+  // proto transforms retrieving the current pid of an environment
+  //////////////////////////////////////////////////////////////////////////////
+  struct pid_ : boost::proto::callable
   {
-    typedef empty_network network_type;
-    typedef boost::mpl::int_<0>     pid_type;
-    
-    network_type network()  const { return network_type(); }
-    pid_type     pid()      const { return pid_type(); }
-    
+    template<class Sig> struct result;
+
+    template<class This, class Env>
+    struct result<This(Env)>
+    {
+      typedef typename boost::proto::detail::uncvref<Env>::type base;
+      typedef typename base::pid_type type;
+    };
+
+    template<class Env> inline
+    typename result<pid_(Env const&)>::type
+    operator()(Env const& ) const
+    {
+      typename result<pid_(Env const&)>::type that;
+      return that;
+    }
   };
-
-  /*****************************************************************************
-   * proto transforms retrieving the current pid of an environment
-   ****************************************************************************/
-   struct pid_ : boost::proto::callable
-   {
-     template<class Sig> struct result;
-
-     template<class This, class Env>
-     struct result<This(Env)>
-     {
-       typedef typename boost::proto::detail::uncvref<Env>::type  base;
-       typedef typename base::pid_type                            type;
-     };
-
-     template<class Env> inline
-     typename result<pid_(Env const&)>::type
-     operator()(Env const& ) const
-     {
-       typename result<pid_(Env const&)>::type that;
-       return that;
-     }
-   };
-
-  typedef environment<empty_network, boost::mpl::int_<0> > empty_environment;
 } }
 
 #endif

@@ -19,9 +19,12 @@ namespace quaff { namespace instruction
   template<class Function>
   struct call<Function,backend::debug_>
   {
+    typedef typename Function::input_type   input_type;
+    typedef typename Function::output_type  output_type;
+
     call(Function const& f) : mFunction(f) {}
 
-    void operator()() const
+    void operator()(input_type const&, output_type& ) const
     {
       std::cout << "| CALL " << (void*)(&mFunction) << "\n";
     }

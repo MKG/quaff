@@ -13,18 +13,37 @@
 ////////////////////////////////////////////////////////////////////////////////
 /// @file quaff/core/models/process_network/semantic/environment.hpp
 ////////////////////////////////////////////////////////////////////////////////
-#include <boost/proto/proto.hpp>
-#include <quaff/core/models/process_network/join_network.hpp>
-#include <quaff/core/models/process_network/semantic/apply_rule.hpp>
+#include <quaff/core/models/process_network/joint_network.hpp>
 
 ////////////////////////////////////////////////////////////////////////////////
 // The pardo_ skeleton build the union of two network
 // Inputs  : the LHS/RHS skeleton, current state adn target back-end
 // Outputs : an environment E = { build(LHS) U build(RHS) }
 ////////////////////////////////////////////////////////////////////////////////
-namespace quaff { namespace model
+namespace quaff { namespace semantic
 {
-  struct convert_pardo : boost::proto::callable
+  //////////////////////////////////////////////////////////////////////////////
+  // Handle seq node in the process_network IR
+  //////////////////////////////////////////////////////////////////////////////
+  template<>
+  struct  process_network_cases::case_<boost::proto::tag::bitwise_and>
+        : boost::proto::
+          when< boost::proto::bitwise_and < boost::proto::_
+                                          , boost::proto::_
+                                          >
+              , convert_pardo<tag::process_network_>
+                ( boost::proto::_left
+                , boost::proto::_right
+                , boost::proto::_state
+                , boost::proto::_data
+                )
+              >
+  {};
+} }
+
+namespace quaff { namespace semantic
+{
+  template<> struct convert_pardo<tag::process_network_>
   {
     template<class Sig> struct result;
 
@@ -38,15 +57,16 @@ namespace quaff { namespace model
 
       static lhs& lhs_; static rhs& rhs_; 
       static state& st; static back_end& be;
+      static convert<tag::process_network_>& converter;
       
       // "temporary" environments
       BOOST_TYPEOF_NESTED_TYPEDEF_TPL ( elhs
-                                      , build_network()(lhs_,st,be)
+                                      , converter(lhs_,st,be)
                                       );
       static typename elhs::type& elhs_;
       
       BOOST_TYPEOF_NESTED_TYPEDEF_TPL ( erhs
-                                      , build_network()( rhs_, elhs_, be)
+                                      , converter( rhs_, elhs_, be)
                                       );
       static typename erhs::type& erhs_;
       
@@ -57,7 +77,7 @@ namespace quaff { namespace model
         ( join_network( elhs_.network()
                       , erhs_.network()
                       )
-        , erhs_.pid()
+        , erhs_.next_pid()
         ) 
       );
 
@@ -68,14 +88,14 @@ namespace quaff { namespace model
     typename result<convert_pardo(LHS, RHS, State, BackEnd)>::type
     operator()(LHS const& lhs, RHS const& rhs, State& s, BackEnd const& be) const
     {
-      build_network callee;
+      convert<tag::process_network_> callee;
       
       // Pre-compute environment to not copy it twice
       BOOST_AUTO(lhe, callee(lhs,s,be)  );
       BOOST_AUTO(rhe, callee(rhs,lhe,be));
       
       return make_environment ( join_network(lhe.network(),rhe.network())
-                              , rhe.pid()
+                              , rhe.next_pid()
                               );
     }
   };

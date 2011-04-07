@@ -28,7 +28,7 @@ namespace quaff { namespace model
 
     void operator()() const
     {
-      boost::fusion::at_c<0>(codelet)();
+      codelet();
       //*out = codelet( *in );
     }
 

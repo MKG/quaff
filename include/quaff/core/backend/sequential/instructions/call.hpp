@@ -13,17 +13,28 @@
 ////////////////////////////////////////////////////////////////////////////////
 /// @file quaff/core/backend/debug/instructions/call.hpp
 ////////////////////////////////////////////////////////////////////////////////
+#include <quaff/core/skeleton/source.hpp>
 
 namespace quaff { namespace instruction
 {
+  //////////////////////////////////////////////////////////////////////////////
+  // call a function within proper interface
+  //////////////////////////////////////////////////////////////////////////////
   template<class Function>
   struct call<Function,backend::sequential_>
-  {   
-    call(Function const& f) : mFunction(f) {}
+  {
+    typedef typename Function::input_type   input_type;
+    typedef typename Function::output_type  output_type;
 
-    void operator()() const { mFunction(); }
+    call(Function const& f)
+        : function_(f) {}
 
-    Function mFunction;
+    void operator()(input_type const& ins, output_type& outs) const
+    {
+      outs = function_(ins);
+    }
+
+    Function              function_;
   };
 } }
 

@@ -18,32 +18,51 @@ namespace quaff { namespace backend
 {
   struct sequential_
   {
+    sequential_() { start(); }
+
+    void terminate()  { status_ = false; }
+    void start()      { status_ = true; }
+
+    bool status_;
+
     // How to run a network
-    template<class N> void run_network( N const& n )
+    template<class Network> void accept( Network const& n )
     {
       boost::fusion::for_each(n.nodes(),runner(*this));
     }
     
     // How to run a process
-    template<class Proc> void run_process(Proc const& p)
+    template<class Proc> void run(Proc const& p)
     {
-      // Geenerate data
-      //do
+      start();
+
+      // Generate data
+      typename Proc::input_type   ins;
+      typename Proc::output_type  outs;
+      
+      do
       {
-        // Run code till their are invalid
-        p.code()(); //(args,back_end);
-      } //while( is_running() );
+        p(ins,outs);
+      }
+      while( status_ );
     }
     
     // Some helpers
     struct runner
     {
       sequential_& be;
-      runner(sequential_& b) :be(b) {}
-      template<class P> void operator()(P& proc) const { proc(be); }
+      runner(sequential_& b) : be(b) {}
+      template<class P> void operator()(P& proc) const { be.run(proc); }
     };
   };
 } }
+
+namespace quaff
+{
+  typedef backend::sequential_ current_backend_type;
+
+  extern current_backend_type current_backend;
+}
 
 #include <quaff/core/backend/sequential/instructions/call.hpp>
 

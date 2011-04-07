@@ -7,17 +7,27 @@
  *                 See accompanying file LICENSE.txt or copy at
  *                     http://www.boost.org/LICENSE_1_0.txt
  ******************************************************************************/
-#ifndef QUAFF_CORE_BACKEND_INSTRUCTIONS_HPP_INCLUDED
-#define QUAFF_CORE_BACKEND_INSTRUCTIONS_HPP_INCLUDED
+#ifndef QUAFF_CORE_BACKEND_BACKEND_HPP_INCLUDED
+#define QUAFF_CORE_BACKEND_BACKEND_HPP_INCLUDED
 
 ////////////////////////////////////////////////////////////////////////////////
-/// @file quaff/core/backend/instructions.hpp
+/// @file quaff/core/backend/backend.hpp
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace quaff { namespace instruction
+////////////////////////////////////////////////////////////////////////////////
+// the text debug back-end is always available
+////////////////////////////////////////////////////////////////////////////////
+#include <quaff/core/backend/debug/backend.hpp>
+
+#if defined(QUAFF_TARGET_MPI)
+#else
+#include <quaff/core/backend/sequential/backend.hpp>
+#endif
+
+namespace quaff
 {
-  template<class Function,class BackEnd>      struct call;
-  template<class F1, class F2,class BackEnd>  struct compose;
-} }
+  inline void start()     { current_backend.start(); }
+  inline void terminate() { current_backend.terminate(); }
+}
 
 #endif

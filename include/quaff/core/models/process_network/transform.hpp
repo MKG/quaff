@@ -10,37 +10,40 @@
 #ifndef QUAFF_CORE_MODELS_PROCESS_NETWORK_TRANSFORM_HPP_INCLUDED
 #define QUAFF_CORE_MODELS_PROCESS_NETWORK_TRANSFORM_HPP_INCLUDED
 
-#include <quaff/core/models/process_network/network.hpp>
-#include <quaff/core/models/process_network/process.hpp>
-#include <quaff/core/models/process_network/descriptor.hpp>
-#include <quaff/core/models/process_network/semantic/environment.hpp>
-#include <quaff/core/models/process_network/semantic/apply_rule.hpp>
-#include <quaff/core/models/process_network/semantic/rule_seq.hpp>
-#include <quaff/core/models/process_network/semantic/rule_pardo.hpp>
+#include <quaff/core/dsl/semantic.hpp>
 
-namespace quaff { namespace model
+namespace quaff { namespace semantic
 {
-  struct  build_network
-        : boost::proto::
-          or_ < boost::proto::
-                when< boost::proto::terminal<boost::proto::_>
-                    , convert_seq ( boost::proto::_value
-                                  , pid_(boost::proto::_state)
-                                  , boost::proto::_data
-                                  )
-                    >                  
-              , boost::proto::
-                when< boost::proto::bitwise_and < boost::proto::_
-                                                , boost::proto::_
-                                                >
-                    , convert_pardo ( boost::proto::_left
-                                    , boost::proto::_right
-                                    , boost::proto::_state
-                                    , boost::proto::_data
-                                    )
-                    >
-              >
+  //////////////////////////////////////////////////////////////////////////////
+  // Switch table for the proto transform turnign a skeleton AST into a process
+  // network. This allow for external extension of skeleton set
+  //////////////////////////////////////////////////////////////////////////////
+  struct process_network_cases
+  {
+    template<typename Tag>
+    struct  case_ : boost::proto::not_< boost::proto::_ >
+    {};
+  };
+
+  //////////////////////////////////////////////////////////////////////////////
+  // Generate a process network based IR
+  //////////////////////////////////////////////////////////////////////////////
+  template<>
+  struct  convert< quaff::tag::process_network_ >
+        : boost::proto::switch_<process_network_cases>
   {};
+} }
+
+namespace boost { namespace proto
+{
+  //////////////////////////////////////////////////////////////////////////////
+  // convert is a callable transform
+  //////////////////////////////////////////////////////////////////////////////
+  template<>
+  struct  is_callable < quaff::semantic::
+                        convert<quaff::tag::process_network_>
+                      >
+        : boost::mpl::true_  {};
 } }
 
 #endif

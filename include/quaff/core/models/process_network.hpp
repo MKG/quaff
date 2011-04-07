@@ -10,9 +10,30 @@
 #ifndef QUAFF_CORE_MODELS_PROCESS_NETWORK_HPP_INCLUDED
 #define QUAFF_CORE_MODELS_PROCESS_NETWORK_HPP_INCLUDED
 
+////////////////////////////////////////////////////////////////////////////////
+// This file defines the process network based intermediate representation
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
+// Tag markup for identifying current model
+////////////////////////////////////////////////////////////////////////////////
+namespace quaff { namespace tag { struct process_network_ {}; } }
+
+////////////////////////////////////////////////////////////////////////////////
+// Model forward declaration and entities
+////////////////////////////////////////////////////////////////////////////////
+#include <quaff/core/models/process_network/forward.hpp>
+#include <quaff/core/models/process_network/environment.hpp>
 #include <quaff/core/models/process_network/network.hpp>
-#include <quaff/core/models/process_network/join_network.hpp>
+#include <quaff/core/models/process_network/joint_network.hpp>
 #include <quaff/core/models/process_network/process.hpp>
-#include <quaff/core/models/process_network/descriptor.hpp>
+#include <quaff/core/models/process_network/empty.hpp>
+
+////////////////////////////////////////////////////////////////////////////////
+// Model semantic rules
+////////////////////////////////////////////////////////////////////////////////
+#include <quaff/core/models/process_network/transform.hpp>
+#include <quaff/core/models/process_network/semantic/rule_seq.hpp>
+#include <quaff/core/models/process_network/semantic/rule_pardo.hpp>
 
 #endif
