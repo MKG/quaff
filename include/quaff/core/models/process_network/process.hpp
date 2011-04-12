@@ -21,37 +21,35 @@ namespace quaff { namespace model
   /////////////////////////////////////////////////////////////////////////////
   // Define a process inside a process network with :
   // - a static Pid value
-  // - a process code Descriptor
-  // - an execution BackEnd
+  // - a process Code Fragment
   /////////////////////////////////////////////////////////////////////////////
-  template< class PIDRange
+  template< class PID
           , class CodeFragment
-          , class InputType, class OutputType
           >
   struct process
   {
-    typedef PIDRange      pid_type;
+    typedef PID           pid_type;
     typedef CodeFragment  codelet_type;
-    typedef InputType     input_type;
-    typedef OutputType    output_type;
 
     process(codelet_type const& codelet) : codelet_(codelet) {}
- 
-    void operator()(input_type const& in, output_type& out) const
+
+    template<class Backend,class Data>
+    void accept(Backend const& b,Data const& d) const
     {
-      codelet_(in,out);
+      b.accept(*this,d);
     }
 
+    codelet_type const& code() const { return codelet_; }
     codelet_type  codelet_;
   };
 
   //////////////////////////////////////////////////////////////////////////////
   // Build a process out of its components
   //////////////////////////////////////////////////////////////////////////////
-  template<class I, class O, class P,class C>
-  process<P,C,I,O> make_process( P const&, C const& c )
+  template<class P,class C>
+  process<P,C> make_process( P const&, C const& c )
   {
-    process<P,C,I,O> that(c);
+    process<P,C> that(c);
     return that;
   }
 } }

@@ -13,11 +13,12 @@
 ////////////////////////////////////////////////////////////////////////////////
 /// @file quaff/core/models/network.hpp
 ////////////////////////////////////////////////////////////////////////////////
-#include <boost/mpl/vector.hpp>
 #include <boost/mpl/set.hpp>
+#include <boost/mpl/vector.hpp>
+#include <boost/fusion/include/at.hpp>
 #include <boost/fusion/include/vector.hpp>
 #include <boost/fusion/include/for_each.hpp>
-#include <boost/fusion/include/at.hpp>
+#include <quaff/core/models/process_network/accept.hpp>
 
 namespace quaff { namespace model
 {
@@ -25,20 +26,15 @@ namespace quaff { namespace model
   // a network is built from a:
   //  - a FusionRandomAccessSequence of process (usually a fusion::vector)
   //  - a MetaAssociativeSequence of input and output nodes (usually a mpl::set)
-  //  - an input Type
-  //  - an output Type
+  //  - a list of Value Type used through the whole system
   //////////////////////////////////////////////////////////////////////////////
-  template< class Nodes
-          , class InputSet  , class OutputSet
-          , class InputTypes, class OutputTypes
-          >
+  template<class Nodes, class InputSet, class OutputSet, class DataTypes>
   struct network
   {
-    typedef Nodes       nodes_type;
-    typedef InputSet    input_set;
-    typedef OutputSet   output_set;
-    typedef InputTypes  input_type;
-    typedef OutputTypes output_type;
+    typedef Nodes                             nodes_type;
+    typedef InputSet                          input_set;
+    typedef OutputSet                         output_set;
+    typedef boost::fusion::vector1<DataTypes> data_type;
 
     ////////////////////////////////////////////////////////////////////////////
     // Build a network form its Nodes sequence
@@ -46,18 +42,14 @@ namespace quaff { namespace model
     network(nodes_type const& n) : nodes_(n) {}
 
     ////////////////////////////////////////////////////////////////////////////
-    // Pass current network to a Back-End
+    // Pass backend over processes
     ////////////////////////////////////////////////////////////////////////////
-    template<class BackEnd> void run(BackEnd& be) const
-    { 
-      // The BackEnd acts like a Visitor over the network
-      be.accept(*this);
+    template<class BackEnd,class Data>
+    void accept(BackEnd const& b, Data& d) const
+    {
+      accept_<BackEnd,Data> acceptor(b,d);
+      boost::fusion::for_each(nodes_,acceptor);
     }
-    
-    ////////////////////////////////////////////////////////////////////////////
-    // Acces to the network Nodes sequence
-    ////////////////////////////////////////////////////////////////////////////
-    nodes_type const& nodes() const { return nodes_; }
 
     nodes_type nodes_;
   };
@@ -65,10 +57,10 @@ namespace quaff { namespace model
   //////////////////////////////////////////////////////////////////////////////
   // Build a network out of its components
   //////////////////////////////////////////////////////////////////////////////
-  template<class IT, class OT, class P, class I,class O>
-  network<P,I,O,IT,OT> make_network( P const& n, I const&, O const& )
+  template<class DT, class P, class I,class O>
+  network<P,I,O,DT> make_network( P const& n, I const&, O const& )
   {
-    network<P,I,O,IT,OT> that(n);
+    network<P,I,O,DT> that(n);
     return that;
   }
 } }

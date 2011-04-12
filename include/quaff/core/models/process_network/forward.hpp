@@ -17,10 +17,7 @@ namespace quaff { namespace model
 {
   template<class Network, class PIDState> struct environment;
 
-  template< class Nodes
-          , class InputSet  , class OutputSet
-          , class InputTypes , class OutputTypes
-          >
+  template<class Nodes, class InputSet, class OutputSet, class DataTypes>
   struct network;
 
   //////////////////////////////////////////////////////////////////////////////
@@ -42,14 +39,11 @@ namespace quaff { namespace model
   //   which the actual process code can be executed
   // - a CodeFragment which is a Deferred Calalble Object containing the code
   //   fragment ot be executed
-  //  - an input Type
-  //  - an output Type
   //
   // process also acts as unary Deferred Callable Object
   //////////////////////////////////////////////////////////////////////////////
   template< class PIDRange
           , class CodeFragment
-          , class InputType, class OutputType
           >
   struct process;
 } }

@@ -17,7 +17,7 @@ template<class X> void run(X const& x)
   quaff::semantic::convert<quaff::tag::process_network_> mn;
   quaff::model::empty_environment en;
   
-  mn( x, en, quaff::current_backend ).network().run(quaff::current_backend);
+  quaff::current_backend.accept(mn(x,en,quaff::current_backend).network());
 }
 
 int g()
@@ -37,14 +37,19 @@ int g()
 
 int main()
 {
+  run( quaff::source(g) & (quaff::source(g) & quaff::source(g) ) );
+
+
   run(  ( quaff::source(g) & quaff::source(g) ) & quaff::source(g)
       & ( quaff::source(g) & quaff::source(g) ) & quaff::source(g)
       & (( quaff::source(g) & quaff::source(g) ) & quaff::source(g))
      );
 
+/*
   debug(  ( quaff::source(g) & quaff::source(g) ) & quaff::source(g)
       & ( quaff::source(g) & quaff::source(g) ) & quaff::source(g)
       & (( quaff::source(g) & quaff::source(g) ) & quaff::source(g))
      );
+     */
 }
 

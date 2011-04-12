@@ -21,7 +21,7 @@ namespace quaff { namespace model
   template<>
   struct network< boost::fusion::vector<>
                 , boost::mpl::set<> , boost::mpl::set<>
-                , boost::mpl::void_ , boost::mpl::void_
+                , boost::mpl::void_
                 >
   {
     typedef boost::fusion::vector<> processes;
@@ -31,7 +31,7 @@ namespace quaff { namespace model
 
   typedef network < boost::fusion::vector<>
                   , boost::mpl::set<> , boost::mpl::set<>
-                  , boost::mpl::void_ , boost::mpl::void_
+                  , boost::mpl::void_
                   >
   empty_network;
 

@@ -29,7 +29,11 @@ namespace quaff { namespace instruction
     call(Function const& f)
         : function_(f) {}
 
-    void operator()(input_type const& ins, output_type& outs) const
+    template<class Context>
+    void operator() ( input_type& ins
+                    , output_type& outs
+                    , Context&
+                    ) const
     {
       outs = function_(ins);
     }

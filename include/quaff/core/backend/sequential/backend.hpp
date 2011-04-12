@@ -13,47 +13,70 @@
 ////////////////////////////////////////////////////////////////////////////////
 /// @file quaff/core/backend/sequential/backend.hpp
 ////////////////////////////////////////////////////////////////////////////////
+#include <quaff/sdk/type_id.hpp>
 
 namespace quaff { namespace backend
 {
   struct sequential_
   {
-    sequential_() { start(); }
+    sequential_() {}
 
-    void terminate()  { status_ = false; }
-    void start()      { status_ = true; }
+    void terminate() const { status_ = false;  }
+    void start()     const { status_ = true;   }
 
-    bool status_;
+    mutable bool status_;
 
     // How to run a network
-    template<class Network> void accept( Network const& n )
+    template<class Network>
+    void accept( Network const& n ) const
     {
-      boost::fusion::for_each(n.nodes(),runner(*this));
+      // Sequential process handles all data externally
+      typedef typename Network::data_type data_type;
+      data_type data;
+
+      // Loop until something stops me
+      do
+      {
+        n.accept(*this,data);
+      } while( status_ );
+
     }
     
     // How to run a process
-    template<class Proc> void run(Proc const& p)
+    template<class Process, class Data>
+    void accept(Process const& p,Data& d) const
     {
+      // Start the process again
       start();
-
-      // Generate data
-      typename Proc::input_type   ins;
-      typename Proc::output_type  outs;
-      
-      do
-      {
-        p(ins,outs);
-      }
-      while( status_ );
+      typedef typename Process::pid_type pid;
+      boost::fusion::
+      for_each( p.code()
+              , run ( boost::fusion::at_c<0>(boost::fusion::at_c<pid::value>(d))
+                    , boost::fusion::at_c<1>(boost::fusion::at_c<pid::value>(d))
+                    , d
+                    )
+              );
     }
     
     // Some helpers
-    struct runner
+    template<class In, class Out,class Data> struct runner
     {
-      sequential_& be;
-      runner(sequential_& b) : be(b) {}
-      template<class P> void operator()(P& proc) const { be.run(proc); }
+      In& in; Out& out; Data& data;
+      runner(In& i, Out& o, Data& d) : in(i), out(o), data(d) {}
+      template<class Code> void operator()(Code const& op) const
+      {
+        op( in,out, data );
+      }
     };
+
+
+    template<class I,class O,class D>
+    runner<I,O,D> run(I& i, O& o, D& d) const
+    {
+      runner<I,O,D> that(i,o,d);
+      return that;
+    }
+
   };
 } }
 
