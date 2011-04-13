@@ -25,11 +25,15 @@ namespace quaff { namespace model
   /////////////////////////////////////////////////////////////////////////////
   template< class PID
           , class CodeFragment
+          , class InputType
+          , class OutputType
           >
   struct process
   {
     typedef PID           pid_type;
     typedef CodeFragment  codelet_type;
+    typedef InputType     input_type;
+    typedef OutputType    output_type;
 
     process(codelet_type const& codelet) : codelet_(codelet) {}
 
@@ -46,10 +50,10 @@ namespace quaff { namespace model
   //////////////////////////////////////////////////////////////////////////////
   // Build a process out of its components
   //////////////////////////////////////////////////////////////////////////////
-  template<class P,class C>
-  process<P,C> make_process( P const&, C const& c )
+  template<class I, class O, class P,class C>
+  process<P,C,I,O> make_process( P const&, C const& c )
   {
-    process<P,C> that(c);
+    process<P,C,I,O> that(c);
     return that;
   }
 } }

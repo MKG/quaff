@@ -44,6 +44,8 @@ namespace quaff { namespace model
   //////////////////////////////////////////////////////////////////////////////
   template< class PIDRange
           , class CodeFragment
+          , class InputType
+          , class OutputType
           >
   struct process;
 } }

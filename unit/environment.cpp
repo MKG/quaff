@@ -8,6 +8,7 @@
  *                     http://www.boost.org/LICENSE_1_0.txt
  ******************************************************************************/
 #include <iostream>
+#include <fstream>
 #include <quaff/core/backend.hpp>
 #include <quaff/core/skeleton/seq.hpp>
 #include <quaff/core/skeleton/source.hpp>
@@ -37,13 +38,15 @@ int g()
 
 int main()
 {
-  run( quaff::source(g) & (quaff::source(g) & quaff::source(g) ) );
+  debug( quaff::source(g) & (quaff::source(g) & quaff::source(g) ), std::cout );
 
 
-  run(  ( quaff::source(g) & quaff::source(g) ) & quaff::source(g)
+  std::ofstream out("out.txt");
+  debug(  ( quaff::source(g) & quaff::source(g) ) & quaff::source(g)
       & ( quaff::source(g) & quaff::source(g) ) & quaff::source(g)
       & (( quaff::source(g) & quaff::source(g) ) & quaff::source(g))
-     );
+      , out
+      );
 
 /*
   debug(  ( quaff::source(g) & quaff::source(g) ) & quaff::source(g)

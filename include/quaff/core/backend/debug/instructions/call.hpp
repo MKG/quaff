@@ -13,6 +13,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 /// @file quaff/core/backend/debug/instructions/call.hpp
 ////////////////////////////////////////////////////////////////////////////////
+#include <quaff/sdk/type_id.hpp>
 
 namespace quaff { namespace instruction
 {
@@ -24,9 +25,20 @@ namespace quaff { namespace instruction
 
     call(Function const& f) : mFunction(f) {}
 
-    void operator()(input_type const&, output_type& ) const
+    template<class Input, class Output, class Context>
+    void operator() ( Input&
+                    , Output&
+                    , Context& os
+                    ) const
     {
-      std::cout << "| CALL " << (void*)(&mFunction) << "\n";
+      os << "| CALL "
+                << type_id<typename Output::type>()
+                << " "
+                << (void*)(&mFunction)
+                << "("
+                << type_id<typename Input::type>()
+                <<")"
+                << "\n";
     }
 
     Function  mFunction;
