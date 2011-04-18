@@ -11,14 +11,15 @@
 #define QUAFF_CORE_MODELS_PROCESS_NETWORK_SEMANTIC_RULE_PIPE_HPP_INCLUDED
 
 ////////////////////////////////////////////////////////////////////////////////
-/// @file quaff/core/models/process_network/semantic/environment.hpp
+
+/// @file quaff/core/models/process_network/semantic/rule_pipe
 ////////////////////////////////////////////////////////////////////////////////
-#include <quaff/core/models/process_network/concat_network.hpp>
+#include <quaff/core/models/process_network/joint_network.hpp>
 
 ////////////////////////////////////////////////////////////////////////////////
-// The pipe_ skeleton build the concatenation of two network
-// Inputs  : the LHS skeleton, current state adn target back-end
-// Outputs : an environment E = { build(RHS) }
+// The pipe_ skeleton build the union of two network and add send/receive
+// Inputs  : the LHS/RHS skeleton, current state adn target back-end
+// Outputs : an environment E = { build(LHS) U build(RHS) } * {send/recv}
 ////////////////////////////////////////////////////////////////////////////////
 namespace quaff { namespace semantic
 {
@@ -28,9 +29,10 @@ namespace quaff { namespace semantic
   template<>
   struct  process_network_cases::case_<boost::proto::tag::bitwise_or>
         : boost::proto::
-          when< boost::proto::bitwise_or < boost::proto::_
-                                          , boost::proto::_
-                                          >
+
+          when< boost::proto::bitwise_or< boost::proto::_
+                                        , boost::proto::_
+                                        >
               , convert_pipe<tag::process_network_>
                 ( boost::proto::_left
                 , boost::proto::_right
@@ -61,26 +63,25 @@ namespace quaff { namespace semantic
       
       // "temporary" environments
       BOOST_TYPEOF_NESTED_TYPEDEF_TPL ( elhs
-                                      , converter(lhs_ ,st,be)
+                                      , converter(lhs_,st,be)
                                       );
       static typename elhs::type& elhs_;
       
       BOOST_TYPEOF_NESTED_TYPEDEF_TPL ( erhs
-                                      , converter( rhs_ , st, be)
+                                      , converter( rhs_, elhs_, be)
                                       );
       static typename erhs::type& erhs_;
 
       
-      
       // Build the environment usign the joint_network
       BOOST_TYPEOF_NESTED_TYPEDEF_TPL 
       ( nested
-      ,converter(make_network(join_process
-                    (elhs_.network.process(), erhs_.network.process()),
-                      elhs_.network.input_set,
-                      erhs_.network.output_set)
-                      ,st, be
+      , make_environment
+        ( join_network( elhs_.network()
+                      , erhs_.network()
                       )
+        , erhs_.next_pid()
+        ) 
       );
 
       typedef typename nested::type type;
@@ -94,12 +95,9 @@ namespace quaff { namespace semantic
       
       // Pre-compute environment to not copy it twice
       BOOST_AUTO(lhe, callee(lhs,s,be)  );
-      BOOST_AUTO(rhe, callee(rhs,s,be));
+      BOOST_AUTO(rhe, callee(rhs,lhe,be));
       
-      return make_environment ( converter(join_process
-                              (lhe.network().process,rhe.network().process),
-                                s,
-                                be)
+      return make_environment ( join_network(lhe.network(),rhe.network())
                               , rhe.next_pid()
                               );
     }

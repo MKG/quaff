@@ -36,6 +36,7 @@ namespace quaff { namespace tag { struct process_network_ {}; } }
 ////////////////////////////////////////////////////////////////////////////////
 #include <quaff/core/models/process_network/transform.hpp>
 #include <quaff/core/models/process_network/semantic/rule_seq.hpp>
+#include <quaff/core/models/process_network/semantic/rule_pipe.hpp>
 #include <quaff/core/models/process_network/semantic/rule_pardo.hpp>
 #include <quaff/core/models/process_network/semantic/rule_pipe.hpp>
 

@@ -14,6 +14,7 @@
 /// @file quaff/core/backend/debug/backend.hpp
 ////////////////////////////////////////////////////////////////////////////////
 #include <boost/mpl/identity.hpp>
+#include <quaff/sdk/meta/run.hpp>
 
 namespace quaff { namespace backend
 {
@@ -43,28 +44,9 @@ namespace quaff { namespace backend
 
       boost::fusion::
       for_each( p.code()
-              , run ( ins, outs, os )
+              , meta::run ( ins, outs, os )
               );
       os << "[-------------------------------]\n";
-    }
-
-    // Some helpers
-    template<class In, class Out,class Data> struct runner
-    {
-      In& in; Out& out; Data& data;
-      runner(In& i, Out& o, Data& d) : in(i), out(o), data(d) {}
-      template<class Code> void operator()(Code const& op) const
-      {
-        op( in,out, data );
-      }
-    };
-
-
-    template<class I,class O,class D>
-    runner<I,O,D> run(I& i, O& o, D& d) const
-    {
-      runner<I,O,D> that(i,o,d);
-      return that;
     }
   };
 } }

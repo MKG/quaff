@@ -73,8 +73,9 @@ namespace quaff { namespace semantic
             ( boost::fusion::make_vector
               ( model::make_process<input_type,output_type>
                 ( pid()
-                , boost::fusion::make_vector(f_) )
+                , boost::fusion::make_vector(f_)
                 )
+              )
               , boost::mpl::set<pid>()
               , boost::mpl::set<pid>()
             )
