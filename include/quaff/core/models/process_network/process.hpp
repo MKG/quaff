@@ -15,6 +15,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 #include <boost/mpl/apply.hpp>
 #include <boost/typeof/typeof.hpp>
+#include <boost/fusion/include/push_back.hpp>
+#include <boost/fusion/include/as_vector.hpp>
+#include <boost/fusion/include/push_front.hpp>
 
 namespace quaff { namespace model
 {
@@ -24,18 +27,18 @@ namespace quaff { namespace model
   // - a process Code Fragment
   /////////////////////////////////////////////////////////////////////////////
   template< class PID
-          , class CodeFragment
+          , class Code
           , class InputType
           , class OutputType
           >
   struct process
   {
-    typedef PID           pid_type;
-    typedef CodeFragment  codelet_type;
-    typedef InputType     input_type;
-    typedef OutputType    output_type;
+    typedef PID         pid_type;
+    typedef Code        codelet_type;
+    typedef InputType   input_type;
+    typedef OutputType  output_type;
 
-    process(codelet_type const& codelet) : codelet_(codelet) {}
+    process(codelet_type const& codelet) : code_(codelet) {}
 
     template<class Backend,class Data>
     void accept(Backend const& b,Data const& d) const
@@ -43,8 +46,65 @@ namespace quaff { namespace model
       b.accept(*this,d);
     }
 
-    codelet_type const& code() const { return codelet_; }
-    codelet_type  codelet_;
+    ////////////////////////////////////////////////////////////////////////////
+    // Upgrade current process by adding a new instruction to its code list
+    ////////////////////////////////////////////////////////////////////////////
+    template<class Instr> inline
+    process < PID
+            , typename  boost::fusion::result_of::
+                        as_vector<  typename  boost::fusion::result_of::
+                                    push_back<Code const,Instr>::type
+                                 >::type
+            , InputType
+            , OutputType
+           >
+    push_back(Instr const& x) const
+    {
+      process < PID
+              , typename  boost::fusion::result_of::
+                          as_vector<  typename  boost::fusion::result_of::
+                                      push_back<Code const,Instr>::type
+                                   >::type
+              , InputType
+              , OutputType
+              > that(boost::fusion::as_vector(boost::fusion::push_back(code_,x)));
+
+      return that;
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Upgrade current process by adding a new instruction to its code list
+    ////////////////////////////////////////////////////////////////////////////
+    template<class Instr> inline
+    process < PID
+            , typename  boost::fusion::result_of::
+                        as_vector<  typename  boost::fusion::result_of::
+                                    push_front<Code const,Instr>::type
+                                 >::type
+            , InputType
+            , OutputType
+           >
+    push_front(Instr const& x) const
+    {
+      process < PID
+              , typename  boost::fusion::result_of::
+                          as_vector<  typename  boost::fusion::result_of::
+                                      push_front<Code const,Instr>::type
+                                   >::type
+              , InputType
+              , OutputType
+              > that(boost::fusion::as_vector(boost::fusion::push_front(code_,x)));
+
+      return that;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Access to the code fragments
+    ////////////////////////////////////////////////////////////////////////////
+    codelet_type const& code() const { return code_; }
+
+    codelet_type  code_;
   };
 
   //////////////////////////////////////////////////////////////////////////////

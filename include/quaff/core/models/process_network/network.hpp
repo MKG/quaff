@@ -18,6 +18,8 @@
 #include <boost/fusion/include/at.hpp>
 #include <boost/fusion/include/vector.hpp>
 #include <boost/fusion/include/for_each.hpp>
+#include <boost/fusion/include/as_vector.hpp>
+#include <boost/fusion/include/transform.hpp>
 #include <quaff/core/models/process_network/accept.hpp>
 
 namespace quaff { namespace model
@@ -50,6 +52,88 @@ namespace quaff { namespace model
       accept_<BackEnd,Data> acceptor(b,d);
       boost::fusion::for_each(nodes_,acceptor);
     }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Upgrade network by applyign a transform on its inputs
+    ////////////////////////////////////////////////////////////////////////////
+
+    template<class Transform, class Set>
+    struct apply_if
+    {
+      template<class Sig> struct result;
+
+      template<class This,class Element>
+      struct result<This(Element const&)>
+      {
+        typedef typename boost::mpl::
+                if_ < boost::mpl::has_key < Set
+                                          , typename Element::pid_type
+                                          >
+                    , typename boost::result_of<Transform(Element)>::type
+                    , Element
+                    >::type type;
+      };
+
+      template<class Element> inline
+      typename result<apply_if(Element const&)>::type
+      operator()(Element const& e)
+      {
+        return eval(e,boost::mpl::has_key<Set,typename Element::pid_type>::value);
+      }
+
+      template<class Element> inline
+      typename result<apply_if(Element const&)>::type
+      eval(Element const& e, boost::mpl::false_ const &)
+      {
+        return e;
+      }
+
+      template<class Element> inline
+      typename result<apply_if(Element const&)>::type
+      eval(Element const& e, boost::mpl::true_ const &)
+      {
+        Transform callee;
+        return callee(e);
+      }
+    };
+
+    template<class Transform> inline
+    network < typename  boost::fusion::result_of::
+                        as_vector< typename  boost::fusion::result_of::
+                                             transform< Nodes const
+                                                      , apply_if< Transform
+                                                                , input_set
+                                                                >
+                                                      >::type
+                                 >::type
+            , InputSet
+            , OutputSet
+            , DataTypes
+            >
+    update_inputs(Transform const& t)
+    {
+      apply_if<Transform, input_set> callee;
+
+      network < typename  boost::fusion::result_of::
+                          as_vector< typename  boost::fusion::result_of::
+                                               transform< Nodes const
+                                                        , apply_if< Transform
+                                                                  , input_set
+                                                                  >
+                                                        >::type
+                                   >::type
+              , InputSet
+              , OutputSet
+              , DataTypes
+              >
+      that(boost::fusion::as_vector(boost::fusion::transform(nodes_,callee)));
+
+      return that;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Upgrade network by applyign a transform on its outputs
+    ////////////////////////////////////////////////////////////////////////////
 
     nodes_type nodes_;
   };
