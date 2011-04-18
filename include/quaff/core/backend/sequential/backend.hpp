@@ -13,6 +13,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 /// @file quaff/core/backend/sequential/backend.hpp
 ////////////////////////////////////////////////////////////////////////////////
+#include <boost/array.hpp>
+#include <quaff/sdk/meta/run.hpp>
 
 namespace quaff { namespace backend
 {
@@ -20,65 +22,73 @@ namespace quaff { namespace backend
   {
     sequential_() {}
 
-    void terminate() const { status_ = false;  }
-    void start()     const { status_ = true;   }
+    ////////////////////////////////////////////////////////////////////////////
+    // Execution controls and checks
+    ////////////////////////////////////////////////////////////////////////////
+    void terminate()              const { process_counter--;            }
+    void start(std::size_t count) const { process_counter = count;      }
+    bool is_running()             const { return process_counter > 0;  }
 
-    mutable bool status_;
+    ////////////////////////////////////////////////////////////////////////////
+    // process_counter tracks the process as they are terminated
+    ////////////////////////////////////////////////////////////////////////////
+    mutable std::size_t process_counter;
 
+    ////////////////////////////////////////////////////////////////////////////
     // How to run a network
+    ////////////////////////////////////////////////////////////////////////////
     template<class Network>
     void accept( Network const& n ) const
     {
+      // How many process do we have ?
+      static const std::size_t
+      count = boost::mpl::size<typename Network::nodes_type>::value;
+
       // Sequential process handles all data externally
-      typedef typename Network::data_type data_type;
+      // and use a boolean array to transfer state informations
+      typedef
+      boost::fusion::vector2< typename Network::data_type
+                            , boost::array<bool,count>
+                            > data_type;
       data_type data;
+
+      // Initialize the state of processes
+      boost::fusion::at_c<1>(data).fill(true);
+
+      // Initialize the process termination counter
+      start(boost::mpl::size<typename Network::nodes_type>::value);
 
       // Loop until something stops me
       do
       {
         n.accept(*this,data);
-      } while( status_ );
+      } while( is_running() );
 
     }
     
+    ////////////////////////////////////////////////////////////////////////////
     // How to run a process
-    template<class Process, class Data>
-    void accept(Process const& p,Data& d) const
+    ////////////////////////////////////////////////////////////////////////////
+    template<class Process, class Context>
+    void accept(Process const& p,Context& d) const
     {
       // Start the process again
-      start();
       typedef typename Process::pid_type pid;
       boost::fusion::
       for_each( p.code()
-              , run ( boost::fusion::at_c<0>(boost::fusion::at_c<pid::value>(d))
-                    , boost::fusion::at_c<1>(boost::fusion::at_c<pid::value>(d))
+              , meta::
+                run ( boost::fusion::at_c<0>(boost::fusion::at_c<pid::value>(boost::fusion::at_c<0>(d)))
+                    , boost::fusion::at_c<1>(boost::fusion::at_c<pid::value>(boost::fusion::at_c<0>(d)))
                     , d
                     )
               );
     }
-    
-    // Some helpers
-    template<class In, class Out,class Data> struct runner
-    {
-      In& in; Out& out; Data& data;
-      runner(In& i, Out& o, Data& d) : in(i), out(o), data(d) {}
-      template<class Code> void operator()(Code const& op) const
-      {
-        op( in,out, data );
-      }
-    };
-
-
-    template<class I,class O,class D>
-    runner<I,O,D> run(I& i, O& o, D& d) const
-    {
-      runner<I,O,D> that(i,o,d);
-      return that;
-    }
-
   };
 } }
 
+////////////////////////////////////////////////////////////////////////////////
+// Specify sequential_ as the defualt backend and initializes its instance
+////////////////////////////////////////////////////////////////////////////////
 namespace quaff
 {
   typedef backend::sequential_ current_backend_type;

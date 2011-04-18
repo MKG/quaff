@@ -26,8 +26,15 @@
 
 namespace quaff
 {
-  inline void start()     { current_backend.start(); }
   inline void terminate() { current_backend.terminate(); }
+
+  template<class Skeleton> void run(Skeleton const& sk)
+  {
+    quaff::semantic::convert<quaff::tag::process_network_> mn;
+    quaff::model::empty_environment en;
+
+    quaff::current_backend.accept(mn(sk,en,quaff::current_backend).network());
+  }
 }
 
 #endif
