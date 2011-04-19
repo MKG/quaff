@@ -63,15 +63,24 @@ namespace quaff { namespace details
   };
 } }
 
+namespace quaff { namespace result_of
+{
+  template<class S,class T, class P>
+  struct  transform_if
+        : boost::fusion::result_of::
+          transform < S const
+                    , details::transform_if_impl< T
+                                                , typename  boost::mpl::
+                                                            lambda<P>::type
+                                                >
+                    >
+  {};
+}}
+
 namespace quaff { namespace meta
 {
   template<class S,class T, class P>
-  typename boost::fusion::result_of::
-  transform < S const
-            , details::transform_if_impl< T
-                                        , typename boost::mpl::lambda<P>::type
-                                        >
-            >::type
+  typename quaff::result_of::transform_if<S,T,P>::type
   transform_if( S const& s, T const& t, P const& p)
   {
     details::transform_if_impl<T,typename boost::mpl::lambda<P>::type> callee(t);
