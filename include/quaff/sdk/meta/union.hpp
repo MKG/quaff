@@ -42,7 +42,7 @@ namespace quaff { namespace meta
   }
 
   template<class S1,class S2>
-  typename result_of::concatenate<S1 const,S2 const>::type
+  typename result_of::union_<S1 const,S2 const>::type
   union_( S1 const& s1, S2 const& s2)
   {
     return boost::fusion::as_set( boost::fusion::join(s1,s2) );
