@@ -12,21 +12,20 @@
 #include <quaff/core/backend.hpp>
 #include <quaff/core/skeleton/seq.hpp>
 #include <quaff/core/skeleton/source.hpp>
- 
-template<class X> void run(X const& x)
-{
-  quaff::semantic::convert<quaff::tag::process_network_> mn;
-  quaff::model::empty_environment en;
-  
-  quaff::current_backend.accept(mn(x,en,quaff::current_backend).network());
-}
+#include <quaff/sdk/meta/transform_if.hpp>
+#include <boost/fusion/include/io.hpp>
+#include <boost/fusion/include/join.hpp>
+#include <boost/fusion/include/set.hpp>
 
+#include <boost/type_traits/is_integral.hpp>
+#include <boost/bind.hpp>
+ 
 int g()
 {
   static int i(0);
-  std::cout << "i: " << i << "\n";
+  std::cout << " - i = " << i << "\n";
 
-  if(i < 10) i++;
+  if(i < 3) i++;
   else
   {
     i = 0;
@@ -39,20 +38,6 @@ int g()
 int main()
 {
   debug( quaff::source(g) & (quaff::source(g) & quaff::source(g) ), std::cout );
-
-
-  std::ofstream out("out.txt");
-  debug(  ( quaff::source(g) & quaff::source(g) ) & quaff::source(g)
-      & ( quaff::source(g) & quaff::source(g) ) & quaff::source(g)
-      & (( quaff::source(g) & quaff::source(g) ) & quaff::source(g))
-      , out
-      );
-
-/*
-  debug(  ( quaff::source(g) & quaff::source(g) ) & quaff::source(g)
-      & ( quaff::source(g) & quaff::source(g) ) & quaff::source(g)
-      & (( quaff::source(g) & quaff::source(g) ) & quaff::source(g))
-     );
-     */
+  run( quaff::source(g) & (quaff::source(g)& quaff::source(g)) & quaff::source(g) );
 }
 
