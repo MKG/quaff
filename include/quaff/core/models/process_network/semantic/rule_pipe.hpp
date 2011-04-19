@@ -72,7 +72,7 @@ namespace quaff { namespace semantic
                                       );
       static typename erhs::type& erhs_;
 
-      
+
       // Build the environment usign the joint_network
       BOOST_TYPEOF_NESTED_TYPEDEF_TPL 
       ( nested
@@ -83,6 +83,8 @@ namespace quaff { namespace semantic
         , erhs_.next_pid()
         ) 
       );
+
+                 
 
       typedef typename nested::type type;
     };
