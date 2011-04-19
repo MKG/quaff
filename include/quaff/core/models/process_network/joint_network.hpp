@@ -13,69 +13,41 @@
 ////////////////////////////////////////////////////////////////////////////////
 /// @file quaff/core/models/process_network/join_network.hpp
 ////////////////////////////////////////////////////////////////////////////////
-#include <quaff/sdk/type_id.hpp>
 #include <quaff/sdk/meta/union.hpp>
-#include <boost/fusion/include/vector.hpp>
-#include <boost/fusion/include/joint_view.hpp>
-#include <quaff/core/models/process_network/accept.hpp>
+
+namespace quaff { namespace result_of
+{
+  template<class N1,class N2>
+  struct join_network
+  {
+    typedef model::network
+            < typename result_of::concatenate < typename N1::nodes_type
+                                              , typename N2::nodes_type
+                                              >::type
+            , typename result_of::union_< typename N1::input_set
+                                        , typename N2::input_set
+                                        >::type
+            , typename result_of::union_< typename N1::output_set
+                                        , typename N2::output_set
+                                        >::type
+            , typename result_of::concatenate < typename N1::data_type
+                                              , typename N2::data_type
+                                              >::type
+            > type;
+  };
+} }
 
 namespace quaff { namespace model
 {
   //////////////////////////////////////////////////////////////////////////////
-  // joint network structure
-  // Static datatype representing the union of two process networks.
+  // join two networks structure by taking union of network components
   //////////////////////////////////////////////////////////////////////////////
-  template<class Network1,class Network2>
-  struct joint_network
+  template<class N1,class N2> inline
+  typename result_of::join_network<N1,N2>::type
+  join_network( N1 const& n1, N2 const& n2 )
   {
-    ////////////////////////////////////////////////////////////////////////////
-    // nodes, input and output set of a joint network is the joint view
-    // of the underlying sequence of both original networks
-    ////////////////////////////////////////////////////////////////////////////
-    typedef typename meta::union_ < typename Network2::nodes_type
-                                  , typename Network1::nodes_type
-                                  >::type                 nodes_type;
-
-    typedef boost::fusion::joint_view< typename Network1::input_set
-                                     , typename Network2::input_set
-                                     >                    input_set;
-
-    typedef boost::fusion::joint_view< typename Network1::output_set
-                                     , typename Network2::output_set
-                                     >                    output_set;
-
-    typedef typename meta::union_ < typename Network2::data_type
-                                  , typename Network1::data_type
-                                  >::type                 data_type;
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Build a joint network from two other Networks
-    ////////////////////////////////////////////////////////////////////////////
-    joint_network ( Network1 const& n1, Network2 const& n2 )
-                  : nodes1(n1), nodes2(n2) 
-    {}
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Pass backend over processes
-    ////////////////////////////////////////////////////////////////////////////
-    template<class BackEnd,class Data>
-    void accept(BackEnd const& b, Data& d) const
-    {
-      nodes1.accept(b,d);
-      nodes2.accept(b,d);
-    }
-
-    Network1 nodes1;
-    Network2 nodes2;
-  };
-
-  //////////////////////////////////////////////////////////////////////////////
-  // Join two networks 
-  //////////////////////////////////////////////////////////////////////////////
-  template<class LHS,class RHS> inline
-  joint_network<LHS,RHS> join_network( LHS const& n1, RHS const& n2 )
-  {
-    joint_network<LHS,RHS> that(n1,n2);
+    typename result_of::join_network<N1,N2>::type
+    that( meta::concatenate(n1.nodes(),n2.nodes()) );
     return that;
   }
 } }
