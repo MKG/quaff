@@ -14,11 +14,9 @@
 /// @file quaff/core/models/process_network/join_network.hpp
 ////////////////////////////////////////////////////////////////////////////////
 #include <quaff/sdk/type_id.hpp>
+#include <quaff/sdk/meta/union.hpp>
 #include <boost/fusion/include/vector.hpp>
 #include <boost/fusion/include/joint_view.hpp>
-#include <boost/fusion/include/vector_tie.hpp>
-#include <boost/mpl/copy.hpp>
-#include <boost/mpl/back_inserter.hpp>
 #include <quaff/core/models/process_network/accept.hpp>
 
 namespace quaff { namespace model
@@ -34,10 +32,10 @@ namespace quaff { namespace model
     // nodes, input and output set of a joint network is the joint view
     // of the underlying sequence of both original networks
     ////////////////////////////////////////////////////////////////////////////
-    typedef boost::fusion::joint_view< typename Network1::nodes_type
-                                     , typename Network2::nodes_type
-                                     >                    nodes_type;
-                               
+    typedef typename meta::union_ < typename Network2::nodes_type
+                                  , typename Network1::nodes_type
+                                  >::type                 nodes_type;
+
     typedef boost::fusion::joint_view< typename Network1::input_set
                                      , typename Network2::input_set
                                      >                    input_set;
@@ -46,10 +44,9 @@ namespace quaff { namespace model
                                      , typename Network2::output_set
                                      >                    output_set;
 
-    typedef typename boost::mpl::
-            copy < typename  Network2::data_type
-                 , boost::mpl::back_inserter<typename Network1::data_type>
-                 >::type                    data_type;
+    typedef typename meta::union_ < typename Network2::data_type
+                                  , typename Network1::data_type
+                                  >::type                 data_type;
 
     ////////////////////////////////////////////////////////////////////////////
     // Build a joint network from two other Networks

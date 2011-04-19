@@ -15,6 +15,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #include <boost/mpl/identity.hpp>
 #include <quaff/sdk/meta/run.hpp>
+#include <boost/fusion/include/vector_tie.hpp>
 
 namespace quaff { namespace backend
 {
