@@ -9,8 +9,8 @@
 #ifndef QUAFF_SDK_META_PUSH_FRONT_HPP_INCLUDED
 #define QUAFF_SDK_META_PUSH_FRONT_HPP_INCLUDED
 
-#include <boost/fusion/include/as_vector.hpp>
 #include <boost/fusion/include/push_front.hpp>
+#include <boost/fusion/include/as_vector.hpp>
 
 ////////////////////////////////////////////////////////////////////////////////
 // Add a code fragment to a process type.
@@ -22,16 +22,17 @@ namespace quaff { namespace result_of
   struct push_front;
 
   template<class P, class C, class I, class O, class Instr>
-  struct push_front< process<P,C,I,O>, Instr >
+  struct push_front< model::process<P,C,I,O>, Instr >
   {
-    typedef process < P
-                    , typename  boost::fusion::result_of::
-                                as_vector < typename  boost::fusion::result_of::
-                                            push_front<C const,Instr>::type
-                                          >::type
-                    , I
-                    , O
-                    > type;
+    typedef model::process< P
+                          , typename  boost::fusion::result_of::
+                                      as_vector < typename
+                                                  boost::fusion::result_of::
+                                                  push_front<C const,Instr>::type
+                                                >::type
+                          , I
+                          , O
+                          > type;
   };
 } }
 
@@ -41,10 +42,10 @@ namespace quaff { namespace meta
    // Upgrade current process by adding a new instruction to its code list
    ////////////////////////////////////////////////////////////////////////////
    template<class P, class C, class I, class O, class Instr> inline
-   typename result_of::push_front< process<P,C,I,O>, Instr>::type
-   push_front(process<P,C,I,O> const& p, Instr const& x) const
+   typename result_of::push_front< model::process<P,C,I,O>, Instr>::type
+   push_front(model::process<P,C,I,O> const& p, Instr const& x)
    {
-     typename result_of::push_front< process<P,C,I,O>, Instr>::type
+     typename result_of::push_front< model::process<P,C,I,O>, Instr>::type
      that(boost::fusion::as_vector(boost::fusion::push_front(p.code(),x)));
 
      return that;
