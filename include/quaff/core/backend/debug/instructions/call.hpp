@@ -25,8 +25,9 @@ namespace quaff { namespace instruction
 
     call(Function const& f) : mFunction(f) {}
 
-    template<class Input, class Output, class Context>
-    void operator() ( Input&
+    template<class Pid, class Input, class Output, class Context>
+    void operator() ( Pid const&
+                    , Input&
                     , Output&
                     , Context& os
                     ) const
