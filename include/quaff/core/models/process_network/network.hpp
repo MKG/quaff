@@ -53,6 +53,8 @@ namespace quaff { namespace model
       boost::fusion::for_each(nodes_,acceptor);
     }
 
+    nodes_type const& nodes() const { return nodes_; }
+
     nodes_type nodes_;
   };
 
