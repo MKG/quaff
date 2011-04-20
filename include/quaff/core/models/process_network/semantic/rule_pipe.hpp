@@ -79,12 +79,15 @@ namespace quaff { namespace semantic
       BOOST_TYPEOF_NESTED_TYPEDEF_TPL 
       ( nested
       , make_environment
-        ( chain_network(  elhs_.network()
-                        .transform_if ( details::add_send<r_iset,back_end>()
-                                      , details::is_inside<l_oset>()
-                                      )
-                      , erhs_.network()
-                      )
+        ( chain_network ( elhs_.network()
+                          .transform_if ( details::add_send<r_iset,back_end>()
+                                        , details::is_inside<l_oset>()
+                                        )
+                        , erhs_.network()
+                          .transform_if ( details::add_recv<l_oset,back_end>()
+                                        , details::is_inside<r_iset>()
+                                        )
+                        )
         , erhs_.next_pid()
         ) 
       );
@@ -106,15 +109,25 @@ namespace quaff { namespace semantic
       return
       make_environment( chain_network
                         ( lhe.network()
-                          .transform_if ( details::add_send< typename res_type::r_iset
+                          .transform_if ( details::
+                                          add_send< typename res_type::r_iset
                                                   , BackEnd
                                                   >()
-                                        , details::is_inside<typename res_type::l_oset>()
+                                        , details::
+                                          is_inside<typename res_type::l_oset>()
                                         )
-                      , rhe.network()
-                                )
-                              , rhe.next_pid()
-                              );
+                        , rhe.network()
+                          .transform_if ( details::
+                                          add_recv< typename res_type::l_oset
+                                                  , BackEnd
+                                                  >()
+                                        , details::
+                                          is_inside<typename res_type::r_iset>()
+                                        )
+
+                        )
+                      , rhe.next_pid()
+                      );
     }
   };
 } }

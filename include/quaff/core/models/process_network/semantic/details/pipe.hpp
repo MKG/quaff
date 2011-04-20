@@ -56,6 +56,30 @@ namespace quaff { namespace details
       instruction::send<Destinations,Backend> sender;
       return meta::push_back(p,sender);
     }
+  };
+
+  //////////////////////////////////////////////////////////////////////////////
+  // add_recv adds a receive instructions to each process requiring it
+  //////////////////////////////////////////////////////////////////////////////
+  template<class Sources,class Backend>
+  struct add_recv
+  {
+    template<class Sig> struct result;
+
+    template<class This, class Process>
+    struct  result<This(Process)>
+          : result_of::push_front< Process
+                                , instruction::receive<Sources,Backend>
+                                >
+    {};
+
+    template<class Process>
+    typename result<add_recv(Process)>::type
+    operator()(Process const& p) const
+    {
+      instruction::receive<Sources,Backend> sender;
+      return meta::push_front(p,sender);
+    }
    };
 } }
 
