@@ -16,8 +16,10 @@
 
 namespace quaff { namespace instruction
 {
-  template<class Function,class BackEnd>      struct call;
-  template<class F1, class F2,class BackEnd>  struct compose;
+  template<class Function     , class BackEnd>  struct call;
+  template<class Destinations , class BackEnd>  struct send;
+  template<class Sources      , class BackEnd>  struct receive;
+
 } }
 
 #endif

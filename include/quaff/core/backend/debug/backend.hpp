@@ -24,11 +24,9 @@ namespace quaff { namespace backend
     debug_() {}
 
     void terminate() const {}
-    void start()     const {}
 
     // How to run a network
-    template<class T>
-    void accept( T const& n ) const
+    template<class T> void accept( T const& n ) const
     {
       boost::fusion::at_c<0>(n).accept(*this,boost::fusion::at_c<1>(n));
     }
@@ -61,12 +59,13 @@ template<class X, class Stream> void debug(X const& xpr, Stream& os)
   quaff::model::empty_environment                         env;
   quaff::backend::debug_ target;
 
-  target.accept ( boost::fusion::vector_tie ( converter(xpr,env,target).network()
-                                            , os
-                                            )
+  target.accept ( boost::fusion::
+                  vector_tie ( converter(xpr,env,target).network(), os )
                 );
 }
 
 #include <quaff/core/backend/debug/instructions/call.hpp>
+#include <quaff/core/backend/debug/instructions/send.hpp>
+//#include <quaff/core/backend/debug/instructions/recv.hpp>
 
 #endif

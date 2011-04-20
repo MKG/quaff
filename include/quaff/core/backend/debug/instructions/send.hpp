@@ -7,39 +7,38 @@
  *                 See accompanying file LICENSE.txt or copy at
  *                     http://www.boost.org/LICENSE_1_0.txt
  ******************************************************************************/
-#ifndef QUAFF_CORE_BACKEND_SEQUENTIAL_INSTRUCTIONS_CALL_HPP_INCLUDED
-#define QUAFF_CORE_BACKEND_SEQUENTIAL_INSTRUCTIONS_CALL_HPP_INCLUDED
+#ifndef QUAFF_CORE_BACKEND_DEBUG_INSTRUCTIONS_SEND_HPP_INCLUDED
+#define QUAFF_CORE_BACKEND_DEBUG_INSTRUCTIONS_SEND_HPP_INCLUDED
 
 ////////////////////////////////////////////////////////////////////////////////
 /// @file quaff/core/backend/debug/instructions/call.hpp
 ////////////////////////////////////////////////////////////////////////////////
-#include <quaff/core/skeleton/source.hpp>
+#include <quaff/sdk/type_id.hpp>
 
 namespace quaff { namespace instruction
 {
-  //////////////////////////////////////////////////////////////////////////////
-  // call a function within proper interface
-  //////////////////////////////////////////////////////////////////////////////
-  template<class Function>
-  struct call<Function,backend::sequential_>
+  template<class Destinations>
+  struct send<Destinations,backend::debug_>
   {
-    typedef typename Function::input_type   input_type;
-    typedef typename Function::output_type  output_type;
+    //send(Destinations const& dst) : mDestinations(dst) {}
 
-    call(Function const& f) : function_(f) {}
-
-    template<class Pid, class Context>
+    template<class Pid, class Input, class Output, class Context>
     void operator() ( Pid const&
-                    , input_type& ins
-                    , output_type& outs
-                    , Context& context
+                    , Input&
+                    , Output& out
+                    , Context& os
                     ) const
     {
-      if(boost::fusion::at_c<1>(context)[Pid::value])
-        outs = function_(ins);
+      os << "| SEND "
+                << "("
+                << type_id<typename Output::type>()
+                << ","
+                << type_id<Destinations>()
+                <<")"
+                << "\n";
     }
 
-    Function  function_;
+    //Destinations  mDestinations;
   };
 } }
 

@@ -25,20 +25,17 @@ namespace quaff { namespace backend
     ////////////////////////////////////////////////////////////////////////////
     // Execution controls and checks
     ////////////////////////////////////////////////////////////////////////////
-    void terminate()              const { process_counter--;            }
-    void start(std::size_t count) const { process_counter = count;      }
-    bool is_running()             const { return process_counter > 0;  }
+    void terminate()         const { *next_++ = false; }
 
     ////////////////////////////////////////////////////////////////////////////
-    // process_counter tracks the process as they are terminated
+    // next_terminating tracks the process as they are terminated
     ////////////////////////////////////////////////////////////////////////////
-    mutable std::size_t process_counter;
+    mutable bool       *next_ , *last_;
 
     ////////////////////////////////////////////////////////////////////////////
     // How to run a network
     ////////////////////////////////////////////////////////////////////////////
-    template<class Network>
-    void accept( Network const& n ) const
+    template<class Network> void accept( Network const& n ) const
     {
       // How many process do we have ?
       static const std::size_t
@@ -56,14 +53,14 @@ namespace quaff { namespace backend
       boost::fusion::at_c<1>(data).fill(true);
 
       // Initialize the process termination counter
-      start(boost::mpl::size<typename Network::nodes_type>::value);
+      next_ = &(boost::fusion::at_c<1>(data)[0]);
+      last_ = &(boost::fusion::at_c<1>(data)[count]);
 
-      // Loop until something stops me
+      // Loop until everybody stopped
       do
       {
         n.accept(*this,data);
-      } while( is_running() );
-
+      } while( next_ != last_ );
     }
     
     ////////////////////////////////////////////////////////////////////////////
@@ -72,8 +69,9 @@ namespace quaff { namespace backend
     template<class Process, class Context>
     void accept(Process const& p,Context& d) const
     {
-      // Start the process again
       typedef typename Process::pid_type pid;
+
+      // Walk down the list of code fragment and run them using a proper context
       boost::fusion::
       for_each( p.code()
               , meta::
@@ -101,5 +99,6 @@ namespace quaff
 
 #include <quaff/core/backend/sequential/instructions/call.hpp>
 //#include <quaff/core/backend/sequential/instructions/send.hpp>
+//#include <quaff/core/backend/sequential/instructions/recv.hpp>
 
 #endif
