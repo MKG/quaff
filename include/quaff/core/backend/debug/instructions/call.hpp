@@ -34,8 +34,6 @@ namespace quaff { namespace instruction
     {
       os << "| CALL "
                 << type_id<typename Output::type>()
-                << " "
-                << (void*)(&mFunction)
                 << "("
                 << type_id<typename Input::type>()
                 <<")"

@@ -14,14 +14,14 @@
 /// @file quaff/core/backend/debug/instructions/call.hpp
 ////////////////////////////////////////////////////////////////////////////////
 #include <quaff/sdk/type_id.hpp>
+#include <boost/fusion/include/io.hpp>
+#include <boost/fusion/include/as_set.hpp>
 
 namespace quaff { namespace instruction
 {
   template<class Destinations>
   struct send<Destinations,backend::debug_>
   {
-    //send(Destinations const& dst) : mDestinations(dst) {}
-
     template<class Pid, class Input, class Output, class Context>
     void operator() ( Pid const&
                     , Input&
@@ -30,15 +30,11 @@ namespace quaff { namespace instruction
                     ) const
     {
       os << "| SEND "
-                << "("
                 << type_id<typename Output::type>()
-                << ","
-                << type_id<Destinations>()
-                <<")"
+                << " to "
+                << boost::fusion::as_set(Destinations())
                 << "\n";
     }
-
-    //Destinations  mDestinations;
   };
 } }
 
