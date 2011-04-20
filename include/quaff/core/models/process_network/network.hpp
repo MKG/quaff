@@ -21,9 +21,16 @@
 #include <boost/fusion/include/as_vector.hpp>
 #include <boost/fusion/include/transform.hpp>
 #include <quaff/core/models/process_network/accept.hpp>
+#include <quaff/sdk/meta/transform_if.hpp>
 
 namespace quaff { namespace model
 {
+  template<class Nodes, class InputSet, class OutputSet, class DataTypes>
+  struct network;
+
+  template<class DT, class P, class I,class O> inline
+  network<P,I,O,DT> make_network( P const& n, I const&, O const& );
+
   //////////////////////////////////////////////////////////////////////////////
   // a network is built from a:
   //  - a FusionRandomAccessSequence of process (usually a fusion::vector)
@@ -54,6 +61,22 @@ namespace quaff { namespace model
     }
 
     nodes_type const& nodes() const { return nodes_; }
+
+    template<class T, class P>
+    network < typename quaff::result_of::transform_if<nodes_type,T,P>::type
+            , input_set
+            , output_set
+            , data_type
+            >
+    transform_if( T const& t, P const& ) const
+    {
+      details::transform_if_impl<T,typename boost::mpl::lambda<P>::type> callee(t);
+      return
+      make_network<data_type> ( boost::fusion::transform(nodes_,callee)
+                              , input_set()
+                              , output_set()
+                              );
+    }
 
     nodes_type nodes_;
   };
