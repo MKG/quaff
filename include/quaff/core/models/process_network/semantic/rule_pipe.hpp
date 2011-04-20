@@ -13,9 +13,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 /// @file quaff/core/models/process_network/semantic/rule_pipe
 ////////////////////////////////////////////////////////////////////////////////
-#include <quaff/sdk/meta/push_back.hpp>
-#include <quaff/sdk/meta/push_front.hpp>
-#include <quaff/core/models/process_network/joint_network.hpp>
+#include <quaff/core/models/process_network/chain_network.hpp>
+#include <quaff/core/models/process_network/semantic/details/pipe.hpp>
 
 ////////////////////////////////////////////////////////////////////////////////
 // The pipe_ skeleton build the union of two network and add send/receive
@@ -71,12 +70,19 @@ namespace quaff { namespace semantic
                                       , converter( rhs_, elhs_, be)
                                       );
       static typename erhs::type& erhs_;
+
+      // lhs/rhs in/output types
+      typedef typename erhs::type::network_type::input_set  r_iset;
+      typedef typename elhs::type::network_type::output_set l_oset;
       
       // Build the environment usign the joint_network
       BOOST_TYPEOF_NESTED_TYPEDEF_TPL 
       ( nested
       , make_environment
-        ( join_network( elhs_.network()
+        ( chain_network(  elhs_.network()
+                        .transform_if ( details::add_send<r_iset,back_end>()
+                                      , details::is_inside<l_oset>()
+                                      )
                       , erhs_.network()
                       )
         , erhs_.next_pid()
@@ -90,13 +96,23 @@ namespace quaff { namespace semantic
     typename result<convert_pipe(LHS, RHS, State, BackEnd)>::type
     operator()(LHS const& lhs, RHS const& rhs, State& s, BackEnd const& be) const
     {
+      typedef result<convert_pipe(LHS, RHS, State, BackEnd)> res_type;
       convert<tag::process_network_> callee;
       
       // Pre-compute environment to not copy it twice
       BOOST_AUTO(lhe, callee(lhs,s,be)  );
       BOOST_AUTO(rhe, callee(rhs,lhe,be));
       
-      return make_environment ( join_network(lhe.network(),rhe.network())
+      return
+      make_environment( chain_network
+                        ( lhe.network()
+                          .transform_if ( details::add_send< typename res_type::r_iset
+                                                  , BackEnd
+                                                  >()
+                                        , details::is_inside<typename res_type::l_oset>()
+                                        )
+                      , rhe.network()
+                                )
                               , rhe.next_pid()
                               );
     }
