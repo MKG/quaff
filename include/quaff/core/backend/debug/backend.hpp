@@ -66,6 +66,6 @@ template<class X, class Stream> void debug(X const& xpr, Stream& os)
 
 #include <quaff/core/backend/debug/instructions/call.hpp>
 #include <quaff/core/backend/debug/instructions/send.hpp>
-//#include <quaff/core/backend/debug/instructions/recv.hpp>
+#include <quaff/core/backend/debug/instructions/receive.hpp>
 
 #endif
