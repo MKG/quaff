@@ -21,15 +21,6 @@
 #include <boost/type_traits/is_integral.hpp>
 #include <boost/bind.hpp>
  
-template<class X> void run(X const& x)
-{
-  quaff::semantic::convert<quaff::tag::process_network_> mn;
-  quaff::model::empty_environment en;
-  
-  quaff::current_backend.accept(mn(x,en,quaff::current_backend).network());
-}
-
-
  
 int g()
 {
@@ -55,7 +46,7 @@ template<class Network> void test(Network const& n) {
 
 quaff::meta::transform_if<Network const>(n
                           ,(std::cout << "pid :" 
-                                      << quaff::model<Network>process::pid_type::value)
+                                      << Network::process::pid_type::value)
                            ,((Network::process::pid_type::value %2)==0) );
 }
 
@@ -66,10 +57,10 @@ int main()
 quaff::semantic::convert<quaff::tag::process_network_>  converter;
 quaff::model::empty_environment                         env;
 quaff::backend::debug_ target;
-
+/*
 test( 
     converter(( quaff::source(g) & (quaff::source(g) & quaff::source(g) )),env,target).network()
-     );
+     );*/
 
 /*  std::ofstream out("out.txt");
   debug(  ( quaff::source(g) & quaff::source(g) ) & quaff::source(g)
@@ -84,8 +75,8 @@ test(
       & (( quaff::source(g) & quaff::source(g) ) & quaff::source(g))
      );
      */
-
-  run( quaff::source(g) & (quaff::source(g)& quaff::source(g)) & quaff::source(g) );
+std::ofstream out("out.dot");
+  graph( quaff::source(g) & (quaff::source(g)& quaff::source(g)) & quaff::source(g) , out);
 
 }
 

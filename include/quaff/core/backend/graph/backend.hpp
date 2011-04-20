@@ -14,6 +14,7 @@
 /// @file quaff/core/backend/graph/backend.hpp
 ////////////////////////////////////////////////////////////////////////////////
 #include <boost/mpl/identity.hpp>
+#include <quaff/sdk/type_id.hpp>
 
 namespace quaff { namespace backend
 {
@@ -61,13 +62,19 @@ namespace quaff { namespace backend
     {
       In& in; Out& out; Data& data; 
       runner(In& i, Out& o, Data& d, int p) : in(i), out(o), data(d){
-         d << "di" << p << " [shape=box];\n\t" // label=\"" << type_id<typename In&::type>()<< "\"];\n\t"
-                    << "dd -- di" << p << " [dir=forward arrowsize=2];\n\t"
-                    << "f" << p << ";\n\t" // [label=\"fonction " << (void*)(&mFunction) << "\" ];\n\t"
-                    << "di" << p << " -- f" << p << ";\n\t"
-                    << "do" << p << " [shape=box];\n\t" // label=\"" << type_id<typename Output::type>()<< "\"];\n\t"
-                    << "f" << p << " -- do" << p << " [dir=forward];\n\t"
-           << "do" << p << " -- df [dir=forward arrowsize=2];\n\t";
+         d  << "di" << p << " [shape=box label=\"" 
+                        << type_id<typename In::type>() 
+                        << "\"];\n\t";
+
+         d  << "dd -- di" << p << " [dir=forward arrowsize=2];\n\t"
+            << "f" << p << ";\n\t" // [label=\"fonction " << (void*)(&mFunction) << "\" ];\n\t"
+            << "di" << p << " -- f" << p << ";\n\t"
+            << "do" << p << " [shape=box label=\"" 
+                          << type_id<typename Out::type>()
+                          << "\"];\n\t"
+            << "f" << p << " -- do" << p << " [dir=forward];\n\t";
+
+        d   << "do" << p << " -- df [dir=forward arrowsize=2];\n\t";
       
       }
       template<class Code> void operator()(Code const& op) const

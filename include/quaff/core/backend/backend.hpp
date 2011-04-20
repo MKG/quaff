@@ -18,6 +18,7 @@
 // the text debug back-end is always available
 ////////////////////////////////////////////////////////////////////////////////
 #include <quaff/core/backend/debug/backend.hpp>
+#include <quaff/core/backend/graph/backend.hpp>
 
 #if defined(QUAFF_TARGET_MPI)
 #else
