@@ -46,7 +46,7 @@ template<class Network> void test(Network const& n) {
 
 quaff::meta::transform_if<Network const>(n
                           ,(std::cout << "pid :" 
-                                      << Network::process::pid_type::value)
+                                      << quaff::model<Network>process::pid_type::value)
                            ,((Network::process::pid_type::value %2)==0) );
 }
 
@@ -57,9 +57,9 @@ quaff::semantic::convert<quaff::tag::process_network_>  converter;
 quaff::model::empty_environment                         env;
 quaff::backend::debug_ target;
 
-/*test( 
+test( 
     converter(( quaff::source(g) & (quaff::source(g) & quaff::source(g) )),env,target).network()
-     );*/
+     );
 
 /*  std::ofstream out("out.txt");
   debug(  ( quaff::source(g) & quaff::source(g) ) & quaff::source(g)
