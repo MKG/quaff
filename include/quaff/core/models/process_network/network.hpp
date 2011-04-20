@@ -36,7 +36,7 @@ namespace quaff { namespace model
     typedef Nodes                             nodes_type;
     typedef InputSet                          input_set;
     typedef OutputSet                         output_set;
-    typedef boost::fusion::vector1<DataTypes> data_type;
+    typedef DataTypes  data_type;
 
     ////////////////////////////////////////////////////////////////////////////
     // Build a network form its Nodes sequence
@@ -52,6 +52,8 @@ namespace quaff { namespace model
       accept_<BackEnd,Data> acceptor(b,d);
       boost::fusion::for_each(nodes_,acceptor);
     }
+
+    nodes_type const& nodes() const { return nodes_; }
 
     nodes_type nodes_;
   };

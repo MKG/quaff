@@ -26,16 +26,17 @@ namespace quaff { namespace instruction
     typedef typename Function::input_type   input_type;
     typedef typename Function::output_type  output_type;
 
-    call(Function const& f)
-        : function_(f) {}
+    call(Function const& f) : function_(f) {}
 
-    template<class Context>
-    void operator() ( input_type& ins
+    template<class Pid, class Context>
+    void operator() ( Pid const&
+                    , input_type& ins
                     , output_type& outs
-                    , Context&
+                    , Context& context
                     ) const
     {
-      outs = function_(ins);
+      if(boost::fusion::at_c<1>(context)[Pid::value])
+        outs = function_(ins);
     }
 
     Function              function_;

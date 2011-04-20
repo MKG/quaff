@@ -45,7 +45,7 @@ namespace quaff { namespace backend
 
       boost::fusion::
       for_each( p.code()
-              , meta::run ( ins, outs, os )
+              , meta::run ( pid(), ins, outs, os )
               );
       os << "[-------------------------------]\n";
     }

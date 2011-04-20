@@ -15,20 +15,21 @@
 ////////////////////////////////////////////////////////////////////////////////
 namespace quaff { namespace meta
 {
-  template<class In, class Out,class Data> struct runner
+  template<class Pid,class In, class Out,class Context> struct runner
   {
-    In& in; Out& out; Data& data;
-    runner(In& i, Out& o, Data& d) : in(i), out(o), data(d) {}
+    Pid const& pid; In& in; Out& out; Context& context;
+    runner(Pid const& p,In& i, Out& o, Context& c)
+          : pid(p), in(i), out(o), context(c) {}
     template<class Code> void operator()(Code const& op) const
     {
-      op( in,out, data );
+      op( pid, in, out, context );
     }
   };
 
-  template<class I,class O,class D> inline
-  runner<I,O,D> run(I& i, O& o, D& d)
+  template<class Pid,class I,class O,class D> inline
+  runner<Pid,I,O,D> run(Pid const& p , I& i, O& o, D& d)
   {
-    runner<I,O,D> that(i,o,d);
+    runner<Pid,I,O,D> that(p,i,o,d);
     return that;
   }
 } }

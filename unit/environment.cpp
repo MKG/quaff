@@ -13,6 +13,13 @@
 #include <quaff/core/skeleton/seq.hpp>
 #include <quaff/core/skeleton/source.hpp>
 #include <quaff/sdk/meta/transform_if.hpp>
+#include <boost/fusion/include/io.hpp>
+#include <boost/fusion/include/join.hpp>
+#include <boost/fusion/include/set.hpp>
+
+
+#include <boost/type_traits/is_integral.hpp>
+#include <boost/bind.hpp>
  
 template<class X> void run(X const& x)
 {
@@ -22,12 +29,14 @@ template<class X> void run(X const& x)
   quaff::current_backend.accept(mn(x,en,quaff::current_backend).network());
 }
 
+
+ 
 int g()
 {
   static int i(0);
-  std::cout << "i: " << i << "\n";
+  std::cout << " - i = " << i << "\n";
 
-  if(i < 10) i++;
+  if(i < 3) i++;
   else
   {
     i = 0;
@@ -53,6 +62,7 @@ quaff::meta::transform_if<Network const>(n
 int main()
 {
   debug( quaff::source(g) & (quaff::source(g) & quaff::source(g) ), std::cout );
+
 quaff::semantic::convert<quaff::tag::process_network_>  converter;
 quaff::model::empty_environment                         env;
 quaff::backend::debug_ target;
@@ -74,5 +84,8 @@ test(
       & (( quaff::source(g) & quaff::source(g) ) & quaff::source(g))
      );
      */
+
+  run( quaff::source(g) & (quaff::source(g)& quaff::source(g)) & quaff::source(g) );
+
 }
 

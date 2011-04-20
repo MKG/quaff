@@ -77,8 +77,11 @@ namespace quaff { namespace backend
       boost::fusion::
       for_each( p.code()
               , meta::
-                run ( boost::fusion::at_c<0>(boost::fusion::at_c<pid::value>(boost::fusion::at_c<0>(d)))
-                    , boost::fusion::at_c<1>(boost::fusion::at_c<pid::value>(boost::fusion::at_c<0>(d)))
+                run ( pid()
+                    , boost::fusion::
+                      at_c<2*pid::value>(boost::fusion::at_c<0>(d))
+                    , boost::fusion::
+                      at_c<2*pid::value+1>(boost::fusion::at_c<0>(d))
                     , d
                     )
               );
@@ -97,5 +100,6 @@ namespace quaff
 }
 
 #include <quaff/core/backend/sequential/instructions/call.hpp>
+//#include <quaff/core/backend/sequential/instructions/send.hpp>
 
 #endif
