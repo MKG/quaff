@@ -7,40 +7,32 @@
  *                 See accompanying file LICENSE.txt or copy at
  *                     http://www.boost.org/LICENSE_1_0.txt
  ******************************************************************************/
-#ifndef QUAFF_CORE_BACKEND_SEQUENTIAL_INSTRUCTIONS_CALL_HPP_INCLUDED
-#define QUAFF_CORE_BACKEND_SEQUENTIAL_INSTRUCTIONS_CALL_HPP_INCLUDED
+#ifndef QUAFF_CORE_SKELETON_SINK_HPP_INCLUDED
+#define QUAFF_CORE_SKELETON_SINK_HPP_INCLUDED
 
 ////////////////////////////////////////////////////////////////////////////////
-/// @file quaff/core/backend/debug/instructions/call.hpp
+/// @file quaff/core/skeleton/source.hpp
 ////////////////////////////////////////////////////////////////////////////////
-#include <quaff/core/skeleton/source.hpp>
+#include <quaff/sdk/meta/sink.hpp>
+#include <boost/utility/enable_if.hpp>
+#include <quaff/core/dsl/terminal.hpp>
+#include <boost/proto/proto_typeof.hpp>
+#include <boost/type_traits/is_function.hpp>
+#include <boost/optional/optional.hpp>
 
-namespace quaff { namespace instruction
+namespace quaff
 {
   //////////////////////////////////////////////////////////////////////////////
-  // call a function within proper interface
+  // Turn function pointer into seq skeleton usign action<>
   //////////////////////////////////////////////////////////////////////////////
-  template<class Function>
-  struct call<Function,backend::sequential_>
+  template<class InputType>
+  dsl::skeleton_terminal< meta::sink<void(*)(InputType)> >
+  sink( void(*f)(InputType) )
   {
-    typedef typename Function::input_type   input_type;
-    typedef typename Function::output_type  output_type;
-
-    call(Function const& f) : function_(f) {}
-
-    template<class Pid, class Context>
-    void operator() ( Pid const&
-                    , input_type& ins
-                    , output_type& outs
-                    , Context& context
-                    ) const
-    {
-      if(boost::fusion::at_c<1>(context)[Pid::value])
-        outs = function_(ins);
-    }
-
-    Function  function_;
-  };
-} }
+    meta::sink<void(*)(InputType)> them = f;
+    dsl::skeleton_terminal< meta::sink<void(*)(InputType)> > that( them );
+    return that;
+  }
+}
 
 #endif

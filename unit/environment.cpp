@@ -8,24 +8,17 @@
  *                     http://www.boost.org/LICENSE_1_0.txt
  ******************************************************************************/
 #include <iostream>
-#include <fstream>
-#include <quaff/core/backend.hpp>
-#include <quaff/core/skeleton/seq.hpp>
-#include <quaff/core/skeleton/source.hpp>
-#include <quaff/sdk/meta/transform_if.hpp>
-#include <boost/fusion/include/io.hpp>
-#include <boost/fusion/include/join.hpp>
-#include <boost/fusion/include/set.hpp>
+#include <quaff/quaff.hpp>
+
 
 
 #include <boost/type_traits/is_integral.hpp>
 #include <boost/bind.hpp>
  
- 
+
 int g()
 {
   static int i(0);
-  std::cout << " - i = " << i << "\n";
 
   if(i < 3) i++;
   else
@@ -56,10 +49,21 @@ quaff::meta::transform_if<Network const>(n
                           ,(std::cout << "pid :" 
                                       << Network::process::pid_type::value)
                            ,((Network::process::pid_type::value %2)==0) );
+
+int x2(int i)
+{
+  return 2 * i;
+}
+
+void h(int i)
+{
+  std::cout << "h say : " << i << "\n";
+
 }
 
 int main()
 {
+
   debug( quaff::source(g) & (quaff::source(g) & quaff::source(g) ), std::cout );
 
 quaff::semantic::convert<quaff::tag::process_network_>  converter;
@@ -85,6 +89,10 @@ test(
      */
 std::ofstream out("out.dot");
   graph( quaff::source(g) & (quaff::seq(id)& quaff::source(g)) & quaff::seq(id) , out);
+
+
+  debug( quaff::source(g) | quaff::seq(x2) | quaff::sink(h), std::cout );
+  run( quaff::source(g) | quaff::seq(x2) | quaff::sink(h) );
 
 }
 

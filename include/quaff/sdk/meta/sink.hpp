@@ -7,40 +7,49 @@
  *                 See accompanying file LICENSE.txt or copy at
  *                     http://www.boost.org/LICENSE_1_0.txt
  ******************************************************************************/
-#ifndef QUAFF_CORE_BACKEND_SEQUENTIAL_INSTRUCTIONS_CALL_HPP_INCLUDED
-#define QUAFF_CORE_BACKEND_SEQUENTIAL_INSTRUCTIONS_CALL_HPP_INCLUDED
+#ifndef QUAFF_SDK_META_SINK_HPP_INCLUDED
+#define QUAFF_SDK_META_SINK_HPP_INCLUDED
+
+#include <quaff/sdk/meta/is_callable.hpp>
+#include <boost/function_types/result_type.hpp>
 
 ////////////////////////////////////////////////////////////////////////////////
-/// @file quaff/core/backend/debug/instructions/call.hpp
+/// @file quaff/sdk/meta/sink.hpp
 ////////////////////////////////////////////////////////////////////////////////
-#include <quaff/core/skeleton/source.hpp>
 
-namespace quaff { namespace instruction
+namespace quaff { namespace meta
 {
+  template<class S> struct  sink;
+  
   //////////////////////////////////////////////////////////////////////////////
-  // call a function within proper interface
+  //Turns a void(I) function into a sink Concretized Function Object
   //////////////////////////////////////////////////////////////////////////////
-  template<class Function>
-  struct call<Function,backend::sequential_>
+  template<class I> struct  sink<void(*)(I)> : callable
   {
-    typedef typename Function::input_type   input_type;
-    typedef typename Function::output_type  output_type;
+    typedef void(*function_type)(I);
 
-    call(Function const& f) : function_(f) {}
+    typedef I                 input_type;
+    typedef boost::mpl::void_ output_type;
 
-    template<class Pid, class Context>
-    void operator() ( Pid const&
-                    , input_type& ins
-                    , output_type& outs
-                    , Context& context
-                    ) const
+    sink() {}
+    sink(function_type const& f) : callee(f) {}
+
+    sink& operator=(function_type const& f)
     {
-      if(boost::fusion::at_c<1>(context)[Pid::value])
-        outs = function_(ins);
+      callee = f;
+      return *this;
     }
 
-    Function  function_;
+    inline output_type operator()(input_type const& in) const
+    {
+      callee(in);
+      return output_type();
+    }
+
+    private:
+    function_type callee;
   };
+
 } }
 
 #endif

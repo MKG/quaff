@@ -28,7 +28,7 @@ namespace quaff { namespace result_of
                           , typename  boost::fusion::result_of::
                                       as_vector < typename
                                                   boost::fusion::result_of::
-                                                  push_front<C const,Instr>::type
+                                                  push_back<C const,Instr>::type
                                                 >::type
                           , I
                           , O
@@ -43,10 +43,10 @@ namespace quaff { namespace meta
    ////////////////////////////////////////////////////////////////////////////
    template<class P, class C, class I, class O, class Instr> inline
    typename result_of::push_back< model::process<P,C,I,O>, Instr>::type
-   push_front(model::process<P,C,I,O> const& p, Instr const& x)
+   push_back(model::process<P,C,I,O> const& p, Instr const& x)
    {
      typename result_of::push_back< model::process<P,C,I,O>, Instr>::type
-     that(boost::fusion::as_vector(boost::fusion::push_front(p.code(),x)));
+     that(boost::fusion::as_vector(boost::fusion::push_back(p.code(),x)));
 
      return that;
    }

@@ -7,19 +7,12 @@
  *                 See accompanying file LICENSE.txt or copy at
  *                     http://www.boost.org/LICENSE_1_0.txt
  ******************************************************************************/
-#ifndef QUAFF_CORE_BACKEND_INSTRUCTIONS_HPP_INCLUDED
-#define QUAFF_CORE_BACKEND_INSTRUCTIONS_HPP_INCLUDED
+#ifndef QUAFF_QUAFF_HPP_INCLUDED
+#define QUAFF_QUAFF_HPP_INCLUDED
 
-////////////////////////////////////////////////////////////////////////////////
-/// @file quaff/core/backend/instructions.hpp
-////////////////////////////////////////////////////////////////////////////////
-
-namespace quaff { namespace instruction
-{
-  template<class Function     , class BackEnd>  struct call;
-  template<class Destinations , class BackEnd>  struct send;
-  template<class Sources      , class BackEnd>  struct receive;
-
-} }
+#include <quaff/core/backend.hpp>
+#include <quaff/core/skeleton/seq.hpp>
+#include <quaff/core/skeleton/source.hpp>
+#include <quaff/core/skeleton/sink.hpp>
 
 #endif

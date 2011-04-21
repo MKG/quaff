@@ -7,40 +7,34 @@
  *                 See accompanying file LICENSE.txt or copy at
  *                     http://www.boost.org/LICENSE_1_0.txt
  ******************************************************************************/
-#ifndef QUAFF_CORE_BACKEND_DEBUG_INSTRUCTIONS_CALL_HPP_INCLUDED
-#define QUAFF_CORE_BACKEND_DEBUG_INSTRUCTIONS_CALL_HPP_INCLUDED
+#ifndef QUAFF_CORE_BACKEND_DEBUG_INSTRUCTIONS_RECEIVE_HPP_INCLUDED
+#define QUAFF_CORE_BACKEND_DEBUG_INSTRUCTIONS_RECEIVE_HPP_INCLUDED
 
 ////////////////////////////////////////////////////////////////////////////////
 /// @file quaff/core/backend/debug/instructions/call.hpp
 ////////////////////////////////////////////////////////////////////////////////
 #include <quaff/sdk/type_id.hpp>
+#include <boost/fusion/include/io.hpp>
+#include <boost/fusion/include/as_set.hpp>
 
 namespace quaff { namespace instruction
 {
-  template<class Function>
-  struct call<Function,backend::debug_>
+  template<class Sources>
+  struct receive<Sources,backend::debug_>
   {
-    typedef typename Function::input_type   input_type;
-    typedef typename Function::output_type  output_type;
-
-    call(Function const& f) : mFunction(f) {}
-
     template<class Pid, class Input, class Output, class Context>
     void operator() ( Pid const&
                     , Input&
-                    , Output&
+                    , Output& out
                     , Context& os
                     ) const
     {
-      os << "| CALL "
-                << type_id<typename Output::type>()
-                << "("
+      os << "| RECEIVE "
                 << type_id<typename Input::type>()
-                <<")"
+                << " from "
+                << boost::fusion::as_set(Sources())
                 << "\n";
     }
-
-    Function  mFunction;
   };
 } }
 

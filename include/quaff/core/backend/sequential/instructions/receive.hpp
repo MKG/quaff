@@ -7,19 +7,25 @@
  *                 See accompanying file LICENSE.txt or copy at
  *                     http://www.boost.org/LICENSE_1_0.txt
  ******************************************************************************/
-#ifndef QUAFF_CORE_BACKEND_INSTRUCTIONS_HPP_INCLUDED
-#define QUAFF_CORE_BACKEND_INSTRUCTIONS_HPP_INCLUDED
+#ifndef QUAFF_CORE_BACKEND_SEQUENTIAL_INSTRUCTIONS_RECEIVE_HPP_INCLUDED
+#define QUAFF_CORE_BACKEND_SEQUENTIAL_INSTRUCTIONS_RECEIVE_HPP_INCLUDED
 
 ////////////////////////////////////////////////////////////////////////////////
-/// @file quaff/core/backend/instructions.hpp
+/// @file quaff/core/backend/sequential/instructions/call.hpp
 ////////////////////////////////////////////////////////////////////////////////
 
 namespace quaff { namespace instruction
 {
-  template<class Function     , class BackEnd>  struct call;
-  template<class Destinations , class BackEnd>  struct send;
-  template<class Sources      , class BackEnd>  struct receive;
-
+  template<class Sources>
+  struct receive<Sources,backend::sequential_>
+  {
+    template<class Pid, class Input, class Output, class Context>
+    void operator()( Pid const&, Input&, Output& , Context& context) const
+    {
+      if(!boost::fusion::at_c<1>(context)[Pid::value])
+        terminate();
+    }
+  };
 } }
 
 #endif
