@@ -7,36 +7,12 @@
  *                 See accompanying file LICENSE.txt or copy at
  *                     http://www.boost.org/LICENSE_1_0.txt
  ******************************************************************************/
-#include <iostream>
-#include <quaff/quaff.hpp>
+#ifndef QUAFF_QUAFF_HPP_INCLUDED
+#define QUAFF_QUAFF_HPP_INCLUDED
 
-int g()
-{
-  static int i(0);
+#include <quaff/core/backend.hpp>
+#include <quaff/core/skeleton/seq.hpp>
+#include <quaff/core/skeleton/source.hpp>
+#include <quaff/core/skeleton/sink.hpp>
 
-  if(i < 3) i++;
-  else
-  {
-    i = 0;
-    quaff::terminate();
-  }
-
-  return i;
-}
-
-int x2(int i)
-{
-  return 2 * i;
-}
-
-void h(int i)
-{
-  std::cout << "h say : " << i << "\n";
-}
-
-int main()
-{
-  debug( quaff::source(g) | quaff::seq(x2) | quaff::sink(h), std::cout );
-  run( quaff::source(g) | quaff::seq(x2) | quaff::sink(h) );
-}
-
+#endif
