@@ -37,6 +37,14 @@ int g()
   return i;
 }
 
+int id(int x) {
+return x;
+}
+
+void m(int x, int y) {
+return;
+}
+
 
 
 template<class Network> void test(Network const& n) {
@@ -76,7 +84,7 @@ test(
      );
      */
 std::ofstream out("out.dot");
-  graph( quaff::source(g) & (quaff::source(g)& quaff::source(g)) & quaff::source(g) , out);
+  graph( quaff::source(g) & (quaff::seq(id)& quaff::source(g)) & quaff::seq(id) , out);
 
 }
 

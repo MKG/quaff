@@ -61,20 +61,42 @@ namespace quaff { namespace backend
     template<class In, class Out,class Data> struct runner
     {
       In& in; Out& out; Data& data; 
-      runner(In& i, Out& o, Data& d, int p) : in(i), out(o), data(d){
-         d  << "di" << p << " [shape=box label=\"" 
-                        << type_id<typename In::type>() 
-                        << "\"];\n\t";
+      runner(In& i, Out& o, Data& d, int p) : in(i), out(o), data(d)
+      {
+        
+        if (!type_id<typename In::type>().compare("mpl_::void_"))
+          {
+           
+            d   << "p" << p << ";\n\t" // [label=\"fonction " << (void*)(&mFunction) << "\" ];\n\t"
+                << "dd" << p << " -- p" << p << ";\n\t";
+                
+           }
+        else
+          {
+            d  << "dd -- di" << p << " [dir=forward arrowsize=2];\n\t"
+               << "do" << p << " -- df [dir=forward arrowsize=2];\n\t";
+            d  << "di" << p << " [shape=box label=\"" 
+                            << type_id<typename In::type>() 
+                            << "\"];\n\t";
+            d   << "p" << p << ";\n\t" // [label=\"fonction " << (void*)(&mFunction) << "\" ];\n\t"
+                << "di" << p << " -- p" << p << ";\n\t";
+          }
+        
+          if (!type_id<typename In::type>().compare("mpl_::void_"))
+          {
+             d << "do" << p << " [shape=box];\n\t";
+           }
+        else
+          {
+             d << "do" << p << " [shape=box label=\"" 
+                            << type_id<typename Out::type>()
+                            << "\"];\n\t";
+                            
+          }   
+          
+              d << "p" << p << " -- do" << p << " [dir=forward];\n\t";
 
-         d  << "dd -- di" << p << " [dir=forward arrowsize=2];\n\t"
-            << "f" << p << ";\n\t" // [label=\"fonction " << (void*)(&mFunction) << "\" ];\n\t"
-            << "di" << p << " -- f" << p << ";\n\t"
-            << "do" << p << " [shape=box label=\"" 
-                          << type_id<typename Out::type>()
-                          << "\"];\n\t"
-            << "f" << p << " -- do" << p << " [dir=forward];\n\t";
-
-        d   << "do" << p << " -- df [dir=forward arrowsize=2];\n\t";
+       // d   << "do" << p << " -- df [dir=forward arrowsize=2];\n\t";
       
       }
       template<class Code> void operator()(Code const& op) const
