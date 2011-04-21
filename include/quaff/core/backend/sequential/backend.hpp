@@ -25,7 +25,10 @@ namespace quaff { namespace backend
     ////////////////////////////////////////////////////////////////////////////
     // Execution controls and checks
     ////////////////////////////////////////////////////////////////////////////
-    void terminate()         const { *next_++ = false; }
+    void terminate() const
+    {
+      if(next_ != last_ ) *next_++ = false;
+    }
 
     ////////////////////////////////////////////////////////////////////////////
     // next_terminating tracks the process as they are terminated
@@ -54,13 +57,10 @@ namespace quaff { namespace backend
 
       // Initialize the process termination counter
       next_ = &(boost::fusion::at_c<1>(data)[0]);
-      last_ = &(boost::fusion::at_c<1>(data)[count]);
+      last_ = &(boost::fusion::at_c<1>(data)[count-1]);
 
       // Loop until everybody stopped
-      do
-      {
-        n.accept(*this,data);
-      } while( next_ != last_ );
+      do { n.accept(*this,data); } while( next_ != last_ );
     }
     
     ////////////////////////////////////////////////////////////////////////////
