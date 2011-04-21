@@ -98,7 +98,7 @@ namespace quaff
 }
 
 #include <quaff/core/backend/sequential/instructions/call.hpp>
-//#include <quaff/core/backend/sequential/instructions/send.hpp>
-//#include <quaff/core/backend/sequential/instructions/recv.hpp>
+#include <quaff/core/backend/sequential/instructions/send.hpp>
+#include <quaff/core/backend/sequential/instructions/receive.hpp>
 
 #endif

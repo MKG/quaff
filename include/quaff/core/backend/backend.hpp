@@ -19,6 +19,11 @@
 ////////////////////////////////////////////////////////////////////////////////
 #include <quaff/core/backend/debug/backend.hpp>
 
+namespace quaff
+{
+  inline void terminate();
+}
+
 #if defined(QUAFF_TARGET_MPI)
 #else
 #include <quaff/core/backend/sequential/backend.hpp>
