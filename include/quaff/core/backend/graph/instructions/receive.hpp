@@ -32,14 +32,26 @@ namespace quaff { namespace instruction
                     , Context& os
                     ) const
     {
-      os << "do";
-      //for_each(boost::fusion::as_set(Sources()), os << value);
-      os << boost::fusion::front( boost::fusion::as_set(Sources())); 
-      os << " -- di" ;
+      //os << "do";
+      for_each(boost::fusion::as_set(Sources()), aff());
+      //os << boost::fusion::front( boost::fusion::as_set(Sources())); 
+      //os << " -- di" ;
       os << p;
       os << " [dir=forward arrowsize=3];\n\t";
     }
   };
+
+ 
+  struct aff
+{
+ typedef void result_type;
+    template<class T >
+    void operator()(T& t) const
+    {
+        std::cout << "do"  << " -- di" ;
+        
+    }
+};
 
   
   
