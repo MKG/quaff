@@ -30,7 +30,7 @@ namespace quaff { namespace instruction
                     ) const
     {
       os << "| RECEIVE "
-                << type_id<typename Output::type>()
+                << type_id<typename Input::type>()
                 << " from "
                 << boost::fusion::as_set(Sources())
                 << "\n";
