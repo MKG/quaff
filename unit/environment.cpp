@@ -9,11 +9,9 @@
  ******************************************************************************/
 #include <iostream>
 #include <quaff/quaff.hpp>
-
-
-
 #include <boost/type_traits/is_integral.hpp>
 #include <boost/bind.hpp>
+#include <fstream>
  
 
 int g()
@@ -34,7 +32,7 @@ int id(int x) {
 return x;
 }
 
-void m(int x, int y) {
+void m(int x) {
 return;
 }
 
@@ -48,7 +46,7 @@ template<class Network> void test(Network const& n) {
 quaff::meta::transform_if<Network const>(n
                           ,(std::cout << "pid :" 
                                       << Network::process::pid_type::value)
-                           ,((Network::process::pid_type::value %2)==0) );
+                           ,((Network::process::pid_type::value %2)==0) );}
 
 int x2(int i)
 {
@@ -63,13 +61,15 @@ void h(int i)
 
 int main()
 {
+std::ofstream out("out.dot");
+ debug( (quaff::source(g)& quaff::source(g)) | quaff::seq(x2) | quaff::sink(h) , std::cout );
+ graph(quaff::source(g)| quaff::seq(x2)| quaff::sink(h),out );  //| quaff::seq(x2) | quaff::sink(h), out );
+/*  debug( quaff::source(g) & (quaff::source(g) & quaff::source(g) ), std::cout );
 
-  debug( quaff::source(g) & (quaff::source(g) & quaff::source(g) ), std::cout );
+//quaff::semantic::convert<quaff::tag::process_network_>  converter;
+//quaff::model::empty_environment                         env;
+//quaff::backend::debug_ target;
 
-quaff::semantic::convert<quaff::tag::process_network_>  converter;
-quaff::model::empty_environment                         env;
-quaff::backend::debug_ target;
-/*
 test( 
     converter(( quaff::source(g) & (quaff::source(g) & quaff::source(g) )),env,target).network()
      );*/
@@ -85,14 +85,15 @@ test(
   debug(  ( quaff::source(g) & quaff::source(g) ) & quaff::source(g)
       & ( quaff::source(g) & quaff::source(g) ) & quaff::source(g)
       & (( quaff::source(g) & quaff::source(g) ) & quaff::source(g))
-     );
-     */
-std::ofstream out("out.dot");
-  graph( quaff::source(g) & (quaff::seq(id)& quaff::source(g)) & quaff::seq(id) , out);
+     );*/
+     
+
+  //graph( quaff::source(g) & (quaff::seq(id)& quaff::source(g)) & quaff::sink(m) , out);
 
 
-  debug( quaff::source(g) | quaff::seq(x2) | quaff::sink(h), std::cout );
-  run( quaff::source(g) | quaff::seq(x2) | quaff::sink(h) );
+ 
+ // run( quaff::source(g)|quaff::seq(x2) | quaff::sink(h) );
+//  run(  quaff::seq(x2) ); //| quaff::sink(h) );
 
 }
 

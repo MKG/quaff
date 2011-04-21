@@ -15,6 +15,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 #include <boost/mpl/identity.hpp>
 #include <quaff/sdk/type_id.hpp>
+#include <quaff/sdk/meta/run.hpp>
+#include <boost/fusion/include/vector_tie.hpp>
 
 namespace quaff { namespace backend
 {
@@ -47,15 +49,18 @@ namespace quaff { namespace backend
       boost::mpl::identity<typename Process::input_type>  ins;
       boost::mpl::identity<typename Process::output_type> outs;
       
-      //os << "di" << pid::value << "[shape=box label=\"" << type_id<typename Input::type>() << "\"];\n\t";
       
 
       boost::fusion::
       for_each( p.code()
-              , run ( ins, outs, os, pid::value)
+              , meta::run (pid(), ins, outs, os )
+              
               );
-      //os << "}\n";
+     
     }
+    
+    /*template<class Pid,class I,class O,class D> inline
+  runner<Pid,I,O,D> run(Pid const& p , I& i, O& o, D& d)*/
 
     // Some helpers
     template<class In, class Out,class Data> struct runner
@@ -68,13 +73,13 @@ namespace quaff { namespace backend
           {
            
             d   << "p" << p << ";\n\t" // [label=\"fonction " << (void*)(&mFunction) << "\" ];\n\t"
-                << "dd" << p << " -- p" << p << ";\n\t";
+                << "dd"  << " -- p" << p << ";\n\t";
                 
            }
         else
           {
-            d  << "dd -- di" << p << " [dir=forward arrowsize=2];\n\t"
-               << "do" << p << " -- df [dir=forward arrowsize=2];\n\t";
+            d  << "dd -- di" << p << " [dir=forward arrowsize=2];\n\t";
+               
             d  << "di" << p << " [shape=box label=\"" 
                             << type_id<typename In::type>() 
                             << "\"];\n\t";
@@ -82,19 +87,20 @@ namespace quaff { namespace backend
                 << "di" << p << " -- p" << p << ";\n\t";
           }
         
-          if (!type_id<typename In::type>().compare("mpl_::void_"))
+          if (!type_id<typename Out::type>().compare("mpl_::void_"))
           {
-             d << "do" << p << " [shape=box];\n\t";
+             d << "p" << p << " -- df [dir=forward arrowsize=2];\n\t";
            }
         else
           {
              d << "do" << p << " [shape=box label=\"" 
                             << type_id<typename Out::type>()
                             << "\"];\n\t";
-                            
+             d << "p" << p << " -- do" << p << " [dir=forward];\n\t"
+               << "do" << p << " -- df [dir=forward arrowsize=2];\n\t";
           }   
           
-              d << "p" << p << " -- do" << p << " [dir=forward];\n\t";
+              
 
        // d   << "do" << p << " -- df [dir=forward arrowsize=2];\n\t";
       
@@ -131,5 +137,6 @@ template<class X, class Stream> void graph(X const& xpr, Stream& os)
 }
 
 #include <quaff/core/backend/graph/instructions/call.hpp>
-
+#include <quaff/core/backend/graph/instructions/send.hpp>
+#include <quaff/core/backend/graph/instructions/receive.hpp>
 #endif
