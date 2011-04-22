@@ -24,18 +24,20 @@
 
 namespace quaff { namespace instruction
 {
- 
+ template<class Pid>
   struct aff
   {
    std::ostringstream& ost;
+   Pid const& pid;
    typedef void result_type;
-   aff(std::ostringstream& os) : ost(os) {}
+   aff(std::ostringstream& os, Pid const& p) : ost(os), pid(p) {}
    
       template<class T>
       void operator()(T& t) const
       {
           ost << "do" << T::value << " -- di" ;
-          
+          ost << pid;
+          ost << " [dir=forward arrowsize=3];\n\t";
       }
   };
 
@@ -51,11 +53,9 @@ namespace quaff { namespace instruction
                     ) const
     {
       std::ostringstream ost;
-      aff a(ost);
+      aff <Pid>a(ost, p);
       for_each(boost::fusion::as_set(Sources()), (a));
-      os << ost.str();
-      os << p;
-      os << " [dir=forward arrowsize=3];\n\t";
+      os << ost.str(); 
     }
   }; 
 } }
