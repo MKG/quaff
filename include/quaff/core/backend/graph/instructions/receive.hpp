@@ -18,10 +18,28 @@
 #include <boost/fusion/include/as_set.hpp>
 #include <boost/fusion/algorithm/iteration/for_each.hpp>
 #include <boost/fusion/include/for_each.hpp>
+#include <iostream>
+#include <sstream>
 
 
 namespace quaff { namespace instruction
 {
+ 
+  struct aff
+  {
+   std::ostringstream& ost;
+   typedef void result_type;
+   aff(std::ostringstream& os) : ost(os) {}
+   
+      template<class T>
+      void operator()(T& t) const
+      {
+          ost << "do" << T::value << " -- di" ;
+          
+      }
+  };
+
+
   template<class Sources>
   struct receive<Sources,backend::graph_>
   {
@@ -32,29 +50,14 @@ namespace quaff { namespace instruction
                     , Context& os
                     ) const
     {
-      //os << "do";
-      for_each(boost::fusion::as_set(Sources()), aff());
-      //os << boost::fusion::front( boost::fusion::as_set(Sources())); 
-      //os << " -- di" ;
+      std::ostringstream ost;
+      aff a(ost);
+      for_each(boost::fusion::as_set(Sources()), (a));
+      os << ost.str();
       os << p;
       os << " [dir=forward arrowsize=3];\n\t";
     }
-  };
-
- 
-  struct aff
-{
- typedef void result_type;
-    template<class T >
-    void operator()(T& t) const
-    {
-        std::cout << "do"  << " -- di" ;
-        
-    }
-};
-
-  
-  
+  }; 
 } }
 
 #endif
