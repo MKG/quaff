@@ -14,5 +14,6 @@
 #include <quaff/core/skeleton/seq.hpp>
 #include <quaff/core/skeleton/source.hpp>
 #include <quaff/core/skeleton/sink.hpp>
+#include <quaff/core/skeleton/farm.hpp>
 
 #endif

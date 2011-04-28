@@ -27,10 +27,6 @@ namespace quaff { namespace tag
 
 namespace quaff { namespace dsl
 {
-  typedef boost::proto::terminal<tag::farm_>::type farm;
-  struct  farm_skeleton
-        :  boost::proto::terminal<tag::farm_>
-  {};
 
   //////////////////////////////////////////////////////////////////////////////
   // A valid sequential_skeleton expression is :
@@ -80,7 +76,10 @@ namespace quaff { namespace dsl
                             , data_parallel_skeleton
                             , boost::proto::bitwise_and<skeleton,skeleton>
                             , boost::proto::bitwise_or<skeleton,skeleton>
-                            , farm_skeleton
+                            , boost::proto::binary_expr<tag::farm_
+                                                        , boost::proto::_
+                                                        , skeleton
+                                                        >
                             >
   {};
 } }
