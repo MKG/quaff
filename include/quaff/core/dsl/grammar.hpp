@@ -22,10 +22,16 @@ namespace quaff { namespace tag
   // tags for quaff specific functions
   //////////////////////////////////////////////////////////////////////////////
   struct map_ {};
+  struct farm_ {};
 } }
 
 namespace quaff { namespace dsl
 {
+  typedef boost::proto::terminal<tag::farm_>::type farm;
+  struct  farm_skeleton
+        :  boost::proto::terminal<tag::farm_>
+  {};
+
   //////////////////////////////////////////////////////////////////////////////
   // A valid sequential_skeleton expression is :
   //  - a terminal holding a boost::function;
@@ -43,8 +49,11 @@ namespace quaff { namespace dsl
                 , boost::proto::comma < sequential_skeleton
                                       , sequential_skeleton
                                       >
+                
                 >
   {};
+  
+
 
   //////////////////////////////////////////////////////////////////////////////
   // A data-parallel skeleton is :
@@ -56,6 +65,7 @@ namespace quaff { namespace dsl
                             , boost::proto::unary_expr< tag::map_
                                                       , sequential_skeleton
                                                       >
+                            
                             >
   {};
 
@@ -70,6 +80,7 @@ namespace quaff { namespace dsl
                             , data_parallel_skeleton
                             , boost::proto::bitwise_and<skeleton,skeleton>
                             , boost::proto::bitwise_or<skeleton,skeleton>
+                            , farm_skeleton
                             >
   {};
 } }
