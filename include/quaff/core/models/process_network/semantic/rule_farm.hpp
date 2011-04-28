@@ -14,7 +14,7 @@
 /// @file quaff/core/models/process_network/semantic/rule_farm.hpp
 ////////////////////////////////////////////////////////////////////////////////
 #include <quaff/core/models/process_network/joint_network.hpp>
-
+#include <quaff/core/dsl/grammar.hpp>
 ////////////////////////////////////////////////////////////////////////////////
 // The farm_ skeleton build the union of N pardo
 // Inputs  : the LHS/RHS skeleton, current state adn target back-end
@@ -26,18 +26,20 @@ namespace quaff { namespace semantic
   // Handle seq node in the process_network IR
   //////////////////////////////////////////////////////////////////////////////
   template<>
-  struct  process_network_cases::case_<quaff::tag::farm_>
+  struct  process_network_cases::case_<tag::farm_>
         : boost::proto::
-          when< boost::proto::binary_expr<quaff::tag::farm_
-                                          , boost::mpl::int_
-                                          , boost::proto::_
-                                          >
+         // when< boost::proto::expr<quaff::tag::farm_
+         //                                 , boost::proto::_
+         //                                 , boost::proto::_
+         when<boost::proto::binary_expr<tag::farm_
+                                        , boost::proto::_
+                                        , boost::proto::_
+                                        >
               , convert_farm<tag::process_network_>
                 ( boost::proto::_left
                 , boost::proto::_right
                 , boost::proto::_state
                 , boost::proto::_data
-                , boost::mpl::int_
                 )
               >
   {};
@@ -49,8 +51,8 @@ namespace quaff { namespace semantic
   {
     template<class Sig> struct result;
 
-    template<class This,class LHS,class RHS,class State,class BackEnd, int N>
-    struct result<This(LHS,RHS,State,BackEnd, N)>
+    template<class This,class LHS,class RHS,class State,class BackEnd>
+    struct result<This(LHS,RHS,State,BackEnd)>
     {
       typedef typename boost::proto::detail::uncvref<LHS>::type     lhs;
       typedef typename boost::proto::detail::uncvref<RHS>::type     rhs;
@@ -86,9 +88,9 @@ namespace quaff { namespace semantic
       typedef typename nested::type type;
     };
 
-    template<class LHS,class RHS,class State,class BackEnd, int N>
-    typename result<convert_pardo(LHS, RHS, State, BackEnd, N)>::type
-    operator()(LHS const& lhs, RHS const& rhs, State& s, BackEnd const& be, int N) const
+    template<class LHS,class RHS,class State,class BackEnd>
+    typename result<convert_farm(LHS, RHS, State, BackEnd)>::type
+    operator()(LHS const& lhs, RHS const& rhs, State& s, BackEnd const& be) const
     {
       convert<tag::process_network_> callee;
       
