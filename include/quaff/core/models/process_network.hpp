@@ -30,6 +30,7 @@ namespace quaff { namespace tag { struct process_network_ {}; } }
 #include <quaff/core/models/process_network/process.hpp>
 #include <quaff/core/models/process_network/empty.hpp>
 #include <quaff/core/models/process_network/concat_network.hpp>
+#include <quaff/core/models/process_network/farmer_process.hpp>
 
 ////////////////////////////////////////////////////////////////////////////////
 // Model semantic rules
@@ -39,5 +40,6 @@ namespace quaff { namespace tag { struct process_network_ {}; } }
 #include <quaff/core/models/process_network/semantic/rule_pipe.hpp>
 #include <quaff/core/models/process_network/semantic/rule_pardo.hpp>
 #include <quaff/core/models/process_network/semantic/rule_farm.hpp>
+#include <quaff/core/models/process_network/semantic/rule_pardoer.hpp>
 
 #endif

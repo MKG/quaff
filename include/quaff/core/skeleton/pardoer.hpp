@@ -7,11 +7,11 @@
  *                 See accompanying file LICENSE.txt or copy at
  *                     http://www.boost.org/LICENSE_1_0.txt
  ******************************************************************************/
-#ifndef QUAFF_CORE_SKELETON_FARM_HPP_INCLUDED
-#define QUAFF_CORE_SKELETON_FARM_HPP_INCLUDED
+#ifndef QUAFF_CORE_SKELETON_PARDOER_HPP_INCLUDED
+#define QUAFF_CORE_SKELETON_PARDOER_HPP_INCLUDED
 
 ////////////////////////////////////////////////////////////////////////////////
-/// @file quaff/core/skeleton/farm.hpp
+/// @file quaff/core/skeleton/pardoer.hpp
 ////////////////////////////////////////////////////////////////////////////////
 #include <quaff/sdk/meta/action.hpp>
 #include <boost/utility/enable_if.hpp>
@@ -25,17 +25,17 @@
 namespace quaff
 {
   /////////////////////////////////////////////////////////////////////////////
-  // Turn function pointer into seq skeleton usign action<>
+  // Turn pardo<N>(skeleton) into pardoer(N,skeleton)
   /////////////////////////////////////////////////////////////////////////////
   
   template<int N, class Skeleton> 
-  typename boost::proto::result_of::make_expr< tag::farm_
+  typename boost::proto::result_of::make_expr< tag::pardoer_
                                               , boost::mpl::int_<N>
                                               , Skeleton const&
                                               >::type
-  farm(Skeleton const& s)
+  pardoer(Skeleton const& s)
   {
-    return boost::proto::make_expr<tag::farm_>( boost::mpl::int_<N>(), boost::cref(s));
+    return boost::proto::make_expr<tag::pardoer_>( boost::mpl::int_<N>(), boost::cref(s));
   }
       
 

@@ -51,6 +51,11 @@ namespace quaff { namespace semantic
   // Rule for converting farm(S) to a proper environment
   //////////////////////////////////////////////////////////////////////////////
   template<class Model> struct convert_farm;
+  
+  //////////////////////////////////////////////////////////////////////////////
+  // Rule for converting (pardo<N>(S)) to a proper environment
+  //////////////////////////////////////////////////////////////////////////////
+  template<class Model> struct convert_pardoer;
 } }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -81,6 +86,11 @@ namespace boost { namespace proto
   template<class Model>
   struct  is_callable< quaff::semantic::convert_farm<Model> >
         : mpl::true_ {};
+        
+  template<class Model>
+  struct  is_callable< quaff::semantic::convert_pardoer<Model> >
+        : mpl::true_ {};
+
 } }
 
 #endif

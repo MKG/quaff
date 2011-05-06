@@ -53,7 +53,7 @@ int x2(int i)
   return 2 * i;
 }
 
-void h(int i)
+void h(float i)
 {
   std::cout << "h say : " << i << "\n";
 
@@ -62,8 +62,12 @@ void h(int i)
 int main()
 {
 std::ofstream out("out.dot");
+//debug(quaff::farm<4>( quaff::seq(id) ));
+//debug (quaff::source(g) | farm() | quaff::sink(h));
  debug( quaff::source(g) | (quaff::seq(x2) & quaff::seq(id)) | (quaff::sink(h)& quaff::sink(m))  , std::cout );
- graph(quaff::source(g)| (quaff::seq(x2) & quaff::seq(id))| (quaff::sink(h)& quaff::sink(m)) ,out );  //| quaff::seq(x2) | quaff::sink(h), out );
+ graph(quaff::source(g)| (quaff::seq(x2) & quaff::seq(id))| (quaff::sink(h)& quaff::sink(m)) ,out );  
+ 
+ //| quaff::seq(x2) | quaff::sink(h), out );
 /*  debug( quaff::source(g) & (quaff::source(g) & quaff::source(g) ), std::cout );
 
 //quaff::semantic::convert<quaff::tag::process_network_>  converter;

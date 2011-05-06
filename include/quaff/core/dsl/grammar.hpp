@@ -23,6 +23,7 @@ namespace quaff { namespace tag
   //////////////////////////////////////////////////////////////////////////////
   struct map_ {};
   struct farm_ {};
+  struct pardoer_{};
 } }
 
 namespace quaff { namespace dsl
@@ -69,14 +70,19 @@ namespace quaff { namespace dsl
   // A valid skeleton expression is :
   //  - a data_parallel skeleton;
   //  - a full parallel execution using operator &;
-  //  - a pipelined execution using operator |
+  //  - a pipelined execution using operator |;
+  //  - a farm<N> skeleton;
+  //  - a pardo<N> skeleton;
   //////////////////////////////////////////////////////////////////////////////
   struct  skeleton
-        : boost::proto::or_ < sequential_skeleton
-                            , data_parallel_skeleton
+        : boost::proto::or_ <  data_parallel_skeleton
                             , boost::proto::bitwise_and<skeleton,skeleton>
                             , boost::proto::bitwise_or<skeleton,skeleton>
                             , boost::proto::binary_expr<tag::farm_
+                                                        , boost::proto::_
+                                                        , skeleton
+                                                        >
+                            , boost::proto::binary_expr<tag::pardoer_
                                                         , boost::proto::_
                                                         , skeleton
                                                         >

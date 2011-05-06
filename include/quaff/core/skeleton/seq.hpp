@@ -21,6 +21,7 @@
 #include <boost/type_traits/is_function.hpp>
 #include <boost/type_traits/remove_pointer.hpp>
 
+
 namespace quaff
 {
   /////////////////////////////////////////////////////////////////////////////

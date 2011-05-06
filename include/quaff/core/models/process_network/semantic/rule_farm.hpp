@@ -28,9 +28,6 @@ namespace quaff { namespace semantic
   template<>
   struct  process_network_cases::case_<tag::farm_>
         : boost::proto::
-         // when< boost::proto::expr<quaff::tag::farm_
-         //                                 , boost::proto::_
-         //                                 , boost::proto::_
          when<boost::proto::binary_expr<tag::farm_
                                         , boost::proto::_
                                         , boost::proto::_
@@ -63,8 +60,61 @@ namespace quaff { namespace semantic
       static state& st; static back_end& be;
       static convert<tag::process_network_>& converter;
       
+      typedef typename rhs::type::network_type::input_set  r_iset;
+      typedef typename rhs::type::network_type::output_set  r_oset;
+      typedef boost::fusion::vector2<r_iset,r_oset>  data_type;
+      
       // "temporary" environments
-      BOOST_TYPEOF_NESTED_TYPEDEF_TPL ( elhs
+      // faire N slaves
+     /* BOOST_TYPEOF_NESTED_TYPEDEF_TPL ( slave
+                                      , model::make_environment (
+            model::make_network<data_type>
+            (
+            boost::fusion::make_vector 
+              ( model::make_farmer_process<boost::fusion::vector<>> //farmer,farmer/> >
+                    ( state
+                       , rhs
+                     )
+               )
+               )
+               )
+                                      );
+      static typename slave::type& slave_;
+      
+      //faire un farmer
+            BOOST_TYPEOF_NESTED_TYPEDEF_TPL ( farmer
+                                      ,model::make_environment (
+            model::make_network< data_type>
+            (
+            boost::fusion::make_vector 
+              ( model::make_farmer_process<r_iset,r_oset>
+                    ( state
+                       , manage_farmer
+                     )
+              )
+              )
+              )
+              );
+      static typename farmer::type& farmer_;
+      
+      //ajouter les slaves
+      BOOST_TYPEOF_NESTED_TYPEDEF_TPL 
+      ( nested
+      , make_environment
+        ( chain_network ( elhs_.network()
+                          .transform_if ( details::add_send<r_iset,back_end>()
+                                        , details::is_inside<l_oset>()
+                                        )
+                        , erhs_.network()
+                          .transform_if ( details::add_recv<l_oset,back_end>()
+                                        , details::is_inside<r_iset>()
+                                        )
+                        )
+        , erhs_.next_pid()
+        ) 
+      );*/
+      
+       BOOST_TYPEOF_NESTED_TYPEDEF_TPL ( elhs
                                       , converter(lhs_,st,be)
                                       );
       static typename elhs::type& elhs_;
@@ -73,8 +123,7 @@ namespace quaff { namespace semantic
                                       , converter( rhs_, elhs_, be)
                                       );
       static typename erhs::type& erhs_;
-      
-      // Build the environment usign the joint_network
+      // Réunir tout
       BOOST_TYPEOF_NESTED_TYPEDEF_TPL 
       ( nested
       , make_environment
@@ -84,7 +133,8 @@ namespace quaff { namespace semantic
         , erhs_.next_pid()
         ) 
       );
-
+      
+      
       typedef typename nested::type type;
     };
 
