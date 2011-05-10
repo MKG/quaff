@@ -35,7 +35,7 @@ namespace quaff { namespace instruction
                     , Context& context
                     ) const
     {
-      if(boost::fusion::at_c<1>(context)[Pid::value])
+      if(boost::fusion::at_c<1>(context)[Pid::begin])
         outs = function_(ins);
     }
 

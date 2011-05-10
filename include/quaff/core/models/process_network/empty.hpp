@@ -10,6 +10,8 @@
 #ifndef QUAFF_CORE_MODELS_PROCESS_NETWORK_EMPTY_HPP_INCLUDED
 #define QUAFF_CORE_MODELS_PROCESS_NETWORK_EMPTY_HPP_INCLUDED
 
+#include <quaff/core/models/process_network/pid.hpp>
+
 ////////////////////////////////////////////////////////////////////////////////
 // Empty environment and network class
 ////////////////////////////////////////////////////////////////////////////////
@@ -38,16 +40,16 @@ namespace quaff { namespace model
   //////////////////////////////////////////////////////////////////////////////
   // Specialisation for empty environment
   //////////////////////////////////////////////////////////////////////////////
-  template<> struct environment<empty_network, boost::mpl::int_<0> >
+  template<> struct environment<empty_network, pids<0,1> >
   {
-    typedef empty_network         network_type;
-    typedef boost::mpl::int_<0>   pid_type;
+    typedef empty_network network_type;
+    typedef pids<0,1>      pid_type;
 
     network_type network()  const { return network_type();  }
     pid_type     pid()      const { return pid_type();      }
   };
 
-  typedef environment<empty_network, boost::mpl::int_<0> > empty_environment;
+  typedef environment<empty_network, pids<0,1> > empty_environment;
 } }
 
 #endif

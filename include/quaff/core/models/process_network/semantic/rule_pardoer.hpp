@@ -7,16 +7,17 @@
  *                 See accompanying file LICENSE.txt or copy at
  *                     http://www.boost.org/LICENSE_1_0.txt
  ******************************************************************************/
-#ifndef QUAFF_CORE_MODELS_PROCESS_NETWORK_SEMANTIC_RULE_PARDO_HPP_INCLUDED
-#define QUAFF_CORE_MODELS_PROCESS_NETWORK_SEMANTIC_RULE_PARDO_HPP_INCLUDED
+#ifndef QUAFF_CORE_MODELS_PROCESS_NETWORK_SEMANTIC_RULE_PARDOER_HPP_INCLUDED
+#define QUAFF_CORE_MODELS_PROCESS_NETWORK_SEMANTIC_RULE_PARDOER_HPP_INCLUDED
 
 ////////////////////////////////////////////////////////////////////////////////
-/// @file quaff/core/models/process_network/semantic/rule_pardo.hpp
+/// @file quaff/core/models/process_network/semantic/rule_pardoer.hpp
 ////////////////////////////////////////////////////////////////////////////////
 #include <quaff/core/models/process_network/joint_network.hpp>
-
+#include <quaff/core/dsl/grammar.hpp>
+#include <boost/fusion/include/vector_tie.hpp>
 ////////////////////////////////////////////////////////////////////////////////
-// The pardo_ skeleton build the union of two network
+// The pardoer_ skeleton build the union of N pardo
 // Inputs  : the LHS/RHS skeleton, current state adn target back-end
 // Outputs : an environment E = { build(LHS) U build(RHS) }
 ////////////////////////////////////////////////////////////////////////////////
@@ -26,12 +27,13 @@ namespace quaff { namespace semantic
   // Handle seq node in the process_network IR
   //////////////////////////////////////////////////////////////////////////////
   template<>
-  struct  process_network_cases::case_<boost::proto::tag::bitwise_and>
+  struct  process_network_cases::case_<tag::pardoer_>
         : boost::proto::
-          when< boost::proto::bitwise_and < boost::proto::_
-                                          , boost::proto::_
-                                          >
-              , convert_pardo<tag::process_network_>
+         when<boost::proto::binary_expr<tag::pardoer_
+                                        , boost::proto::_
+                                        , boost::proto::_
+                                        >
+              , convert_pardoer<tag::process_network_>
                 ( boost::proto::_left
                 , boost::proto::_right
                 , boost::proto::_state
@@ -43,7 +45,31 @@ namespace quaff { namespace semantic
 
 namespace quaff { namespace semantic
 {
-  template<> struct convert_pardo<tag::process_network_>
+  struct construct
+  {
+    template<class LHS,class RHS,class State,class BackEnd>
+    typename result<convert_pardo(LHS, RHS, State, BackEnd)>::type
+    operator()(LHS const& elhs, State& s, BackEnd const& be) const
+      {
+            BOOST_TYPEOF_NESTED_TYPEDEF_TPL ( erhs
+                                        , converter( s_, elhs, be)
+                                        );
+            static typename erhs::type& erhs_;
+            BOOST_TYPEOF_NESTED_TYPEDEF_TPL 
+            ( nested
+            , make_environment
+            ( join_network( elhs_.network()
+                        , erhs_.network()
+                        )
+            , erhs_.next_pid()
+            ) );
+            return nested;
+            
+      }
+  };
+    
+    
+  template<> struct convert_pardoer<tag::process_network_>
   {
     template<class Sig> struct result;
 
@@ -55,48 +81,44 @@ namespace quaff { namespace semantic
       typedef typename boost::proto::detail::uncvref<State>::type   state;
       typedef typename boost::proto::detail::uncvref<BackEnd>::type back_end;
 
-      static lhs& lhs_; static rhs& rhs_; 
+      static int& lhs_; static rhs& rhs_; 
       static state& st; static back_end& be;
       static convert<tag::process_network_>& converter;
       
-      // "temporary" environments
       BOOST_TYPEOF_NESTED_TYPEDEF_TPL ( elhs
-                                      , converter(lhs_,st,be)
+                                      , converter(rhs_,st,be)
                                       );
-      static typename elhs::type& elhs_;
       
-      BOOST_TYPEOF_NESTED_TYPEDEF_TPL ( erhs
-                                      , converter( rhs_, elhs_, be)
-                                      );
-      static typename erhs::type& erhs_;
       
-      // Build the environment usign the joint_network
-      BOOST_TYPEOF_NESTED_TYPEDEF_TPL 
-      ( nested
-      , make_environment
-        ( join_network( elhs_.network()
-                      , erhs_.network()
-                      )
-        , erhs_.next_pid()
-        ) 
-      );
-
+      boost::fusion::for_each(lhs,
+                            BOOST_TYPEOF_NESTED_TYPEDEF_TPL 
+                            ( elhs, construct(elhs, rhs_, be)));
+       
+                
       typedef typename nested::type type;
     };
-
+    
+   
+          
+          
     template<class LHS,class RHS,class State,class BackEnd>
-    typename result<convert_pardo(LHS, RHS, State, BackEnd)>::type
+    typename result<convert_pardoer(LHS, RHS, State, BackEnd)>::type
     operator()(LHS const& lhs, RHS const& rhs, State& s, BackEnd const& be) const
     {
       convert<tag::process_network_> callee;
       
       // Pre-compute environment to not copy it twice
-      BOOST_AUTO(lhe, callee(lhs,s,be)  );
-      BOOST_AUTO(rhe, callee(rhs,lhe,be));
+      BOOST_AUTO(lhe, callee(rhs,s,be)  );
+      for_each(lhs,
+      {
+        BOOST_AUTO(rhe, callee(rhs,lhe,be));
+        BOOST_AUTO(lhe,  make_environment 
+                        ( join_network(lhe.network(),rhe.network())
+                         , rhe.next_pid()
+                              ));
+      }
       
-      return make_environment ( join_network(lhe.network(),rhe.network())
-                              , rhe.next_pid()
-                              );
+      return lhe;
     }
   };
 } }

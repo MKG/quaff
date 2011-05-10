@@ -7,11 +7,11 @@
  *                 See accompanying file LICENSE.txt or copy at
  *                     http://www.boost.org/LICENSE_1_0.txt
  ******************************************************************************/
-#ifndef QUAFF_CORE_SKELETON_SEQ_HPP_INCLUDED
-#define QUAFF_CORE_SKELETON_SEQ_HPP_INCLUDED
+#ifndef QUAFF_CORE_SKELETON_PARDOER_HPP_INCLUDED
+#define QUAFF_CORE_SKELETON_PARDOER_HPP_INCLUDED
 
 ////////////////////////////////////////////////////////////////////////////////
-/// @file quaff/core/skeleton/seq.hpp
+/// @file quaff/core/skeleton/pardoer.hpp
 ////////////////////////////////////////////////////////////////////////////////
 #include <quaff/sdk/meta/action.hpp>
 #include <boost/utility/enable_if.hpp>
@@ -20,28 +20,24 @@
 #include <quaff/sdk/meta/is_callable.hpp>
 #include <boost/type_traits/is_function.hpp>
 #include <boost/type_traits/remove_pointer.hpp>
-
+#include <quaff/core/skeleton/seq.hpp>
 
 namespace quaff
 {
   /////////////////////////////////////////////////////////////////////////////
-  // Turn function pointer into seq skeleton usign action<>
+  // Turn pardo<N>(skeleton) into pardoer(N,skeleton)
   /////////////////////////////////////////////////////////////////////////////
-  template<class Out, class In>
-  dsl::skeleton_terminal< meta::action<Out(*)(In)> >
-  seq( Out(*f)(In) )
+  
+  template<int N, class Skeleton> 
+  typename boost::proto::result_of::make_expr< tag::pardoer_
+                                              , boost::mpl::int_<N>
+                                              , Skeleton const&
+                                              >::type
+  pardoer(Skeleton const& s)
   {
-    meta::action<Out(*)(In)> them = f;
-    dsl::skeleton_terminal< meta::action<Out(*)(In)> > that( them );
-    return that;
+    return  boost::proto::
+            make_expr<tag::pardo_>( boost::mpl::int_<N>(), boost::cref(s));
   }
-
-  /////////////////////////////////////////////////////////////////////////////
-  // Macro for declaring global seq object
-  /////////////////////////////////////////////////////////////////////////////
-  #define QUAFF_TASK(Name,Function)             \
-  BOOST_PROTO_AUTO(Name, quaff::seq(Function) ) \
-  /**/
 }
 
 #endif

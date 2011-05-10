@@ -11,7 +11,7 @@
 #define QUAFF_CORE_MODELS_PROCESS_NETWORK_SEMANTIC_RULE_SEQ_HPP_INCLUDED
 
 ////////////////////////////////////////////////////////////////////////////////
-/// @file quaff/core/models/process_network/semantic/environment.hpp
+/// @file quaff/core/models/process_network/semantic/rule_seq.hpp
 ////////////////////////////////////////////////////////////////////////////////
 #include <boost/mpl/set.hpp>
 #include <boost/fusion/include/vector.hpp>
@@ -79,7 +79,7 @@ namespace quaff { namespace semantic
               , boost::mpl::set<pid>()
               , boost::mpl::set<pid>()
             )
-        , typename boost::mpl::next<pid>::type()
+        , typename pid::next()
         )
       );
       
@@ -109,7 +109,7 @@ namespace quaff { namespace semantic
         , boost::mpl::set<Pid>()
         , boost::mpl::set<Pid>()
         )
-      , typename boost::mpl::next<Pid>::type()
+      , typename Pid::next()
       );
     }
   };

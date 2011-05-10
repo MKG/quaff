@@ -7,18 +7,18 @@
  *                 See accompanying file LICENSE.txt or copy at
  *                     http://www.boost.org/LICENSE_1_0.txt
  ******************************************************************************/
-#ifndef QUAFF_CORE_MODELS_PROCESS_NETWORK_PROCESS_HPP_INCLUDED
-#define QUAFF_CORE_MODELS_PROCESS_NETWORK_PROCESS_HPP_INCLUDED
+#ifndef QUAFF_CORE_MODELS_PROCESS_NETWORK_FARMER_PROCESS_HPP_INCLUDED
+#define QUAFF_CORE_MODELS_PROCESS_NETWORK_FARMER_PROCESS_HPP_INCLUDED
 
 ////////////////////////////////////////////////////////////////////////////////
-/// @file quaff/core/models/process.hpp
+/// @file quaff/core/models/process_network/farmer_process.hpp
 ////////////////////////////////////////////////////////////////////////////////
 
 namespace quaff { namespace model
 {
   /////////////////////////////////////////////////////////////////////////////
   // Define a process inside a process network with :
-  // - a static Pid range [begin PID, end PID[
+  // - a static Pid value
   // - a process Code Fragment
   /////////////////////////////////////////////////////////////////////////////
   template< class PID
@@ -26,14 +26,14 @@ namespace quaff { namespace model
           , class InputType
           , class OutputType
           >
-  struct process
+  struct farmer_process
   {
     typedef PID         pid_type;
     typedef Code        codelet_type;
     typedef InputType   input_type;
     typedef OutputType  output_type;
 
-    process(codelet_type const& codelet) : code_(codelet) {}
+    farmer_process(codelet_type const& codelet) : code_(codelet) {}
 
     template<class Backend,class Data>
     void accept(Backend const& b,Data const& d) const
@@ -53,9 +53,9 @@ namespace quaff { namespace model
   // Build a process out of its components
   //////////////////////////////////////////////////////////////////////////////
   template<class I, class O, class P,class C>
-  process<P,C,I,O> make_process( P const&, C const& c )
+  farmer_process<P,C,I,O> make_farmer_process( P const&, C const& c )
   {
-    process<P,C,I,O> that(c);
+    farmer_process<P,C,I,O> that(c);
     return that;
   }
 } }

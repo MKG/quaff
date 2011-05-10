@@ -14,7 +14,6 @@
 /// @file quaff/core/models/process_network/semantic/environment.hpp
 ////////////////////////////////////////////////////////////////////////////////
 #include <boost/proto/proto.hpp>
-#include <boost/mpl/next_prior.hpp>
 
 namespace quaff { namespace model
 {

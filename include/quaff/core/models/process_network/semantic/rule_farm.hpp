@@ -7,16 +7,16 @@
  *                 See accompanying file LICENSE.txt or copy at
  *                     http://www.boost.org/LICENSE_1_0.txt
  ******************************************************************************/
-#ifndef QUAFF_CORE_MODELS_PROCESS_NETWORK_SEMANTIC_RULE_PARDO_HPP_INCLUDED
-#define QUAFF_CORE_MODELS_PROCESS_NETWORK_SEMANTIC_RULE_PARDO_HPP_INCLUDED
+#ifndef QUAFF_CORE_MODELS_PROCESS_NETWORK_SEMANTIC_RULE_FARM_HPP_INCLUDED
+#define QUAFF_CORE_MODELS_PROCESS_NETWORK_SEMANTIC_RULE_FARM_HPP_INCLUDED
 
 ////////////////////////////////////////////////////////////////////////////////
-/// @file quaff/core/models/process_network/semantic/rule_pardo.hpp
+/// @file quaff/core/models/process_network/semantic/rule_farm.hpp
 ////////////////////////////////////////////////////////////////////////////////
 #include <quaff/core/models/process_network/joint_network.hpp>
-
+#include <quaff/core/dsl/grammar.hpp>
 ////////////////////////////////////////////////////////////////////////////////
-// The pardo_ skeleton build the union of two network
+// The farm_ skeleton build the union of N pardo
 // Inputs  : the LHS/RHS skeleton, current state adn target back-end
 // Outputs : an environment E = { build(LHS) U build(RHS) }
 ////////////////////////////////////////////////////////////////////////////////
@@ -26,12 +26,13 @@ namespace quaff { namespace semantic
   // Handle seq node in the process_network IR
   //////////////////////////////////////////////////////////////////////////////
   template<>
-  struct  process_network_cases::case_<boost::proto::tag::bitwise_and>
+  struct  process_network_cases::case_<tag::farm_>
         : boost::proto::
-          when< boost::proto::bitwise_and < boost::proto::_
-                                          , boost::proto::_
-                                          >
-              , convert_pardo<tag::process_network_>
+         when<boost::proto::binary_expr<tag::farm_
+                                        , boost::proto::_
+                                        , boost::proto::_
+                                        >
+              , convert_farm<tag::process_network_>
                 ( boost::proto::_left
                 , boost::proto::_right
                 , boost::proto::_state
@@ -43,7 +44,7 @@ namespace quaff { namespace semantic
 
 namespace quaff { namespace semantic
 {
-  template<> struct convert_pardo<tag::process_network_>
+  template<> struct convert_farm<tag::process_network_>
   {
     template<class Sig> struct result;
 
@@ -59,8 +60,69 @@ namespace quaff { namespace semantic
       static state& st; static back_end& be;
       static convert<tag::process_network_>& converter;
       
+      typedef typename rhs::type::network_type::input_set  r_iset;
+      typedef typename rhs::type::network_type::output_set  r_oset;
+      typedef boost::fusion::vector2<r_iset,r_oset>  data_type;
+      
       // "temporary" environments
-      BOOST_TYPEOF_NESTED_TYPEDEF_TPL ( elhs
+      static instruction::manage_farm<rhs,back_end>& manage_farmer;
+      //faire un farmer
+      
+            BOOST_TYPEOF_NESTED_TYPEDEF_TPL ( farmer 
+                                     ,make_environment(
+                                        model::make_network< data_type>
+                                        (
+                                            boost::fusion::make_vector 
+                                              (model::make_farmer_process<r_iset,r_oset>
+                                                ( state
+                                                  ,boost::fusion::make_vector(manage_farmer)
+                                                 )
+                                              )
+                                            , boost::mpl::set<state>()
+                                            , boost::mpl::set<state>()
+                                        ),
+                                        rhs_.next_pid()
+                                      )
+              );
+      //static typename farmer::type& farmer_;
+      
+      
+      // faire N slaves
+     /* BOOST_TYPEOF_NESTED_TYPEDEF_TPL ( slave
+                                      , model::make_environment (
+            model::make_network<data_type>
+            (
+            boost::fusion::make_vector 
+              ( model::make_farmer_process<boost::fusion::vector<>> //farmer,farmer/> >
+                    ( state
+                       , rhs
+                     )
+               )
+               )
+               )
+                                      );
+      static typename slave::type& slave_;
+      
+      
+      
+      //ajouter les slaves
+      BOOST_TYPEOF_NESTED_TYPEDEF_TPL 
+      ( nested
+      , make_environment
+        ( chain_network ( elhs_.network()
+                          .transform_if ( details::add_send<r_iset,back_end>()
+                                        , details::is_inside<l_oset>()
+                                        )
+                        , erhs_.network()
+                          .transform_if ( details::add_recv<l_oset,back_end>()
+                                        , details::is_inside<r_iset>()
+                                        )
+                        )
+        , erhs_.next_pid()
+        ) 
+      );*/
+      
+       BOOST_TYPEOF_NESTED_TYPEDEF_TPL ( elhs
                                       , converter(lhs_,st,be)
                                       );
       static typename elhs::type& elhs_;
@@ -69,8 +131,7 @@ namespace quaff { namespace semantic
                                       , converter( rhs_, elhs_, be)
                                       );
       static typename erhs::type& erhs_;
-      
-      // Build the environment usign the joint_network
+      // Réunir tout
       BOOST_TYPEOF_NESTED_TYPEDEF_TPL 
       ( nested
       , make_environment
@@ -80,12 +141,13 @@ namespace quaff { namespace semantic
         , erhs_.next_pid()
         ) 
       );
-
-      typedef typename nested::type type;
+      
+      
+      //typedef typename nested::type type;
     };
 
     template<class LHS,class RHS,class State,class BackEnd>
-    typename result<convert_pardo(LHS, RHS, State, BackEnd)>::type
+    typename result<convert_farm(LHS, RHS, State, BackEnd)>::type
     operator()(LHS const& lhs, RHS const& rhs, State& s, BackEnd const& be) const
     {
       convert<tag::process_network_> callee;

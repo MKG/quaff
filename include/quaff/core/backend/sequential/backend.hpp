@@ -77,9 +77,9 @@ namespace quaff { namespace backend
               , meta::
                 run ( pid()
                     , boost::fusion::
-                      at_c<2*pid::value>(boost::fusion::at_c<0>(d))
+                      at_c<2*pid::begin>(boost::fusion::at_c<0>(d))
                     , boost::fusion::
-                      at_c<2*pid::value+1>(boost::fusion::at_c<0>(d))
+                      at_c<2*pid::begin+1>(boost::fusion::at_c<0>(d))
                     , d
                     )
               );

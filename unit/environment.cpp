@@ -9,6 +9,10 @@
  ******************************************************************************/
 #include <iostream>
 #include <quaff/quaff.hpp>
+#include <boost/type_traits/is_integral.hpp>
+#include <boost/bind.hpp>
+#include <fstream>
+ 
 
 int g()
 {
@@ -29,14 +33,18 @@ int x2(int i)
   return 2 * i;
 }
 
-void h(int i)
+void h(float i)
 {
   std::cout << "h say : " << i << "\n";
+
 }
 
 int main()
 {
+  std::ofstream file("graph.dot");
+
   debug( quaff::source(g) | quaff::seq(x2) | quaff::sink(h), std::cout );
   run( quaff::source(g) | quaff::seq(x2) | quaff::sink(h) );
+  graph( quaff::source(g) | quaff::seq(x2) | quaff::sink(h), file );
 }
 

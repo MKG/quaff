@@ -11,7 +11,7 @@
 #define QUAFF_CORE_MODELS_PROCESS_NETWORK_SEMANTIC_RULE_PIPE_HPP_INCLUDED
 
 ////////////////////////////////////////////////////////////////////////////////
-/// @file quaff/core/models/process_network/semantic/rule_pipe
+/// @file quaff/core/models/process_network/semantic/rule_pipe.hpp
 ////////////////////////////////////////////////////////////////////////////////
 #include <quaff/core/models/process_network/chain_network.hpp>
 #include <quaff/core/models/process_network/semantic/details/pipe.hpp>
@@ -29,6 +29,7 @@ namespace quaff { namespace semantic
   template<>
   struct  process_network_cases::case_<boost::proto::tag::bitwise_or>
         : boost::proto::
+
           when< boost::proto::bitwise_or< boost::proto::_
                                         , boost::proto::_
                                         >
@@ -91,6 +92,8 @@ namespace quaff { namespace semantic
         , erhs_.next_pid()
         ) 
       );
+
+                 
 
       typedef typename nested::type type;
     };
