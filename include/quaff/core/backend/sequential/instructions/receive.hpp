@@ -22,7 +22,7 @@ namespace quaff { namespace instruction
     template<class Pid, class Input, class Output, class Context>
     void operator()( Pid const&, Input&, Output& , Context& context) const
     {
-      if(!boost::fusion::at_c<1>(context)[Pid::value])
+      if(!boost::fusion::at_c<1>(context)[Pid::begin])
         terminate();
     }
   };

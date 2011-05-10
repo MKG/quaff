@@ -18,7 +18,7 @@ namespace quaff { namespace model
 {
   /////////////////////////////////////////////////////////////////////////////
   // Define a process inside a process network with :
-  // - a static Pid value
+  // - a static Pid range [begin PID, end PID[
   // - a process Code Fragment
   /////////////////////////////////////////////////////////////////////////////
   template< class PID

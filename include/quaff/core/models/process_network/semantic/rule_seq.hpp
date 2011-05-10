@@ -79,7 +79,7 @@ namespace quaff { namespace semantic
               , boost::mpl::set<pid>()
               , boost::mpl::set<pid>()
             )
-        , typename boost::mpl::next<pid>::type()
+        , typename pid::next()
         )
       );
       
@@ -109,7 +109,7 @@ namespace quaff { namespace semantic
         , boost::mpl::set<Pid>()
         , boost::mpl::set<Pid>()
         )
-      , typename boost::mpl::next<Pid>::type()
+      , typename Pid::next()
       );
     }
   };

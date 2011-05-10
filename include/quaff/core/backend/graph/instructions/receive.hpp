@@ -35,7 +35,7 @@ namespace quaff { namespace instruction
       template<class T>
       void operator()(T& t) const
       {
-          ost << "do" << T::value << " -- di" ;
+          ost << "do" << T::begin << " -- di" ;
           ost << pid;
           ost << " [dir=forward arrowsize=3];\n\t";
       }

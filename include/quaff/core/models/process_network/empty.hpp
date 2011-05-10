@@ -9,8 +9,8 @@
  ******************************************************************************/
 #ifndef QUAFF_CORE_MODELS_PROCESS_NETWORK_EMPTY_HPP_INCLUDED
 #define QUAFF_CORE_MODELS_PROCESS_NETWORK_EMPTY_HPP_INCLUDED
-#include <boost/mpl/pair.hpp>
-#include <boost/mpl/int.hpp>
+
+#include <quaff/core/models/process_network/pid.hpp>
 
 ////////////////////////////////////////////////////////////////////////////////
 // Empty environment and network class
@@ -36,36 +36,20 @@ namespace quaff { namespace model
                   , boost::mpl::void_
                   >
   empty_network;
-  
-  //////////////////////////////////////////////////////////////////////////////
-  // Specialisation for empty pair
-  //////////////////////////////////////////////////////////////////////////////  
-  /*template<class titi> struct boost::mpl::pair< titi, titi >
-  {
-    typedef empty_network         network_type;
-    typedef boost::mpl::pair<titi, titi > pid_type;
-    //typedef boost::mpl::int_<0>   pid_type;
-
-    network_type network()  const { return network_type();  }
-    pid_type     pid()      const { return pid_type();      }
-  };*/
-
-  typedef boost::mpl::pair<boost::mpl::int_<0>,boost::mpl::int_<0> > empty_pair;  
 
   //////////////////////////////////////////////////////////////////////////////
   // Specialisation for empty environment
   //////////////////////////////////////////////////////////////////////////////
-  template<> struct environment<empty_network, empty_pair >
+  template<> struct environment<empty_network, pids<0,1> >
   {
-    typedef empty_network         network_type;
-    typedef empty_pair pid_type;
-    //typedef boost::mpl::int_<0>   pid_type;
+    typedef empty_network network_type;
+    typedef pids<0,1>      pid_type;
 
     network_type network()  const { return network_type();  }
     pid_type     pid()      const { return pid_type();      }
   };
 
-  typedef environment<empty_network, empty_pair > empty_environment;
+  typedef environment<empty_network, pids<0,1> > empty_environment;
 } }
 
 #endif

@@ -27,7 +27,7 @@ namespace quaff { namespace instruction
                     ) const
     {
       Destinations d;
-      if(boost::fusion::at_c<1>(context)[Pid::value])
+      if(boost::fusion::at_c<1>(context)[Pid::begin])
       {
         boost::fusion::for_each(d,post<Output,Context>(out,context));
       }
@@ -43,7 +43,7 @@ namespace quaff { namespace instruction
       propagate(bool* s) : status_(s) {}
 
       template<class P>
-      void operator()(P const&) const { status_[P::value] = false; }
+      void operator()(P const&) const { status_[P::begin] = false; }
     };
 
     template<class Output,class Context>
@@ -55,7 +55,7 @@ namespace quaff { namespace instruction
       template<class P>
       void operator()(P const&) const
       {
-        boost::fusion::at_c<2*P::value>(boost::fusion::at_c<0>(context_)) = data_;
+        boost::fusion::at_c<2*P::begin>(boost::fusion::at_c<0>(context_)) = data_;
       }
 
       Output& data_;

@@ -14,7 +14,6 @@
 /// @file quaff/core/models/process_network/semantic/environment.hpp
 ////////////////////////////////////////////////////////////////////////////////
 #include <boost/proto/proto.hpp>
-#include <boost/mpl/next_prior.hpp>
 
 namespace quaff { namespace model
 {
@@ -27,7 +26,7 @@ namespace quaff { namespace model
   struct environment
   {
     typedef Network   network_type;
-    typedef boost::mpl::pair<PIDState, PIDState>  pid_type;
+    typedef PIDState  pid_type;
 
     ////////////////////////////////////////////////////////////////////////////
     // Build an environnement from a network and a back-end

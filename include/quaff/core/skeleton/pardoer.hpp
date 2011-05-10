@@ -35,16 +35,9 @@ namespace quaff
                                               >::type
   pardoer(Skeleton const& s)
   {
-    return boost::proto::make_expr<tag::pardoer_>( boost::mpl::int_<N>(), boost::cref(s));
+    return  boost::proto::
+            make_expr<tag::pardo_>( boost::mpl::int_<N>(), boost::cref(s));
   }
-      
-
-  /////////////////////////////////////////////////////////////////////////////
-  // Macro for declaring global seq object
-  /////////////////////////////////////////////////////////////////////////////
- /* #define QUAFF_TASK(Name,Function)             \
-  BOOST_PROTO_AUTO(Name, quaff::seq(Function) ) \
-  */
 }
 
 #endif

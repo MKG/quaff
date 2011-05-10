@@ -72,12 +72,10 @@ namespace quaff { namespace semantic
                                       );
       static typename erhs::type& erhs_;
 
-
       // lhs/rhs in/output types
       typedef typename erhs::type::network_type::input_set  r_iset;
       typedef typename elhs::type::network_type::output_set l_oset;
       
-
       // Build the environment usign the joint_network
       BOOST_TYPEOF_NESTED_TYPEDEF_TPL 
       ( nested
