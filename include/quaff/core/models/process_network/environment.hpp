@@ -27,7 +27,7 @@ namespace quaff { namespace model
   struct environment
   {
     typedef Network   network_type;
-    typedef PIDState  pid_type;
+    typedef boost::mpl::pair<PIDState, PIDState>  pid_type;
 
     ////////////////////////////////////////////////////////////////////////////
     // Build an environnement from a network and a back-end
