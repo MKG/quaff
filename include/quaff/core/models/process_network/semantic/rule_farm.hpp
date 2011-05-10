@@ -65,6 +65,28 @@ namespace quaff { namespace semantic
       typedef boost::fusion::vector2<r_iset,r_oset>  data_type;
       
       // "temporary" environments
+      static instruction::manage_farm<rhs,back_end>& manage_farmer;
+      //faire un farmer
+      
+            BOOST_TYPEOF_NESTED_TYPEDEF_TPL ( farmer 
+                                     ,make_environment(
+                                        model::make_network< data_type>
+                                        (
+                                            boost::fusion::make_vector 
+                                              (model::make_farmer_process<r_iset,r_oset>
+                                                ( state
+                                                  ,boost::fusion::make_vector(manage_farmer)
+                                                 )
+                                              )
+                                            , boost::mpl::set<state>()
+                                            , boost::mpl::set<state>()
+                                        ),
+                                        rhs_.next_pid()
+                                      )
+              );
+      //static typename farmer::type& farmer_;
+      
+      
       // faire N slaves
      /* BOOST_TYPEOF_NESTED_TYPEDEF_TPL ( slave
                                       , model::make_environment (
@@ -81,21 +103,7 @@ namespace quaff { namespace semantic
                                       );
       static typename slave::type& slave_;
       
-      //faire un farmer
-            BOOST_TYPEOF_NESTED_TYPEDEF_TPL ( farmer
-                                      ,model::make_environment (
-            model::make_network< data_type>
-            (
-            boost::fusion::make_vector 
-              ( model::make_farmer_process<r_iset,r_oset>
-                    ( state
-                       , manage_farmer
-                     )
-              )
-              )
-              )
-              );
-      static typename farmer::type& farmer_;
+      
       
       //ajouter les slaves
       BOOST_TYPEOF_NESTED_TYPEDEF_TPL 
@@ -135,7 +143,7 @@ namespace quaff { namespace semantic
       );
       
       
-      typedef typename nested::type type;
+      //typedef typename nested::type type;
     };
 
     template<class LHS,class RHS,class State,class BackEnd>
