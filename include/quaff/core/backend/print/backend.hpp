@@ -7,11 +7,11 @@
  *                 See accompanying file LICENSE.txt or copy at
  *                     http://www.boost.org/LICENSE_1_0.txt
  ******************************************************************************/
-#ifndef QUAFF_CORE_BACKEND_GRAPH_BACKEND_HPP_INCLUDED
-#define QUAFF_CORE_BACKEND_GRAPH_BACKEND_HPP_INCLUDED
+#ifndef QUAFF_CORE_BACKEND_PRINT_BACKEND_HPP_INCLUDED
+#define QUAFF_CORE_BACKEND_PRINT_BACKEND_HPP_INCLUDED
 
 ////////////////////////////////////////////////////////////////////////////////
-/// @file quaff/core/backend/graph/backend.hpp
+/// @file quaff/core/backend/print/backend.hpp
 ////////////////////////////////////////////////////////////////////////////////
 #include <boost/mpl/identity.hpp>
 #include <quaff/sdk/type_id.hpp>
@@ -20,9 +20,9 @@
 
 namespace quaff { namespace backend
 {
-  struct graph_
+  struct print_
   {
-    graph_() {}
+    print_() {}
 
     void terminate() const {}
     void start()     const {}
@@ -31,14 +31,16 @@ namespace quaff { namespace backend
     template<class T>
     void accept( T const& n ) const
     {
-      boost::fusion::at_c<1>(n)<< "graph running_process {\n\t";
-      boost::fusion::at_c<1>(n)<< "dd" << "[shape=box label=\"Source\"];\n\t";
-      boost::fusion::at_c<1>(n)<< "df" <<  "[shape=box label=\"Puit\"];\n\t";
+      boost::fusion::at_c<1>(n)<< "#include <iostream>\n #include <quaff/quaff.hpp>\n \
+ #include <boost/type_traits/is_integral.hpp \n #include <boost/bind.hpp>\n \
+#include <fstream>\n\n";
+
+      boost::fusion::at_c<1>(n)<< "int main() {\n";
       boost::fusion::at_c<0>(n).accept(*this,boost::fusion::at_c<1>(n));
 
      //for_each( boost::fusion::at_c<0>(n).code(),
       //        boost::fusion::at_c<1>(n)<< "dd" << " -- di" << boost::fusion::at_c<0>(n)::pid_type::value  << " [dir=back arrowsize=3];\n\t");
-      boost::fusion::at_c<1>(n)<< " }\n";
+      boost::fusion::at_c<1>(n)<< "return 0;\n }\n";
     }
 
     // How to run a process
@@ -60,45 +62,37 @@ namespace quaff { namespace backend
     }
     
     /*template<class Pid,class I,class O,class D> inline
-  runner<Pid,I,O,D> run(Pid const& p , I& i, O& o, D& d)*/
-/*
+  runner<Pid,I,O,D> run(Pid const& p , I& i, O& o, D& d)
+
     // Some helpers
     template<class In, class Out,class Data> struct runner
     {
       In& in; Out& out; Data& data; 
       runner(In& i, Out& o, Data& d, int p) : in(i), out(o), data(d)
       {
+        //inclure le fichier correspoondant à la fonction !!
+
+      
+        //création de la variable de recuperation
+        if (!type_id<typename Out::type>().compare("mpl_::void_"))
+        {
+        }
+        else
+        {
+           d <<  "\t" << type_id<typename Out::type>() << " do" << p << ";\n";
+        } 
         
+        //création de la variable d'entree
         if (!type_id<typename In::type>().compare("mpl_::void_"))
           {
-           
-            d   << "p" << p << ";\n\t" // [label=\"fonction " << (void*)(&mFunction) << "\" ];\n\t"
-                << "dd"  << " -- p" << p << ";\n\t";
-                
-           }
+           //vide
+          }
         else
           {
-            d  << "dd -- di" << p << " [dir=forward arrowsize=2];\n\t";
-               
-            d  << "di" << p << " [shape=box label=\"" 
-                            << type_id<typename In::type>() 
-                            << "\"];\n\t";
-            d   << "p" << p << ";\n\t" // [label=\"fonction " << (void*)(&mFunction) << "\" ];\n\t"
-                << "di" << p << " -- p" << p << ";\n\t";
+            d << "\t" << type_id<typename In::type>() << " di" << p << ";\n";
           }
         
-          if (!type_id<typename Out::type>().compare("mpl_::void_"))
-          {
-             d << "p" << p << " -- df [dir=forward arrowsize=2];\n\t";
-           }
-        else
-          {
-             d << "do" << p << " [shape=box label=\"" 
-                            << type_id<typename Out::type>()
-                            << "\"];\n\t";
-             d << "p" << p << " -- do" << p << " [dir=forward];\n\t"
-               << "do" << p << " -- df [dir=forward arrowsize=2];\n\t";
-          }   
+         
           
               
 
@@ -124,11 +118,11 @@ namespace quaff { namespace backend
 ////////////////////////////////////////////////////////////////////////////////
 // Generate a debug on the standard output
 ////////////////////////////////////////////////////////////////////////////////
-template<class X, class Stream> void graph(X const& xpr, Stream& os)
+template<class X, class Stream> void print(X const& xpr, Stream& os)
 {
   quaff::semantic::convert<quaff::tag::process_network_>  converter;
   quaff::model::empty_environment                         env;
-  quaff::backend::graph_ target;
+  quaff::backend::print_ target;
 
   target.accept ( boost::fusion::vector_tie ( converter(xpr,env,target).network()
                                             , os
@@ -136,7 +130,7 @@ template<class X, class Stream> void graph(X const& xpr, Stream& os)
                 );
 }
 
-#include <quaff/core/backend/graph/instructions/call.hpp>
-#include <quaff/core/backend/graph/instructions/send.hpp>
-#include <quaff/core/backend/graph/instructions/receive.hpp>
+#include <quaff/core/backend/print/instructions/call.hpp>
+#include <quaff/core/backend/print/instructions/send.hpp>
+#include <quaff/core/backend/print/instructions/receive.hpp>
 #endif

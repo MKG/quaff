@@ -73,7 +73,6 @@ namespace quaff { namespace model
   joint_process<LHS,RHS> join_process( LHS const& p1, RHS const& p2 )
   {
     joint_process<LHS,RHS> that(p1,p2);
-    std::cout << "grr\n";
     return that;
   }
 } }

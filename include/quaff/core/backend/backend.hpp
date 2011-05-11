@@ -19,6 +19,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #include <quaff/core/backend/debug/backend.hpp>
 #include <quaff/core/backend/graph/backend.hpp>
+#include <quaff/core/backend/print/backend.hpp>
 
 namespace quaff
 {

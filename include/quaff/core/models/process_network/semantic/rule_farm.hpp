@@ -68,7 +68,7 @@ namespace quaff { namespace semantic
       static instruction::manage_farm<rhs,back_end>& manage_farmer;
       //faire un farmer
       
-            BOOST_TYPEOF_NESTED_TYPEDEF_TPL ( farmer 
+      /*      BOOST_TYPEOF_NESTED_TYPEDEF_TPL ( farmer 
                                      ,make_environment(
                                         model::make_network< data_type>
                                         (
@@ -83,7 +83,7 @@ namespace quaff { namespace semantic
                                         ),
                                         rhs_.next_pid()
                                       )
-              );
+              );*/
       //static typename farmer::type& farmer_;
       
       

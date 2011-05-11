@@ -46,5 +46,6 @@ int main()
   debug( quaff::source(g) | quaff::seq(x2) | quaff::sink(h), std::cout );
   run( quaff::source(g) | quaff::seq(x2) | quaff::sink(h) );
   graph( quaff::source(g) | quaff::seq(x2) | quaff::sink(h), file );
+  print(quaff::source(g) | quaff::seq(x2) | quaff::sink(h), std::cout );
 }
 
