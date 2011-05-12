@@ -33,7 +33,9 @@ namespace quaff { namespace model
     typedef InputType   input_type;
     typedef OutputType  output_type;
 
-    process(codelet_type const& codelet) : code_(codelet) {}
+    process(codelet_type const& codelet, int N) : code_(codelet) {
+    typedef extend(PID,int)::type pid_type;
+    }
 
     template<class Backend,class Data>
     void accept(Backend const& b,Data const& d) const
@@ -53,9 +55,9 @@ namespace quaff { namespace model
   // Build a process out of its components
   //////////////////////////////////////////////////////////////////////////////
   template<class I, class O, class P,class C>
-  process<P,C,I,O> make_process( P const&, C const& c )
+  process<P,C,I,O> make_process( P const&, C const& c, int N )
   {
-    process<P,C,I,O> that(c);
+    process<P,C,I,O> that(c, N);
     return that;
   }
 } }

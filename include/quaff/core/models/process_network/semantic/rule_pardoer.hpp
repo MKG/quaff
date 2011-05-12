@@ -44,31 +44,7 @@ namespace quaff { namespace semantic
 } }
 
 namespace quaff { namespace semantic
-{
-  struct construct
-  {
-    template<class LHS,class RHS,class State,class BackEnd>
-    typename result<convert_pardo(LHS, RHS, State, BackEnd)>::type
-    operator()(LHS const& elhs, State& s, BackEnd const& be) const
-      {
-            BOOST_TYPEOF_NESTED_TYPEDEF_TPL ( erhs
-                                        , converter( s_, elhs, be)
-                                        );
-            static typename erhs::type& erhs_;
-            BOOST_TYPEOF_NESTED_TYPEDEF_TPL 
-            ( nested
-            , make_environment
-            ( join_network( elhs_.network()
-                        , erhs_.network()
-                        )
-            , erhs_.next_pid()
-            ) );
-            return nested;
-            
-      }
-  };
-    
-    
+{    
   template<> struct convert_pardoer<tag::process_network_>
   {
     template<class Sig> struct result;
@@ -85,17 +61,44 @@ namespace quaff { namespace semantic
       static state& st; static back_end& be;
       static convert<tag::process_network_>& converter;
       
-      BOOST_TYPEOF_NESTED_TYPEDEF_TPL ( elhs
+      
+      /* BOOST_TYPEOF_NESTED_TYPEDEF_TPL ( elhs
                                       , converter(rhs_,st,be)
                                       );
+      static typename elhs::type& elhs_;
+      typedef typename elhs::type::network_type::input_set  l_iset;
+      typedef typename elhs::type::network_type::output_set l_oset;
+      
+       BOOST_TYPEOF_NESTED_TYPEDEF_TPL
+      ( nested
+      , model::make_environment
+        (
+            model::make_network< data_type>
+            ( boost::fusion::make_vector
+              ( model::make_process<l_iset,l_oset>
+                ( pid()
+                , boost::fusion::make_vector(f_)
+                )
+              )
+              , boost::mpl::set<pid>()
+              , boost::mpl::set<pid>()
+            )
+        , typename pid::next()
+        )
+      );*/
       
       
-      boost::fusion::for_each(lhs,
-                            BOOST_TYPEOF_NESTED_TYPEDEF_TPL 
-                            ( elhs, construct(elhs, rhs_, be)));
-       
+      /*
+      static typedef elhs_.next_pid() pid;
+      BOOST_TYPEOF_NESTED_TYPEDEF_TPL 
+      ( nested
+      , make_environment
+        ( elhs_.network()
+        , model::pids<pid::begin, pid::begin + lsh>
+        ) 
+      );*/
                 
-      typedef typename nested::type type;
+      //typedef typename nested::type type;
     };
     
    
@@ -109,14 +112,6 @@ namespace quaff { namespace semantic
       
       // Pre-compute environment to not copy it twice
       BOOST_AUTO(lhe, callee(rhs,s,be)  );
-      for_each(lhs,
-      {
-        BOOST_AUTO(rhe, callee(rhs,lhe,be));
-        BOOST_AUTO(lhe,  make_environment 
-                        ( join_network(lhe.network(),rhe.network())
-                         , rhe.next_pid()
-                              ));
-      }
       
       return lhe;
     }

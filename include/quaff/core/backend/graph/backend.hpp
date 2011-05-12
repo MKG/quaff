@@ -59,65 +59,6 @@ namespace quaff { namespace backend
      
     }
     
-    /*template<class Pid,class I,class O,class D> inline
-  runner<Pid,I,O,D> run(Pid const& p , I& i, O& o, D& d)*/
-/*
-    // Some helpers
-    template<class In, class Out,class Data> struct runner
-    {
-      In& in; Out& out; Data& data; 
-      runner(In& i, Out& o, Data& d, int p) : in(i), out(o), data(d)
-      {
-        
-        if (!type_id<typename In::type>().compare("mpl_::void_"))
-          {
-           
-            d   << "p" << p << ";\n\t" // [label=\"fonction " << (void*)(&mFunction) << "\" ];\n\t"
-                << "dd"  << " -- p" << p << ";\n\t";
-                
-           }
-        else
-          {
-            d  << "dd -- di" << p << " [dir=forward arrowsize=2];\n\t";
-               
-            d  << "di" << p << " [shape=box label=\"" 
-                            << type_id<typename In::type>() 
-                            << "\"];\n\t";
-            d   << "p" << p << ";\n\t" // [label=\"fonction " << (void*)(&mFunction) << "\" ];\n\t"
-                << "di" << p << " -- p" << p << ";\n\t";
-          }
-        
-          if (!type_id<typename Out::type>().compare("mpl_::void_"))
-          {
-             d << "p" << p << " -- df [dir=forward arrowsize=2];\n\t";
-           }
-        else
-          {
-             d << "do" << p << " [shape=box label=\"" 
-                            << type_id<typename Out::type>()
-                            << "\"];\n\t";
-             d << "p" << p << " -- do" << p << " [dir=forward];\n\t"
-               << "do" << p << " -- df [dir=forward arrowsize=2];\n\t";
-          }   
-          
-              
-
-       // d   << "do" << p << " -- df [dir=forward arrowsize=2];\n\t";
-      
-      }
-      template<class Code> void operator()(Code const& op) const
-      {
-        op( in,out, data );
-      }
-    };
-
-
-    template<class I,class O,class D>
-    runner<I,O,D> run(I& i, O& o, D& d, int t) const
-    {
-      runner<I,O,D> that(i,o,d,t);
-      return that;
-    }*/
   };
 } }
 

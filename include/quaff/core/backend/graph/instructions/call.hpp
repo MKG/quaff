@@ -35,7 +35,7 @@ namespace quaff { namespace instruction
 
      os  << "p" << p << " [label=\"p" << p << "\\n fonction " << (void*)(&mFunction) << "\" ];\n\t";
          
-     if (!type_id<typename Input::type>().compare("mpl_::void_"))
+     if (boost::is_same<typename Input::type,boost::mpl::void_>::value )
           {
            
             os  << "dd"  << " -- p" << p << ";\n\t";
@@ -43,7 +43,6 @@ namespace quaff { namespace instruction
            }
     else
           {
-            //os  << "dd -- di" << p << " [dir=forward arrowsize=2];\n\t";
                
             os  << "di" << p << " [shape=box label=\"" 
                             << type_id<typename Input::type>() 
@@ -51,7 +50,7 @@ namespace quaff { namespace instruction
             os << "di" << p << " -- p" << p << ";\n\t";
           }
         
-    if (!type_id<typename Output::type>().compare("mpl_::void_"))
+    if (boost::is_same<typename Output::type,boost::mpl::void_>::value )
           {
              os << "p" << p << " -- df [dir=forward arrowsize=2];\n\t";
            }

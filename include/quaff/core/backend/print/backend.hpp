@@ -31,15 +31,10 @@ namespace quaff { namespace backend
     template<class T>
     void accept( T const& n ) const
     {
-      boost::fusion::at_c<1>(n)<< "#include <iostream>\n #include <quaff/quaff.hpp>\n \
- #include <boost/type_traits/is_integral.hpp \n #include <boost/bind.hpp>\n \
-#include <fstream>\n\n";
+      boost::fusion::at_c<1>(n)<< "#include <iostream>\n#include <quaff/quaff.hpp>\n#include <boost/type_traits/is_integral.hpp \n#include <boost/bind.hpp>\n#include <fstream>\n\n";
 
       boost::fusion::at_c<1>(n)<< "int main() {\n";
       boost::fusion::at_c<0>(n).accept(*this,boost::fusion::at_c<1>(n));
-
-     //for_each( boost::fusion::at_c<0>(n).code(),
-      //        boost::fusion::at_c<1>(n)<< "dd" << " -- di" << boost::fusion::at_c<0>(n)::pid_type::value  << " [dir=back arrowsize=3];\n\t");
       boost::fusion::at_c<1>(n)<< "return 0;\n }\n";
     }
 
@@ -60,58 +55,6 @@ namespace quaff { namespace backend
               );
      
     }
-    
-    /*template<class Pid,class I,class O,class D> inline
-  runner<Pid,I,O,D> run(Pid const& p , I& i, O& o, D& d)
-
-    // Some helpers
-    template<class In, class Out,class Data> struct runner
-    {
-      In& in; Out& out; Data& data; 
-      runner(In& i, Out& o, Data& d, int p) : in(i), out(o), data(d)
-      {
-        //inclure le fichier correspoondant à la fonction !!
-
-      
-        //création de la variable de recuperation
-        if (!type_id<typename Out::type>().compare("mpl_::void_"))
-        {
-        }
-        else
-        {
-           d <<  "\t" << type_id<typename Out::type>() << " do" << p << ";\n";
-        } 
-        
-        //création de la variable d'entree
-        if (!type_id<typename In::type>().compare("mpl_::void_"))
-          {
-           //vide
-          }
-        else
-          {
-            d << "\t" << type_id<typename In::type>() << " di" << p << ";\n";
-          }
-        
-         
-          
-              
-
-       // d   << "do" << p << " -- df [dir=forward arrowsize=2];\n\t";
-      
-      }
-      template<class Code> void operator()(Code const& op) const
-      {
-        op( in,out, data );
-      }
-    };
-
-
-    template<class I,class O,class D>
-    runner<I,O,D> run(I& i, O& o, D& d, int t) const
-    {
-      runner<I,O,D> that(i,o,d,t);
-      return that;
-    }*/
   };
 } }
 

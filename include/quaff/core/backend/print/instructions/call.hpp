@@ -38,30 +38,20 @@ namespace quaff { namespace instruction
     os << "#include <" << "???" << ".h>\n";
     
     //création de la variable de recuperation
-        if (!type_id<typename Output::type>().compare("mpl_::void_"))
+        if (! boost::is_same<typename Output::type,boost::mpl::void_>::value )
         {
+          os <<  "\t" << type_id<typename Output::type>() << " do" << p << ";\n";
         }
-        else
-        {
-           os <<  "\t" << type_id<typename Output::type>() << " do" << p << ";\n";
-        } 
+       
         
         //création de la variable d'entree
-        if (!type_id<typename Input::type>().compare("mpl_::void_"))
-          {
-           //vide
-          }
-        else
+        if (! boost::is_same<typename Input::type,boost::mpl::void_>::value)
           {
             os << "\t" << type_id<typename Input::type>() << " di" << p << ";\n";
           }
     
     // affichage variable sortie
-    if (!type_id<typename Output::type>().compare("mpl_::void_"))
-          {
-             //vide
-           }
-    else
+    if (! boost::is_same<typename Output::type,boost::mpl::void_>::value)
           {
              os << "\tdo" << p << " = ";
           }   
@@ -70,13 +60,7 @@ namespace quaff { namespace instruction
 
      os  <<  (void*)(&mFunction) << "(";
          
-     if (!type_id<typename Input::type>().compare("mpl_::void_"))
-          {
-           
-            //vide
-                
-           }
-    else
+     if (! boost::is_same<typename Input::type,boost::mpl::void_>::value)
           {
             
             os  << "di" << p ;
