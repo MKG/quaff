@@ -36,10 +36,11 @@ namespace quaff { namespace model
     
     process(pid_type const& pid, codelet_type const& codelet, int N) 
     : code_(codelet) {
-      BOOST_TYPEOF_NESTED_TYPEDEF_TPL 
-      (nested ,
-       extends(pid, N) );
-       typedef typename nested::type pid_type;
+     
+       
+    typedef typename extends<pid, N>::type& pid_type;
+       //typedef typename extends(pid, N)::type pid_type;
+      //typedef  typename nested pid_type;
     }
 
     template<class Backend,class Data>
