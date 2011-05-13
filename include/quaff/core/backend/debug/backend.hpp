@@ -39,7 +39,11 @@ namespace quaff { namespace backend
       boost::mpl::identity<typename Process::input_type>  ins;
       boost::mpl::identity<typename Process::output_type> outs;
 
-      os << "[ Running process " << pid::begin << "]\n";
+      os << "[ Running process "
+         << "from " //ajout marie
+         << pid::begin 
+         << " to " << pid::end  //ajout marie
+         << "]\n";
 
       boost::fusion::
       for_each( p.code()

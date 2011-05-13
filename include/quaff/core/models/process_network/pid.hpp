@@ -31,6 +31,7 @@ namespace quaff { namespace model
     typedef pids<B-size,E-size> prev;
     typedef pids<B+size,E+size> next;
     
+    
 
     bool contains(int p) const
     {
@@ -45,13 +46,11 @@ namespace quaff { namespace model
   }
   
   template<class PID, int N>
-  struct extend
+  struct extends
   {
-  typedef PID pid;
-  typedef pids< PID::begin, PID::begin+N > type;
-  extend(PID const& p, int const& n): pid(p) {}
+    typedef pids<PID::begin, PID::begin + N> type;
   };
-  
+
 } }
 
 #endif

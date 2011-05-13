@@ -32,9 +32,14 @@ namespace quaff { namespace model
     typedef Code        codelet_type;
     typedef InputType   input_type;
     typedef OutputType  output_type;
-
-    process(codelet_type const& codelet, int N) : code_(codelet) {
-    typedef extend(PID,int)::type pid_type;
+    
+    
+    process(pid_type const& pid, codelet_type const& codelet, int N) 
+    : code_(codelet) {
+      BOOST_TYPEOF_NESTED_TYPEDEF_TPL 
+      (nested ,
+       extends(pid, N) );
+       typedef typename nested::type pid_type;
     }
 
     template<class Backend,class Data>
@@ -54,10 +59,10 @@ namespace quaff { namespace model
   //////////////////////////////////////////////////////////////////////////////
   // Build a process out of its components
   //////////////////////////////////////////////////////////////////////////////
-  template<class I, class O, class P,class C>
-  process<P,C,I,O> make_process( P const&, C const& c, int N )
+  template<class I, class O, class P,class C, int N>
+  process<P,C,I,O> make_process( P const& p, C const& c, boost::mpl::int_<N> )
   {
-    process<P,C,I,O> that(c, N);
+    process<P,C,I,O> that(p, c,N );
     return that;
   }
 } }
