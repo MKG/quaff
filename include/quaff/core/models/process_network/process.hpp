@@ -9,7 +9,7 @@
  ******************************************************************************/
 #ifndef QUAFF_CORE_MODELS_PROCESS_NETWORK_PROCESS_HPP_INCLUDED
 #define QUAFF_CORE_MODELS_PROCESS_NETWORK_PROCESS_HPP_INCLUDED
-
+#include <quaff/core/models/process_network/pid.hpp>
 ////////////////////////////////////////////////////////////////////////////////
 /// @file quaff/core/models/process.hpp
 ////////////////////////////////////////////////////////////////////////////////
@@ -34,14 +34,8 @@ namespace quaff { namespace model
     typedef OutputType  output_type;
     
     
-    process(pid_type const& pid, codelet_type const& codelet, int N) 
-    : code_(codelet) {
-     
-       
-    typedef typename extends<pid, N>::type& pid_type;
-       //typedef typename extends(pid, N)::type pid_type;
-      //typedef  typename nested pid_type;
-    }
+    process(codelet_type const& codelet) 
+    : code_(codelet) {}
 
     template<class Backend,class Data>
     void accept(Backend const& b,Data const& d) const
@@ -60,10 +54,10 @@ namespace quaff { namespace model
   //////////////////////////////////////////////////////////////////////////////
   // Build a process out of its components
   //////////////////////////////////////////////////////////////////////////////
-  template<class I, class O, class P,class C, int N>
-  process<P,C,I,O> make_process( P const& p, C const& c, boost::mpl::int_<N> )
+  template<class I, class O, class N, class P,class C >
+  process<typename model::extends<P,N>::type ,C,I,O> make_process( P const& p, C const& c )
   {
-    process<P,C,I,O> that(p, c,N );
+    process<typename model::extends<P,N>::type,C,I,O> that(c);
     return that;
   }
 } }

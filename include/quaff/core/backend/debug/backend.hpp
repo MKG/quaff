@@ -63,8 +63,7 @@ template<class X, class Stream> void debug(X const& xpr, Stream& os)
   quaff::model::empty_environment                         env;
   quaff::backend::debug_ target;
 
-  target.accept ( boost::fusion::
-                  vector_tie ( converter(xpr,env,target).network(), os )
+  target.accept ( boost::fusion::vector_tie ( converter(xpr,env,target).network(), os )
                 );
 }
 

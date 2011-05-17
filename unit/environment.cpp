@@ -43,7 +43,7 @@ int main()
 {
   std::ofstream file("graph.dot");
 
-  debug( quaff::source(g), std::cout); // | quaff::seq(x2) | quaff::sink(h), std::cout );
+  debug(quaff::source(g) | (quaff::seq(x2) & quaff::seq(x2)) | quaff::sink(h), std::cout );
   //run( quaff::source(g) | quaff::seq(x2) | quaff::sink(h) );
   //graph( quaff::source(g) | quaff::seq(x2) | quaff::sink(h), file );
   //print(quaff::source(g) | quaff::seq(x2) | quaff::sink(h), std::cout );

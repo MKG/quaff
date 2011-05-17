@@ -12,7 +12,7 @@
 
 #include <boost/mpl/range_c.hpp>
 ////////////////////////////////////////////////////////////////////////////////
-/// @file quaff/core/models/pid
+/// @file quaff/core/models/process_network/pid
 ////////////////////////////////////////////////////////////////////////////////
 namespace quaff { namespace model
 {
@@ -45,11 +45,33 @@ namespace quaff { namespace model
     return os << B;
   }
   
-  template<class PID, int N>
+  /*template<class PID, int N>
   struct extends
   {
+    //typedef PID pid_type;
     typedef pids<PID::begin, PID::begin + N> type;
+    //type operator()(pid_type pid,  boost::mpl::int_<N>()) {
+    //return pids<PID::begin, PID::begin + N>();
+    //}
+  };*/
+  
+  template < typename PID, typename N >
+  struct extends
+  {
+    BOOST_MPL_ASSERT (( boost::is_same< typename N::value_type, int > ));
+ 
+    typedef pids<PID::begin, PID::begin + N::value > type;
+    
   };
+  
+  template<class PID, const int& N>
+  pids<PID::begin, PID::begin + N>
+  exte(PID const& pid, int const& )
+  {
+  typedef pids<PID::begin, PID::begin + N> type;
+  return pids<PID::begin, PID::begin + N>();
+  
+  }
 
 } }
 

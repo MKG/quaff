@@ -22,9 +22,14 @@ namespace quaff { namespace result_of
   struct push_back;
 
   template<class P, class C, class I, class O, class Instr>
-  struct push_back< model::process<P,C,I,O>, Instr >
+  struct push_back< model::process<
+                        //typename model::extends< P, boost::mpl::int_<1> >::type
+                        P
+                        ,C,I,O>, Instr >
   {
-    typedef model::process< P
+    typedef model::process< 
+                          //typename model::extends< P, boost::mpl::int_<1> >::type
+                          P
                           , typename  boost::fusion::result_of::
                                       as_vector < typename
                                                   boost::fusion::result_of::
@@ -42,10 +47,26 @@ namespace quaff { namespace meta
    // Upgrade current process by adding a new instruction to its code list
    ////////////////////////////////////////////////////////////////////////////
    template<class P, class C, class I, class O, class Instr> inline
-   typename result_of::push_back< model::process<P,C,I,O>, Instr>::type
-   push_back(model::process<P,C,I,O> const& p, Instr const& x)
+   typename result_of::push_back< model::process<
+                                      //typename model::extends<P, boost::mpl::int_<1> >::type
+                                      P
+                                      ,C
+                                      ,I
+                                      ,O>
+                                  , Instr>::type
+   push_back(model::process<
+                          //typename model::extends<P, boost::mpl::int_<1> >::type
+                          P
+                          ,C
+                          ,I
+                          ,O> const& p, Instr const& x)
    {
-     typename result_of::push_back< model::process<P,C,I,O>, Instr>::type
+     typename result_of::push_back< model::process<
+                                                  //typename model::extends<P, boost::mpl::int_<1> >::type
+                                                  P
+                                                  ,C
+                                                  ,I
+                                                  ,O>, Instr>::type
      that(boost::fusion::as_vector(boost::fusion::push_back(p.code(),x)));
 
      return that;
