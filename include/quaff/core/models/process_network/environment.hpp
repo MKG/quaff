@@ -45,10 +45,17 @@ namespace quaff { namespace model
   //////////////////////////////////////////////////////////////////////////////
   // Build an environnement from Network and PID
   //////////////////////////////////////////////////////////////////////////////
+  //template<class Number, class PID,class Network>
   template<class PID,class Network>
-  inline environment<Network,PID> make_environment(Network const& n, PID const&)
+  inline environment<Network
+                    //,typename model::extends<PID,Number>::type 
+                    , PID > 
+  make_environment(Network const& n, PID const&)
   {
-    environment<Network,PID> that(n);
+    environment<Network
+                 //,typename model::extends<PID,Number>::type 
+               , PID
+                > that(n);
     return that;
   }
 

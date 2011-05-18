@@ -73,7 +73,7 @@ namespace quaff { namespace semantic
       // Build the environment usign the joint_network
       BOOST_TYPEOF_NESTED_TYPEDEF_TPL 
       ( nested
-      , make_environment
+      , make_environment 
         ( join_network( elhs_.network()
                       , erhs_.network()
                       )
@@ -94,7 +94,8 @@ namespace quaff { namespace semantic
       BOOST_AUTO(lhe, callee(lhs,s,be)  );
       BOOST_AUTO(rhe, callee(rhs,lhe,be));
       
-      return make_environment ( join_network(lhe.network(),rhe.network())
+      return make_environment 
+                            ( join_network(lhe.network(),rhe.network())
                               , rhe.next_pid()
                               );
     }

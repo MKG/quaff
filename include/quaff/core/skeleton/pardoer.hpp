@@ -33,7 +33,7 @@ namespace quaff
                                               , boost::mpl::int_<N>
                                               , Skeleton const&
                                               >::type
-  pardo(Skeleton const& s)
+  pardo(boost::mpl::int_<N>, Skeleton const& s)
   {
     return  boost::proto::
             make_expr<tag::pardoer_>( boost::mpl::int_<N>(), boost::cref(s));

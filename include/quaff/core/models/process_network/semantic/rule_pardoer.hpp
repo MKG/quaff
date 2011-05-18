@@ -16,6 +16,8 @@
 #include <quaff/core/models/process_network/joint_network.hpp>
 #include <quaff/core/dsl/grammar.hpp>
 #include <boost/fusion/include/vector_tie.hpp>
+#include <boost/fusion/include/at_c.hpp>
+
 ////////////////////////////////////////////////////////////////////////////////
 // The pardoer_ skeleton build the union of N pardo
 // Inputs  : the LHS/RHS skeleton, current state adn target back-end
@@ -62,43 +64,53 @@ namespace quaff { namespace semantic
       static convert<tag::process_network_>& converter;
       
       
-      /* BOOST_TYPEOF_NESTED_TYPEDEF_TPL ( elhs
-                                      , converter(rhs_,st,be)
+      BOOST_TYPEOF_NESTED_TYPEDEF_TPL ( erhs
+                                      , converter( rhs_, st, be)
                                       );
-      static typename elhs::type& elhs_;
-      typedef typename elhs::type::network_type::input_set  l_iset;
-      typedef typename elhs::type::network_type::output_set l_oset;
+      static typename erhs::type& erhs_;
+      static typename erhs::type::pid_type& pid;
+      static typename erhs::type::network_type::nodes_type vec;
+     //typedef boost::fusion::at_c<0>(vec) p;
+     
+     typedef boost::fusion::at_c<0>(typename erhs::type::network_type::nodes_type())::input_type isi;
+     
+      BOOST_TYPEOF_NESTED_TYPEDEF_TPL(p
+                                      , boost::fusion::at_c<0>(typename erhs::type::network_type::nodes_type()));
+     
+      typedef boost::fusion::vector2<typename p::input_type, typename p::output_type>  data_type;
       
-       BOOST_TYPEOF_NESTED_TYPEDEF_TPL
+      BOOST_TYPEOF_NESTED_TYPEDEF_TPL
       ( nested
-      , model::make_environment
+      , model::make_environment 
         (
             model::make_network< data_type>
             ( boost::fusion::make_vector
-              ( model::make_process<l_iset,l_oset>
-                ( pid()
-                , boost::fusion::make_vector(f_)
+              ( model::make_process<typename p::input_type, typename p::output_type
+                                    , model::extends<typename  p::pid_type::type
+                                                     , boost::mpl::int_<8> > >
+                ( p::pid_type()
+                , p::codelet_type()
                 )
               )
-              , boost::mpl::set<pid>()
-              , boost::mpl::set<pid>()
+              , boost::mpl::set<typename p::pid_type::type>()
+              , boost::mpl::set<typename p::pid_type::type>()
             )
-        , typename pid::next()
+        , typename p::pid_type::next()
         )
-      );*/
+      );
       
-      
-      /*
-      static typedef elhs_.next_pid() pid;
-      BOOST_TYPEOF_NESTED_TYPEDEF_TPL 
+      // Build the environment usign the joint_network
+      /*BOOST_TYPEOF_NESTED_TYPEDEF_TPL 
       ( nested
       , make_environment
-        ( elhs_.network()
-        , model::pids<pid::begin, pid::begin + lsh>
+        (  erhs_.network()
+        //, model::extends<erhs_.next_pid, lhs_>()
+        , model::extends<typename erhs::type::pid_type::type , boost::mpl::int_<8> >() //erhs_.next_pid()
         ) 
       );*/
-                
-      //typedef typename nested::type type;
+
+      typedef typename nested::type type;
+      
     };
     
    
