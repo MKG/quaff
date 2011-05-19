@@ -68,16 +68,31 @@ namespace quaff { namespace semantic
                                       , converter( rhs_, st, be)
                                       );
       static typename erhs::type& erhs_;
-      static typename erhs::type::pid_type& pid;
+
       static typename erhs::type::network_type::nodes_type vec;
      //typedef boost::fusion::at_c<0>(vec) p;
      
-     typedef boost::fusion::at_c<0>(typename erhs::type::network_type::nodes_type())::input_type isi;
-     
+     //typedef boost::fusion::at_c<0>(typename erhs::type::network_type::nodes_type())::input_type isi;
+     //typedef typename boost::fusion::at_c<0>(vec)::input_type plop;
       BOOST_TYPEOF_NESTED_TYPEDEF_TPL(p
-                                      , boost::fusion::at_c<0>(typename erhs::type::network_type::nodes_type()));
-     
-      typedef boost::fusion::vector2<typename p::input_type, typename p::output_type>  data_type;
+                                      , boost::fusion::at_c<0>(vec));
+     static typename p::type& plop;
+     //static typename boost::fusion::at_c<0>(typename erhs::type::network_type::nodes_type)& p;
+     BOOST_TYPEOF_NESTED_TYPEDEF_TPL(input_type
+                                      , p::input_type);
+     BOOST_TYPEOF_NESTED_TYPEDEF_TPL(output_type
+                                    , p::output_type);    
+     //static typename p::pid_type pid;
+     typedef typename p::type::pid_type ppp; 
+     typedef typename p::type::codelet_type codelet; 
+     //typedef typename p::input_type in_type;
+     //typedef typename p::output_type out_type;
+     //typedef typename plop.pid_type() pid;
+     BOOST_TYPEOF_NESTED_TYPEDEF_TPL(code_type
+                                    , p::type::codelet_type::type );      
+     //typedef typename p::codelet_type code_type;
+     //static code_type& code;
+     typedef boost::fusion::vector2< input_type, output_type>  data_type;
       
       BOOST_TYPEOF_NESTED_TYPEDEF_TPL
       ( nested
@@ -85,17 +100,17 @@ namespace quaff { namespace semantic
         (
             model::make_network< data_type>
             ( boost::fusion::make_vector
-              ( model::make_process<typename p::input_type, typename p::output_type
-                                    , model::extends<typename  p::pid_type::type
+              ( model::make_process<input_type, output_type
+                                    , model::extends< ppp
                                                      , boost::mpl::int_<8> > >
-                ( p::pid_type()
-                , p::codelet_type()
+                ( ppp()
+                , codelet()
                 )
               )
-              , boost::mpl::set<typename p::pid_type::type>()
-              , boost::mpl::set<typename p::pid_type::type>()
+              , boost::mpl::set< ppp >()
+              , boost::mpl::set< ppp >()
             )
-        , typename p::pid_type::next()
+        , typename ppp::next()
         )
       );
       

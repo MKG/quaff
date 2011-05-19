@@ -42,7 +42,7 @@ void h(float i)
 int main()
 {
   std::ofstream file("graph.dot");
-debug(pardo(boost::mpl::int_<8>(),quaff::seq(x2)), std::cout );
+debug(pardo(boost::mpl::int_<42>(),quaff::seq(x2)), std::cout );
 
  // debug(quaff::source(g) | pardo(8,quaff::seq(x2)) | quaff::sink(h), std::cout );
   //run( quaff::source(g) | quaff::seq(x2) | quaff::sink(h) );
