@@ -38,7 +38,7 @@ namespace quaff { namespace model
     : code_(codelet) {}
 
     template<class Backend,class Data>
-    void accept(Backend const& b,Data const& d) const
+    void  accept(Backend const& b,Data const& d) const
     {
       b.accept(*this,d);
     }

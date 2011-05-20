@@ -76,21 +76,40 @@ namespace quaff { namespace semantic
      //typedef typename boost::fusion::at_c<0>(vec)::input_type plop;
       BOOST_TYPEOF_NESTED_TYPEDEF_TPL(p
                                       , boost::fusion::at_c<0>(vec));
-     static typename p::type& plop;
+                                      
+     typedef typename p::type& plop;
+     //typedef typename p::type plip;
+     
+
      //static typename boost::fusion::at_c<0>(typename erhs::type::network_type::nodes_type)& p;
      BOOST_TYPEOF_NESTED_TYPEDEF_TPL(input_type
                                       , p::input_type);
+     //static typename input_type::type& inty;
+     
      BOOST_TYPEOF_NESTED_TYPEDEF_TPL(output_type
-                                    , p::output_type);    
+                                    , p::output_type); 
+                                    
+     //typedef typename input_type::type& input_type_;                               
+     //typedef typename output_type::type& output_type_;
+     
+     
+     //static typename output_type::type& outty;
      //static typename p::pid_type pid;
      typedef typename p::type::pid_type ppp; 
-     typedef typename p::type::codelet_type codelet; 
+     //typedef typename p::type pog;
+     
      //typedef typename p::input_type in_type;
      //typedef typename p::output_type out_type;
      //typedef typename plop.pid_type() pid;
-     BOOST_TYPEOF_NESTED_TYPEDEF_TPL(code_type
-                                    , p::type::codelet_type::type );      
-     //typedef typename p::codelet_type code_type;
+     //BOOST_TYPEOF_NESTED_TYPEDEF_TPL(coco
+     //                               , p::type::code() );
+                                       
+     //BOOST_TYPEOF_NESTED_TYPEDEF_TPL(cocoul
+     //                               , plop );
+     static typename p::type& cocoul_ ;
+                                                                     
+     //static typename coco::type& codelet; 
+     typedef typename p::type::codelet_type code_type;
      //static code_type& code;
      typedef boost::fusion::vector2< input_type, output_type>  data_type;
       
@@ -100,13 +119,19 @@ namespace quaff { namespace semantic
         (
             model::make_network< data_type>
             ( boost::fusion::make_vector
-              ( model::make_process<input_type, output_type
-                                    , model::extends< ppp
-                                                     , boost::mpl::int_<8> > >
+              /*( model::make_process<input_type, output_type
+                                    , boost::mpl::int_<8>  >
                 ( ppp()
-                , codelet()
+                , cocoul_.code_
                 )
-              )
+              )*/
+             // (model::process<typename extends< ppp, boost::mpl::int_<8>  >::type
+              (model::process< typename model::extends<ppp,boost::mpl::int_<8>  >::type
+                              , code_type
+                              , input_type
+                              , output_type
+                              >
+                             (cocoul_.code_))
               , boost::mpl::set< ppp >()
               , boost::mpl::set< ppp >()
             )
@@ -130,17 +155,31 @@ namespace quaff { namespace semantic
     
    
           
-          
+        
     template<class LHS,class RHS,class State,class BackEnd>
     typename result<convert_pardoer(LHS, RHS, State, BackEnd)>::type
     operator()(LHS const& lhs, RHS const& rhs, State& s, BackEnd const& be) const
     {
+      typedef result<convert_pardoer(LHS, RHS, State, BackEnd)> res_type;
+
       convert<tag::process_network_> callee;
       
       // Pre-compute environment to not copy it twice
-      BOOST_AUTO(lhe, callee(rhs,s,be)  );
+      //BOOST_AUTO(lhe, callee(rhs,s,be)  );
       
-      return lhe;
+      return make__environment 
+        (model::make_network< res_type::data_type>
+            ( boost::fusion::make_vector
+              (model::process< typename model::extends<typename res_type::ppp, boost::mpl::int_<8>  >::type
+                              , typename res_type::code_type
+                              , typename res_type::input_type
+                              , typename res_type::output_type
+                              > (typename res_type::plop::code() ) )
+              , boost::mpl::set< typename res_type::ppp >()
+              , boost::mpl::set< typename res_type::ppp >()
+            )
+        , typename res_type::ppp::next()
+        );
     }
   };
 } }
