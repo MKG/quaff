@@ -36,10 +36,10 @@ namespace quaff { namespace semantic
                                         , boost::proto::_
                                         >
               , convert_pardoer<tag::process_network_>
-                ( boost::proto::_left
-                , boost::proto::_right
-                , boost::proto::_state
-                , boost::proto::_data
+                ( boost::proto::_left 
+                , boost::proto::_right 
+                , boost::proto::_state 
+                , boost::proto::_data 
                 )
               >
   {};
@@ -69,14 +69,14 @@ namespace quaff { namespace semantic
                                       );
       static typename erhs::type& erhs_;
 
-      static typename erhs::type::network_type::nodes_type vec;
+      static typename erhs::type::network_type::nodes_type& vec;
      //typedef boost::fusion::at_c<0>(vec) p;
      
      //typedef boost::fusion::at_c<0>(typename erhs::type::network_type::nodes_type())::input_type isi;
      //typedef typename boost::fusion::at_c<0>(vec)::input_type plop;
       BOOST_TYPEOF_NESTED_TYPEDEF_TPL(p
                                       , boost::fusion::at_c<0>(vec));
-                                      
+     static p& p_;                                 
      typedef typename p::type& plop;
      //typedef typename p::type plip;
      
@@ -89,7 +89,7 @@ namespace quaff { namespace semantic
      BOOST_TYPEOF_NESTED_TYPEDEF_TPL(output_type
                                     , p::output_type); 
                                     
-     //typedef typename input_type::type& input_type_;                               
+     //static typename input_type::type& input_type_;                               
      //typedef typename output_type::type& output_type_;
      
      
