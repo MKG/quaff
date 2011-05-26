@@ -64,7 +64,7 @@ namespace quaff { namespace semantic
       typedef boost::fusion::vector2<input_type,output_type>  data_type;
 
       static instruction::call<function,back_end>& f_;
-
+      
       BOOST_TYPEOF_NESTED_TYPEDEF_TPL
       ( nested
       , model::make_environment 

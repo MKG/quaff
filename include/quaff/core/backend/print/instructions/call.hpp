@@ -34,41 +34,48 @@ namespace quaff { namespace instruction
     {
     
     //creer fichier correspoondant a la fonction
-    
-    os << "#include <" << "???" << ".h>\n";
+    std::ofstream incl("incl.txt", std::ios::out | std::ios::app);
+    std::ofstream var("var.txt", std::ios::out | std::ios::app);
+    std::ofstream gen("gen.txt", std::ios::out | std::ios::app);
+    incl << "#include <" << "???" << ".h>\n";
     
     //création de la variable de recuperation
         if (! boost::is_same<typename Output::type,boost::mpl::void_>::value )
         {
-          os <<  "\t" << type_id<typename Output::type>() << " do" << p << ";\n";
+          var <<  "\t" << type_id<typename Output::type>() << " do" << p << ";\n";
         }
        
         
         //création de la variable d'entree
         if (! boost::is_same<typename Input::type,boost::mpl::void_>::value)
           {
-            os << "\t" << type_id<typename Input::type>() << " di" << p << ";\n";
+            var << "\t" << type_id<typename Input::type>() << " di" << p << ";\n";
           }
     
+    gen << "\t";
     // affichage variable sortie
     if (! boost::is_same<typename Output::type,boost::mpl::void_>::value)
           {
-             os << "\tdo" << p << " = ";
+             gen << "do" << p << " = ";
           }   
 
 
 
-     os  <<  (void*)(&mFunction) << "(";
+     gen  <<  (void*)(&mFunction) << "(";
          
      if (! boost::is_same<typename Input::type,boost::mpl::void_>::value)
           {
             
-            os  << "di" << p ;
+            gen  << "di" << p ;
           }
      
      
-    os  << ");\n";
+    gen  << ");\n";
     
+    
+    incl.close();
+    var.close();
+    gen.close();
          
     }
 

@@ -14,7 +14,7 @@
 /// @file quaff/core/backend/debug/instructions/call.hpp
 ////////////////////////////////////////////////////////////////////////////////
 #include <quaff/core/skeleton/source.hpp>
-
+#include <quaff/sdk/type_id.hpp>
 namespace quaff { namespace instruction
 {
   //////////////////////////////////////////////////////////////////////////////
@@ -36,7 +36,11 @@ namespace quaff { namespace instruction
                     ) const
     {
       if(boost::fusion::at_c<1>(context)[Pid::begin])
-        outs = function_(ins);
+        {outs = function_(ins);
+        std::cout <<"appel de outs " << type_id<output_type>() ;
+        std::cout     << " = fonction " << (void *)&function_ ;
+        std::cout          << "( ins "<< type_id<input_type>() << ");\n";
+        }
     }
 
     Function  function_;

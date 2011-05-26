@@ -30,10 +30,10 @@ namespace quaff
   
   template<int N, class Skeleton> 
   typename boost::proto::result_of::make_expr< tag::pardoer_
-                                              , boost::mpl::int_<N>
+                                              , boost::mpl::int_<N> 
                                               , Skeleton const&
                                               >::type
-  pardo(boost::mpl::int_<N>, Skeleton const& s)
+  pardo(boost::mpl::int_<N> , Skeleton const& s) 
   {
     return  boost::proto::
             make_expr<tag::pardoer_>( boost::mpl::int_<N>(), boost::cref(s));

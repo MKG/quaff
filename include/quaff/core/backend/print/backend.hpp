@@ -17,6 +17,8 @@
 #include <quaff/sdk/type_id.hpp>
 #include <quaff/sdk/meta/run.hpp>
 #include <boost/fusion/include/vector_tie.hpp>
+#include <fstream>
+#include <string>
 
 namespace quaff { namespace backend
 {
@@ -31,16 +33,42 @@ namespace quaff { namespace backend
     template<class T>
     void accept( T const& n ) const
     {
-      boost::fusion::at_c<1>(n)<< "#include <iostream>\n#include <quaff/quaff.hpp>\n#include <boost/type_traits/is_integral.hpp \n#include <boost/bind.hpp>\n#include <fstream>\n\n";
+      //creation des fichiers
+      std::ofstream incl("incl.txt", std::ios::out | std::ios::trunc);
+      std::ofstream var("var.txt", std::ios::out | std::ios::trunc);
+      std::ofstream gen("gen.txt", std::ios::out | std::ios::trunc);
+      incl << "#include <iostream>\n#include <quaff/quaff.hpp>\n#include <boost/type_traits/is_integral.hpp \n#include <boost/bind.hpp>\n#include <fstream>\n\n";
 
-      boost::fusion::at_c<1>(n)<< "int main() {\n";
+      
+      gen.close();
+      var.close();
+      incl.close();
+      
+      //lancement du reste
       boost::fusion::at_c<0>(n).accept(*this,boost::fusion::at_c<1>(n));
-      boost::fusion::at_c<1>(n)<< "return 0;\n }\n";
+      
+      
+      //ecriture finale
+      std::ifstream inclu("incl.txt", std::ios::in);
+      std::ifstream vari("var.txt", std::ios::in);
+      std::ifstream gener("gen.txt", std::ios::in);
+      std::string ligne;
+      while(getline(inclu, ligne))
+      boost::fusion::at_c<1>(n) << ligne << "\n"; //std::endl;
+      boost::fusion::at_c<1>(n) << "int main() {\n";
+      while(getline(vari, ligne))
+      boost::fusion::at_c<1>(n) << ligne <<  "\n"; //std::endl;
+      while(getline(gener, ligne))
+      boost::fusion::at_c<1>(n) << ligne << "\n"; // std::endl;
+      boost::fusion::at_c<1>(n) << "return 0;\n }\n";
+      gener.close();
+      vari.close();
+      inclu.close();
     }
 
     // How to run a process
     template<class Process, class Data>
-    void accept(Process const& p,Data& os) const
+    void accept(Process const& p,Data& os ) const
     {
       typedef typename Process::pid_type pid;
       boost::mpl::identity<typename Process::input_type>  ins;

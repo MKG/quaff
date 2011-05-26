@@ -20,6 +20,7 @@
 #include <quaff/sdk/meta/is_callable.hpp>
 #include <boost/type_traits/is_function.hpp>
 #include <boost/type_traits/remove_pointer.hpp>
+#include <string>
 
 
 namespace quaff
@@ -27,20 +28,34 @@ namespace quaff
   /////////////////////////////////////////////////////////////////////////////
   // Turn function pointer into seq skeleton usign action<>
   /////////////////////////////////////////////////////////////////////////////
+  template<class Function>
+  void stock(const Function& f, const std::string func_name) {
+  //static typename boost::proto::detail::uncvref<Function>::type  func;
+  std::cout << "fonction : f = " << (void *)&f << " a pour nom " << func_name << std::endl;
+  }
+  
   template<class Out, class In>
   dsl::skeleton_terminal< meta::action<Out(*)(In)> >
-  seq( Out(*f)(In) )
+  seq( Out(*f)(In), const std::string func_name )
   {
     meta::action<Out(*)(In)> them = f;
     dsl::skeleton_terminal< meta::action<Out(*)(In)> > that( them );
+    
+    stock(them , func_name);
     return that;
   }
+  
+  
+  
 
   /////////////////////////////////////////////////////////////////////////////
   // Macro for declaring global seq object
   /////////////////////////////////////////////////////////////////////////////
   #define QUAFF_TASK(Name,Function)             \
   BOOST_PROTO_AUTO(Name, quaff::seq(Function) ) \
+  /**/
+  #define SEQ(Function) \
+  seq(Function, #Function) \
   /**/
 }
 

@@ -35,9 +35,12 @@ namespace quaff { namespace instruction
       template<class T>
       void operator()(T& t) const
       {
-          ost << "\tdi" << pid;
-          ost << " = " << "do" << T::begin;
-          ost << ";\n";
+          std::ofstream gen("gen.txt", std::ios::out | std::ios::app);
+          gen << "\tmemcpy(";
+          gen << "di" << pid;
+          gen << " <- " << "do" << T::begin;
+          gen << ");\n";
+          gen.close();
       }
   };
 

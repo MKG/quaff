@@ -52,7 +52,7 @@ namespace quaff { namespace semantic
     template<class Sig> struct result;
 
     template<class This,class LHS,class RHS,class State,class BackEnd>
-    struct result<This(LHS,RHS,State,BackEnd)>
+    struct result<This(LHS , RHS , State ,BackEnd )>
     {
       typedef typename boost::proto::detail::uncvref<LHS>::type     lhs;
       typedef typename boost::proto::detail::uncvref<RHS>::type     rhs;
@@ -70,47 +70,28 @@ namespace quaff { namespace semantic
       static typename erhs::type& erhs_;
 
       static typename erhs::type::network_type::nodes_type& vec;
-     //typedef boost::fusion::at_c<0>(vec) p;
-     
-     //typedef boost::fusion::at_c<0>(typename erhs::type::network_type::nodes_type())::input_type isi;
-     //typedef typename boost::fusion::at_c<0>(vec)::input_type plop;
+
       BOOST_TYPEOF_NESTED_TYPEDEF_TPL(p
                                       , boost::fusion::at_c<0>(vec));
      static p& p_;                                 
      typedef typename p::type& plop;
-     //typedef typename p::type plip;
-     
 
-     //static typename boost::fusion::at_c<0>(typename erhs::type::network_type::nodes_type)& p;
      BOOST_TYPEOF_NESTED_TYPEDEF_TPL(input_type
                                       , p::input_type);
-     //static typename input_type::type& inty;
      
      BOOST_TYPEOF_NESTED_TYPEDEF_TPL(output_type
                                     , p::output_type); 
                                     
-     //static typename input_type::type& input_type_;                               
-     //typedef typename output_type::type& output_type_;
-     
-     
-     //static typename output_type::type& outty;
-     //static typename p::pid_type pid;
+
      typedef typename p::type::pid_type ppp; 
-     //typedef typename p::type pog;
-     
-     //typedef typename p::input_type in_type;
-     //typedef typename p::output_type out_type;
-     //typedef typename plop.pid_type() pid;
-     //BOOST_TYPEOF_NESTED_TYPEDEF_TPL(coco
-     //                               , p::type::code() );
-                                       
-     //BOOST_TYPEOF_NESTED_TYPEDEF_TPL(cocoul
-     //                               , plop );
+
      static typename p::type& cocoul_ ;
+     BOOST_TYPEOF_NESTED_TYPEDEF_TPL(plouf
+                                    , p::type::code()); 
+     static typename plouf::type& gre;
                                                                      
-     //static typename coco::type& codelet; 
      typedef typename p::type::codelet_type code_type;
-     //static code_type& code;
+
      typedef boost::fusion::vector2< input_type, output_type>  data_type;
       
       BOOST_TYPEOF_NESTED_TYPEDEF_TPL
@@ -131,7 +112,9 @@ namespace quaff { namespace semantic
                               , input_type
                               , output_type
                               >
-                             (cocoul_.code_))
+                             (
+                             //gre))
+                             cocoul_.code_))
               , boost::mpl::set< ppp >()
               , boost::mpl::set< ppp >()
             )
@@ -139,16 +122,6 @@ namespace quaff { namespace semantic
         )
       );
       
-      // Build the environment usign the joint_network
-      /*BOOST_TYPEOF_NESTED_TYPEDEF_TPL 
-      ( nested
-      , make_environment
-        (  erhs_.network()
-        //, model::extends<erhs_.next_pid, lhs_>()
-        , model::extends<typename erhs::type::pid_type::type , boost::mpl::int_<8> >() //erhs_.next_pid()
-        ) 
-      );*/
-
       typedef typename nested::type type;
       
     };
@@ -157,10 +130,10 @@ namespace quaff { namespace semantic
           
         
     template<class LHS,class RHS,class State,class BackEnd>
-    typename result<convert_pardoer(LHS, RHS, State, BackEnd)>::type
+    typename result<convert_pardoer(LHS const&, RHS const&, State const&, BackEnd const&)>::type
     operator()(LHS const& lhs, RHS const& rhs, State& s, BackEnd const& be) const
     {
-      typedef result<convert_pardoer(LHS, RHS, State, BackEnd)> res_type;
+      typedef result<convert_pardoer(LHS , RHS , State, BackEnd )> res_type;
 
       convert<tag::process_network_> callee;
       
