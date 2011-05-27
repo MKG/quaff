@@ -28,20 +28,15 @@ namespace quaff
   /////////////////////////////////////////////////////////////////////////////
   // Turn function pointer into seq skeleton usign action<>
   /////////////////////////////////////////////////////////////////////////////
-  template<class Function>
-  void stock(const Function& f, const std::string func_name) {
-  //static typename boost::proto::detail::uncvref<Function>::type  func;
-  std::cout << "fonction : f = " << (void *)&f << " a pour nom " << func_name << std::endl;
-  }
+
   
   template<class Out, class In>
-  dsl::skeleton_terminal< meta::action<Out(*)(In)> >
+  dsl::skeleton_terminal< meta::named_action<Out, In> >
   seq( Out(*f)(In), const std::string func_name )
   {
     meta::action<Out(*)(In)> them = f;
-    dsl::skeleton_terminal< meta::action<Out(*)(In)> > that( them );
-    
-    stock(them , func_name);
+    meta::named_action<Out, In> test = meta::named_action<Out, In>(them, func_name);
+    dsl::skeleton_terminal< meta::named_action<Out, In> > that( test );
     return that;
   }
   

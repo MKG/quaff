@@ -39,10 +39,40 @@ namespace quaff { namespace meta
       callee = f;
       return *this;
     }
+    
+    function_type get_function() const {
+      return callee;
+    }
+    
+    inline std::string name_of() const{
+      return "<unamed>";
+    }
 
     inline output_type operator()(input_type const&) const { return callee(); }
 
     private:
+    function_type callee;
+  };
+  
+  template<class R>
+  struct  named_source : source<R(*)()>
+  {
+    typedef R(*function_type)();
+
+    typedef boost::mpl::void_ input_type;
+    typedef R                 output_type;
+    
+    named_source() {}
+
+    named_source(source<R(*)()> const& s, std::string const& n) 
+    : callee(s.get_function()), name(n) {}
+    
+    inline std::string name_of() const{
+      return name;
+    }
+    
+    private :
+    std::string name;
     function_type callee;
   };
 

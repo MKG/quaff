@@ -34,6 +34,7 @@ namespace quaff { namespace meta
   // we require.
   //////////////////////////////////////////////////////////////////////////////
   template<class Callable> struct  action;
+  
 
   //////////////////////////////////////////////////////////////////////////////
   // Plain C function of the form O (*)(I)
@@ -48,11 +49,19 @@ namespace quaff { namespace meta
 
     action() {}
     action(function_type const& f) : callee(f) {}
+    
+    function_type get_function() const {
+      return callee;
+    }
 
     action& operator=(function_type const& f)
     {
       callee = f;
       return *this;
+    }
+    
+    inline std::string name_of() const{
+      return "<unamed>";
     }
 
     inline Output operator()(Input in) const
@@ -63,6 +72,29 @@ namespace quaff { namespace meta
     private:
     function_type callee;
   };
+  
+  template<class Output, class Input>
+  struct  named_action : action<Output (*) (Input) >
+  {
+    typedef Output  (*function_type)(Input);
+
+    typedef Input     input_type;
+    typedef Output    output_type;
+    
+    named_action() {}
+
+    named_action(action<Output (*) (Input) > const& a, std::string const& n) 
+    : callee(a.get_function()), name(n) {}
+    
+    inline std::string name_of() const{
+      return name;
+    }
+    
+    private :
+    std::string name;
+    function_type callee;
+  };
+  
 } }
 
 #endif

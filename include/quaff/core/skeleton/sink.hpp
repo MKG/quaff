@@ -26,13 +26,18 @@ namespace quaff
   // Turn function pointer into seq skeleton usign action<>
   //////////////////////////////////////////////////////////////////////////////
   template<class InputType>
-  dsl::skeleton_terminal< meta::sink<void(*)(InputType)> >
-  sink( void(*f)(InputType) )
+  dsl::skeleton_terminal< meta::named_sink<InputType> >
+  sink( void(*f)(InputType),const std::string name )
   {
     meta::sink<void(*)(InputType)> them = f;
-    dsl::skeleton_terminal< meta::sink<void(*)(InputType)> > that( them );
+    meta::named_sink<InputType> n_them = meta::named_sink<InputType>(them, name);
+    dsl::skeleton_terminal< meta::named_sink<InputType> > that( n_them );
     return that;
   }
 }
+
+  #define SINK(Function) \
+  sink(Function, #Function) \
+  /**/
 
 #endif

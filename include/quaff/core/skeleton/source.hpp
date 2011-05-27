@@ -26,13 +26,18 @@ namespace quaff
   // Turn function pointer into seq skeleton usign action<>
   //////////////////////////////////////////////////////////////////////////////
   template<class ReturnType>
-  dsl::skeleton_terminal< meta::source<ReturnType(*)()> >
-  source( ReturnType(*f)() )
+  dsl::skeleton_terminal< meta::named_source<ReturnType> >
+  source( ReturnType(*f)(), const std::string name )
   {
     meta::source<ReturnType(*)()> them = f;
-    dsl::skeleton_terminal< meta::source<ReturnType(*)()> > that( them );
+    meta::named_source<ReturnType> n_them = meta::named_source<ReturnType>(them, name);
+    dsl::skeleton_terminal< meta::named_source<ReturnType> > that( n_them );
     return that;
   }
 }
+
+  #define SOURCE(Function) \
+  source(Function, #Function) \
+  /**/
 
 #endif

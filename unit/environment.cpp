@@ -78,13 +78,14 @@ int main()
 {
   std::ofstream file("graph.dot");
 //debug(pardo(boost::mpl::int_<42>(),quaff::seq(x2)), std::cout );
-
+//scmp(quaff::SEQ(x2) |(quaff::SEQ(blue) & quaff::SEQ(blue)), std::cout );
   //run(quaff::seq(split, "split") | quaff::seq(x2, "x2") | quaff::sink(h)) //, std::cout );
  // run( quaff::source(g) | quaff::seq(x2, "x2")& quaff::seq(idi, "idi") | quaff::sink(h) );
  // graph( quaff::source(g) | quaff::seq(x2, "x2")& quaff::seq(idi, "idi") | quaff::sink(h), file);
- run( quaff::source(g) | quaff::seq(x2, "x2")& quaff::seq(idi, "idi") & quaff::seq(x2, "x2")| quaff::sink(h) );
- graph( quaff::source(g) | quaff::seq(x2, "x2")& quaff::seq(idi, "idi") & quaff::seq(x2, "x2") | quaff::sink(h), file);
+ //run( quaff::source(g) | quaff::seq(x2, "x2")& quaff::seq(idi, "idi") & quaff::seq(x2, "x2")| quaff::sink(h) );
+ //graph( quaff::source(g) | quaff::seq(x2, "x2")& quaff::seq(idi, "idi") & quaff::seq(x2, "x2") | quaff::sink(h), file);
  // graph( quaff::seq(split) | (quaff::seq(green) & quaff::seq(green) & quaff::seq(green) & quaff::seq(green)|(quaff::seq(blue)&quaff::seq(blue)))| (quaff::seq(black)&quaff::seq(black))| quaff::seq(merge), file );
-  //print(quaff::source(g) | quaff::SEQ(x2) |(quaff::SEQ(blue) & quaff::SEQ(blue))| quaff::sink(h), std::cout );
+  scmp(quaff::SOURCE(g) | quaff::SEQ(x2) |(quaff::SEQ(blue) & quaff::SEQ(blue))| quaff::SINK(h), std::cout );
+  
 }
 
