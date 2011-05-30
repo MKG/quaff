@@ -23,12 +23,7 @@ namespace quaff { namespace instruction
   struct send<Destinations,backend::graph_>
   {
     template<class Pid, class Input, class Output, class Context>
-    void operator() ( Pid const&
-                    , Input&
-                    , Output& out
-                    , Context& os
-                    ) const
-    {}
+    void operator() ( Pid const& , Input&, Output&, Context& ) const {}
   };
 } }
 
