@@ -7,52 +7,36 @@
  *                 See accompanying file LICENSE.txt or copy at
  *                     http://www.boost.org/LICENSE_1_0.txt
  ******************************************************************************/
-#ifndef QUAFF_SDK_META_SOURCE_HPP_INCLUDED
-#define QUAFF_SDK_META_SOURCE_HPP_INCLUDED
+#ifndef QUAFF_SDK_META_NAMED_ACTION_HPP_INCLUDED
+#define QUAFF_SDK_META_NAMED_ACTION_HPP_INCLUDED
 
-#include <quaff/sdk/meta/is_callable.hpp>
-#include <boost/function_types/result_type.hpp>
+#include <string>
+#include <quaff/sdk/meta/action.hpp>
 
 ////////////////////////////////////////////////////////////////////////////////
-/// @file quaff/sdk/meta/source.hpp
+/// @file quaff/sdk/meta/action.hpp
 ////////////////////////////////////////////////////////////////////////////////
-
 namespace quaff { namespace meta
 {
-  template<class S> struct source;
-  
   //////////////////////////////////////////////////////////////////////////////
-  //Turns a R() function into a source Concretized Function Object
+  // named_action acts as an action but has a defined name
   //////////////////////////////////////////////////////////////////////////////
-  template<class R> struct  source<R(*)()> : callable
+  template<class Callable>
+  struct  named_action : action<Callable>
   {
-    typedef R(*function_type)();
+    typedef action<Callable> parent;
 
-    typedef boost::mpl::void_ input_type;
-    typedef R                 output_type;
-
-    source() {}
-    source(function_type const& f) : callee(f) {}
-
-    source& operator=(function_type const& f)
-    {
-      callee = f;
-      return *this;
-    }
+    named_action() {}
     
-    function_type get_function() const {
-      return callee;
-    }
+    named_action( Callable const& f, std::string const& n )
+                : parent(f), id(n) {}
+
+    inline std::string const& name() const { return id; }
     
-    inline std::string name_of() const{
-      return "<unamed>";
-    }
-
-    inline output_type operator()(input_type const&) const { return callee(); }
-
-    private:
-    function_type callee;
+    private :
+    std::string id;
   };
+
 } }
 
 #endif

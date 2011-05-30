@@ -39,10 +39,6 @@ namespace quaff { namespace meta
       callee = f;
       return *this;
     }
-    
-    function_type get_function() const {
-      return callee;
-    }
 
     inline output_type operator()(input_type const& in) const
     {
@@ -50,36 +46,11 @@ namespace quaff { namespace meta
       return output_type();
     }
     
-    inline std::string name_of() const{
-      return "<unamed>";
-    }
+    inline std::string name() const { return "<unamed>"; }
 
     private:
     function_type callee;
   };
-  
-  template<class I>
-  struct  named_sink : sink<void(*)(I) >
-  {
-    typedef void(*function_type)(I);
-
-    typedef I                 input_type;
-    typedef boost::mpl::void_ output_type;
-    
-    named_sink() {}
-
-    named_sink(sink<void(*)(I)> const& s, std::string const& n) 
-    : callee(s.get_function()), name(n) {}
-    
-    inline std::string name_of() const{
-      return name;
-    }
-    
-    private :
-    std::string name;
-    function_type callee;
-  };
-
 } }
 
 #endif
