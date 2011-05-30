@@ -24,7 +24,7 @@ namespace quaff { namespace instruction
   {
     typedef void result_type;
 
-    display_pid(Stream& os, Pid const& p) : ost(os), pid(p) {}
+    display_pid(Stream& s, Pid const& p) : os(s), pid(p) {}
    
     template<class T> void operator()(T& t) const
     {

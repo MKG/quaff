@@ -32,13 +32,13 @@ namespace quaff { namespace instruction
      os  << "p" << p << " [label=\"p" << p
          << "\\n fonction " << (void*)(&mFunction) << "\" ];\n\t";
 
-     handle_inputs<Input> ( p ,os
-                          , typename boost::is_same < typename Input::type
-                                                    , boost::mpl::void_
-                                                    >::type()
-                          );
+     handle_input<Input>( p ,os
+                        , typename boost::is_same < typename Input::type
+                                                  , boost::mpl::void_
+                                                  >::type()
+                        );
 
-     handle_outputs<Output> ( p ,os
+     handle_output<Output>( p ,os
                           , typename boost::is_same < typename Output::type
                                                     , boost::mpl::void_
                                                     >::type()
