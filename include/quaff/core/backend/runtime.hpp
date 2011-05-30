@@ -7,19 +7,27 @@
  *                 See accompanying file LICENSE.txt or copy at
  *                     http://www.boost.org/LICENSE_1_0.txt
  ******************************************************************************/
-#ifndef QUAFF_CORE_BACKEND_INSTRUCTIONS_HPP_INCLUDED
-#define QUAFF_CORE_BACKEND_INSTRUCTIONS_HPP_INCLUDED
+#ifndef QUAFF_CORE_BACKEND_RUNTIME_HPP_INCLUDED
+#define QUAFF_CORE_BACKEND_RUNTIME_HPP_INCLUDED
 
 ////////////////////////////////////////////////////////////////////////////////
-/// @file quaff/core/backend/instructions.hpp
+/// @file quaff/core/backend/runtime.hpp
 ////////////////////////////////////////////////////////////////////////////////
-
-namespace quaff { namespace instruction
+namespace quaff
 {
-  template<class Function     , class BackEnd>  struct call;
-  template<class Destinations , class BackEnd>  struct send;
-  template<class Sources      , class BackEnd>  struct receive;
-  template<class Function     , class BackEnd>  struct manage_farm;
-} }
+  inline void terminate()
+  {
+    current_backend.terminate();
+  }
+
+  template<class Skeleton>
+  inline void run(Skeleton const& sk)
+  {
+    quaff::semantic::convert<quaff::tag::process_network_> mn;
+    quaff::model::empty_environment en;
+
+    quaff::current_backend.accept(mn(sk,en,quaff::current_backend).network());
+  }
+}
 
 #endif
