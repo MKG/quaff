@@ -35,12 +35,7 @@ namespace quaff { namespace instruction
                     , Context& context
                     ) const
     {
-      if(boost::fusion::at_c<1>(context)[Pid::begin])
-        {outs = function_(ins);
-        std::cout <<"appel de outs " << type_id<output_type>() ;
-        std::cout     << " = fonction " << (void *)&function_ ;
-        std::cout          << "( ins "<< type_id<input_type>() << ");\n";
-        }
+      if(boost::fusion::at_c<1>(context)[Pid::begin]) outs = function_(ins);
     }
 
     Function  function_;
