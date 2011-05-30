@@ -9,8 +9,8 @@
 
 INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/include/)
 SET(SOURCES
-    environment.cpp
-    #seq.cpp
+    #environment.cpp
+    seq.cpp
     )
 
 ################################################################################
