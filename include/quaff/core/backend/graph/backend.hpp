@@ -34,10 +34,9 @@ namespace quaff { namespace backend
       boost::fusion::at_c<1>(n)<< "graph running_process {\n\t";
       boost::fusion::at_c<1>(n)<< "dd" << "[shape=box label=\"Source\"];\n\t";
       boost::fusion::at_c<1>(n)<< "df" <<  "[shape=box label=\"Puit\"];\n\t";
+      
       boost::fusion::at_c<0>(n).accept(*this,boost::fusion::at_c<1>(n));
 
-     //for_each( boost::fusion::at_c<0>(n).code(),
-      //        boost::fusion::at_c<1>(n)<< "dd" << " -- di" << boost::fusion::at_c<0>(n)::pid_type::value  << " [dir=back arrowsize=3];\n\t");
       boost::fusion::at_c<1>(n)<< " }\n";
     }
 

@@ -35,6 +35,8 @@
 .DS_Store
 .project
 .cproject
+include/quaff/core/backend/scmp/*
+!.gitignore
 
 ################################################################################
 # Ignore CMake generated files

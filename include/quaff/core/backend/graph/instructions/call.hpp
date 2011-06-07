@@ -33,7 +33,7 @@ namespace quaff { namespace instruction
                     ) const
     {
 
-     os  << "p" << p << " [label=\"p" << p << "\\n fonction " << (void*)(&mFunction) << "\" ];\n\t";
+     os  << "p" << p << " [label=\"p" << p << "\\n fonction " << mFunction.name_of() << "\" ];\n\t";
          
      if (boost::is_same<typename Input::type,boost::mpl::void_>::value )
           {
