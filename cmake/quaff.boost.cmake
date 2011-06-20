@@ -12,7 +12,7 @@
 ################################################################################
 SET(Boost_ADDITIONAL_VERSIONS "1.45" "1.45.0" "1.46" "1.46.0" "1.46.1")
 INCLUDE(FindBoost)
-FIND_PACKAGE( Boost 1.46.1 )
+FIND_PACKAGE( Boost 1.46.1 COMPONENTS filesystem)
 
 IF(Boost_FOUND)
  LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
