@@ -15,6 +15,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #include <string>
 #include <quaff/sdk/meta/sink.hpp>
+#include <quaff/sdk/meta/named_sink.hpp>
 #include <quaff/core/dsl/terminal.hpp>
 #include <boost/proto/proto_typeof.hpp>
 
