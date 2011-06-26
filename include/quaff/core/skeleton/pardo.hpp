@@ -13,30 +13,48 @@
 ////////////////////////////////////////////////////////////////////////////////
 /// @file quaff/core/skeleton/pardoer.hpp
 ////////////////////////////////////////////////////////////////////////////////
-#include <quaff/sdk/meta/action.hpp>
-#include <boost/utility/enable_if.hpp>
-#include <quaff/core/dsl/terminal.hpp>
+#include <quaff/quaff.hpp>
 #include <boost/proto/proto_typeof.hpp>
-#include <quaff/sdk/meta/is_callable.hpp>
-#include <boost/type_traits/is_function.hpp>
-#include <boost/type_traits/remove_pointer.hpp>
-#include <quaff/core/skeleton/seq.hpp>
 
 namespace quaff
 {
-  /////////////////////////////////////////////////////////////////////////////
-  // Turn pardo<N>(skeleton) into pardoer(N,skeleton)
-  /////////////////////////////////////////////////////////////////////////////
-  
-  template<int N, class Skeleton> 
-  typename boost::proto::result_of::make_expr< tag::pardoer_
-                                              , boost::mpl::int_<N> 
-                                              , Skeleton const&
-                                              >::type
-  pardo(boost::mpl::int_<N> , Skeleton const& s) 
+  namespace details
   {
-    return  boost::proto::
-            make_expr<tag::pardoer_>( boost::mpl::int_<N>(), boost::cref(s));
+    template<std::size_t N, class Skeleton>
+    struct pardoer
+    {
+      static Skeleton const& s_;
+      BOOST_TYPEOF_NESTED_TYPEDEF_TPL
+      ( nested, (boost::proto::deep_copy(s_ & pardoer<N-1,Skeleton>()(s_))) )
+      typedef typename nested::type result_type;
+  
+      result_type operator()(Skeleton const& s) const
+      {
+        pardoer<N-1,Skeleton> callee;
+        return boost::proto::deep_copy(s & callee(s));
+      }
+    };
+
+    template<class Skeleton>
+    struct pardoer<2,Skeleton>
+    {
+      static Skeleton const& s_;
+      BOOST_TYPEOF_NESTED_TYPEDEF_TPL( nested, boost::proto::deep_copy(s_ & s_) )
+      typedef typename nested::type result_type;
+
+      result_type operator()(Skeleton const& s) const
+      {
+        return boost::proto::deep_copy(s & s);
+      }
+    };
+  }
+
+  template<std::size_t N, class Skeleton>
+  typename details::pardoer<N,Skeleton>::result_type
+  pardo( Skeleton const& s)
+  {
+    details::pardoer<N,Skeleton> callee;
+    return callee(s);
   }
 }
 
