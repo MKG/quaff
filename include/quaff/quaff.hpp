@@ -10,11 +10,13 @@
 #ifndef QUAFF_QUAFF_HPP_INCLUDED
 #define QUAFF_QUAFF_HPP_INCLUDED
 
+#define FUSION_MAX_VECTOR_SIZE 60
+
 #include <quaff/core/backend.hpp>
 #include <quaff/core/skeleton/seq.hpp>
 #include <quaff/core/skeleton/source.hpp>
 #include <quaff/core/skeleton/sink.hpp>
-#include <quaff/core/skeleton/farm.hpp>
-//#include <quaff/core/skeleton/pardoer.hpp>
+//#include <quaff/core/skeleton/farm.hpp>
+#include <quaff/core/skeleton/pardo.hpp>
 
 #endif
