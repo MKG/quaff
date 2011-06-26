@@ -24,15 +24,11 @@ namespace quaff { namespace backend
 
     template<class T> inline void accept( T const& n ) const
     {
-      typename  boost::fusion::
-                result_of::at_c<T const&,1> os = boost::fusion::at_c<1>(n);
-
-      os  << "graph running_process {\n\t"
-          << "dd" << "[shape=box label=\"Source\"];\n\t"
-          << "df" << "[shape=box label=\"Puit\"];\n\t";
-
-      boost::fusion::at_c<0>(n).accept(*this,os);
-      os << " }\n";
+      boost::fusion::at_c<1>(n) << "graph running_process {\n\t"
+                                << "dd" << "[shape=box label=\"Source\"];\n\t"
+                                << "df" << "[shape=box label=\"Puit\"];\n\t";
+      boost::fusion::at_c<0>(n).accept(*this,boost::fusion::at_c<1>(n));
+      boost::fusion::at_c<1>(n) << " }\n";
     }
 
     template<class Process, class Data>

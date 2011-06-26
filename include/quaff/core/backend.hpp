@@ -16,5 +16,4 @@
 #include <quaff/core/models/process_network.hpp>
 #include <quaff/core/backend/backend.hpp>
 
-
 #endif

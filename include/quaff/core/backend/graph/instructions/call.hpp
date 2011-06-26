@@ -14,6 +14,7 @@
 /// @file quaff/core/backend/graph/instructions/call.hpp
 ////////////////////////////////////////////////////////////////////////////////
 #include <quaff/sdk/type_id.hpp>
+#include <quaff/sdk/meta/name_of.hpp>
 
 namespace quaff { namespace instruction
 {

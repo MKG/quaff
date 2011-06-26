@@ -28,7 +28,7 @@ namespace quaff { namespace instruction
    
     template<class T> void operator()(T& t) const
     {
-      os << "do" << T::begin << " -- di" ;
+      os << "do" << T::value << " -- di" ;
       os << pid;
       os << " [dir=forward arrowsize=3];\n\t";
     }
@@ -47,8 +47,7 @@ namespace quaff { namespace instruction
                     , Context& os
                     ) const
     {
-      display_pid<Pid,Context>a(os, p);
-      for_each(boost::fusion::as_set(Sources()), (a));
+      for_each(boost::fusion::as_set(Sources()), display_pid<Pid,Context>(os,p));
     }
   }; 
 } }
