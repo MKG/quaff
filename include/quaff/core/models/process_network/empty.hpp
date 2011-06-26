@@ -40,16 +40,16 @@ namespace quaff { namespace model
   //////////////////////////////////////////////////////////////////////////////
   // Specialisation for empty environment
   //////////////////////////////////////////////////////////////////////////////
-  template<> struct environment<empty_network, pids<0,1> >
+  template<> struct environment<empty_network, pid<0> >
   {
     typedef empty_network network_type;
-    typedef pids<0,1>      pid_type;
+    typedef pid<0>        pid_type;
 
     network_type network()  const { return network_type();  }
-    pid_type     pid()      const { return pid_type();      }
+    pid_type     next_pid() const { return pid_type();      }
   };
 
-  typedef environment<empty_network, pids<0,1> > empty_environment;
+  typedef environment<empty_network, pid<0> > empty_environment;
 } }
 
 #endif

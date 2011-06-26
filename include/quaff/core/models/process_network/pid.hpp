@@ -10,56 +10,22 @@
 #ifndef QUAFF_CORE_MODELS_PROCESS_NETWORK_PID_HPP_INCLUDED
 #define QUAFF_CORE_MODELS_PROCESS_NETWORK_PID_HPP_INCLUDED
 
-#include <boost/mpl/range_c.hpp>
+#include <boost/mpl/size_t.hpp>
 ////////////////////////////////////////////////////////////////////////////////
 /// @file quaff/core/models/process_network/pid
 ////////////////////////////////////////////////////////////////////////////////
 namespace quaff { namespace model
 {
   /////////////////////////////////////////////////////////////////////////////
-  // Define a Pid range [begin PID, end PID[
+  // Define a Pid value
   /////////////////////////////////////////////////////////////////////////////
-  template<std::size_t B, std::size_t E>
-  struct pids
+  template<std::size_t P> struct pid : boost::mpl::size_t<P> {};
+
+  template<std::size_t P>
+  std::ostream& operator<<(std::ostream& os, pid<P> const& )
   {
-    typedef boost::mpl::range_c<std::size_t,B,E> range_type;
-
-    BOOST_STATIC_CONSTANT( std::ptrdiff_t, size   = E-B );
-    BOOST_STATIC_CONSTANT( std::ptrdiff_t, begin  = B   );
-    BOOST_STATIC_CONSTANT( std::ptrdiff_t, end    = E   );
-
-    typedef pids<B-size,E-size> prev;
-    typedef pids<B+size,E+size> next;
-    
-    
-
-    bool contains(int p) const
-    {
-      return (B<=p) && (p<E);
-    }
-  };
-
-  template<std::size_t B, std::size_t E>
-  std::ostream& operator<<(std::ostream& os, pids<B,E> const& )
-  {
-    return os << B;
+    return os << P;
   }
-
-  
-  template < typename PID, typename N >
-  struct extends
-  {
-    //BOOST_MPL_ASSERT (( boost::is_same< typename N::value_type, int > ));
- 
-    typedef pids<PID::begin, PID::begin + N::value > type;
-    typename extends<PID, N>::type
-    operator()(PID const& p, N const& n) const
-    {
-    typedef pids<PID::begin, PID::begin + N::value > type;
-    return pids<PID::begin, PID::begin + N::value >();
-    }
-  };
-
 
 } }
 

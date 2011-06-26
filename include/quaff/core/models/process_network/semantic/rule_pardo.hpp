@@ -96,8 +96,8 @@ namespace quaff { namespace semantic
       
       return make_environment 
                             ( join_network(lhe.network(),rhe.network())
-                              , rhe.next_pid()
-                              );
+                            , rhe.next_pid()
+                            );
     }
   };
 } }
