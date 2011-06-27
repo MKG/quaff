@@ -23,7 +23,6 @@ namespace quaff { namespace tag
   //////////////////////////////////////////////////////////////////////////////
   struct map_ {};
   struct farm_ {};
-  struct pardoer_{};
 } }
 
 namespace quaff { namespace dsl
@@ -79,10 +78,6 @@ namespace quaff { namespace dsl
                             , boost::proto::bitwise_and<skeleton,skeleton>
                             , boost::proto::bitwise_or<skeleton,skeleton>
                             , boost::proto::binary_expr<tag::farm_
-                                                        , boost::proto::_
-                                                        , skeleton
-                                                        >
-                            , boost::proto::binary_expr<tag::pardoer_
                                                         , boost::proto::_
                                                         , skeleton
                                                         >

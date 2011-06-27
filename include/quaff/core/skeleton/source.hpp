@@ -13,12 +13,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 /// @file quaff/core/skeleton/source.hpp
 ////////////////////////////////////////////////////////////////////////////////
-#include <quaff/sdk/meta/source.hpp>
-#include <boost/utility/enable_if.hpp>
+#include <string>
 #include <quaff/core/dsl/terminal.hpp>
 #include <boost/proto/proto_typeof.hpp>
-#include <boost/type_traits/is_function.hpp>
-#include <boost/optional/optional.hpp>
+#include <quaff/sdk/meta/named_source.hpp>
 
 namespace quaff
 {
@@ -26,18 +24,36 @@ namespace quaff
   // Turn function pointer into seq skeleton usign action<>
   //////////////////////////////////////////////////////////////////////////////
   template<class ReturnType>
-  dsl::skeleton_terminal< meta::named_source<ReturnType> >
-  source( ReturnType(*f)(), const std::string name )
+  dsl::skeleton_terminal< meta::source<ReturnType(*)()> >
+  source( ReturnType(*f)() )
   {
     meta::source<ReturnType(*)()> them = f;
-    meta::named_source<ReturnType> n_them = meta::named_source<ReturnType>(them, name);
-    dsl::skeleton_terminal< meta::named_source<ReturnType> > that( n_them );
+    dsl::skeleton_terminal< meta::source<ReturnType(*)()> > that( them );
+    return that;
+  }
+
+  template<class ReturnType>
+  dsl::skeleton_terminal< meta::named_source<ReturnType(*)()> >
+  source( ReturnType(*f)(), const std::string& name )
+  {
+    meta::named_source<ReturnType(*)()> them(f, name);
+    dsl::skeleton_terminal< meta::named_source<ReturnType(*)()> > that( them );
     return that;
   }
 }
 
-  #define SOURCE(Function) \
-  source(Function, #Function) \
-  /**/
+/////////////////////////////////////////////////////////////////////////////
+// Macro for declaring global sink object
+/////////////////////////////////////////////////////////////////////////////
+#define QUAFF_SOURCE(Name,Function)               \
+BOOST_PROTO_AUTO(Name, quaff::source(Function) )  \
+/**/
+
+/////////////////////////////////////////////////////////////////////////////
+// Macro for declaring global sink object with a name
+/////////////////////////////////////////////////////////////////////////////
+#define QUAFF_NAMED_SOURCE(Name,Function)                                     \
+BOOST_PROTO_AUTO(Name, quaff::source(Function,BOOST_PP_STRINGIZE(Function)) ) \
+/**/
 
 #endif

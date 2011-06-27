@@ -14,6 +14,7 @@
 /// @file quaff/core/models/process_network/semantic/rule_seq.hpp
 ////////////////////////////////////////////////////////////////////////////////
 #include <boost/mpl/set.hpp>
+#include <boost/mpl/next_prior.hpp>
 #include <boost/fusion/include/vector.hpp>
 #include <boost/fusion/include/make_vector.hpp>
 #include <quaff/core/backend/instructions.hpp>
@@ -56,7 +57,7 @@ namespace quaff { namespace semantic
     struct result<This(Function,Pid,BackEnd)>
     {
       typedef typename boost::proto::detail::uncvref<Function>::type  function;
-      typedef typename boost::proto::detail::uncvref<Pid>::type       pid;
+      typedef typename boost::proto::detail::uncvref<Pid>::type       pid_value;
       typedef typename boost::proto::detail::uncvref<BackEnd>::type   back_end;
 
       typedef typename function::input_type                   input_type;
@@ -71,15 +72,15 @@ namespace quaff { namespace semantic
         (
             model::make_network< data_type>
             ( boost::fusion::make_vector
-              ( model::make_process<input_type,output_type, boost::mpl::int_<1> >
-                ( pid()
+              ( model::make_process<input_type,output_type >
+                ( pid_value()
                 , boost::fusion::make_vector(f_)
                 )
               )
-              , boost::mpl::set<pid>()
-              , boost::mpl::set<pid>()
+              , boost::mpl::set<pid_value>()
+              , boost::mpl::set<pid_value>()
             )
-        , typename pid::next()
+        , typename boost::mpl::next<pid_value>::type()
         )
       );
       
@@ -101,7 +102,7 @@ namespace quaff { namespace semantic
       (
         model::make_network< data_type >
         ( boost::fusion::
-          make_vector ( model::make_process<input_type,output_type,boost::mpl::int_<1> >
+          make_vector ( model::make_process<input_type,output_type>
                         ( pid
                         , boost::fusion::make_vector(f_)
                         )
@@ -109,7 +110,7 @@ namespace quaff { namespace semantic
         , boost::mpl::set<Pid>()
         , boost::mpl::set<Pid>()
         )
-      , typename Pid::next()
+      , typename boost::mpl::next<Pid>::type()
       );
     }
   };

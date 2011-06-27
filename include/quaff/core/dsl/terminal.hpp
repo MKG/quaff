@@ -20,12 +20,12 @@ namespace quaff { namespace dsl
 {
   template<class Func, class Dummy = boost::proto::is_proto_expr>
   struct  skeleton_terminal
-        : public skeleton_expression<typename boost::proto::terminal<Func>::type >
+        : public skeletons<typename boost::proto::terminal<Func>::type >
   {
     ////////////////////////////////////////////////////////////////////////////
     // Internal typedefs
     ////////////////////////////////////////////////////////////////////////////
-    typedef skeleton_expression<typename boost::proto::terminal<Func>::type > parent;
+    typedef skeletons<typename boost::proto::terminal<Func>::type > parent;
 
     ////////////////////////////////////////////////////////////////////////////
     // Constructor & cie

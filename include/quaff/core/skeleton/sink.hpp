@@ -13,12 +13,11 @@
 ////////////////////////////////////////////////////////////////////////////////
 /// @file quaff/core/skeleton/source.hpp
 ////////////////////////////////////////////////////////////////////////////////
+#include <string>
 #include <quaff/sdk/meta/sink.hpp>
-#include <boost/utility/enable_if.hpp>
+#include <quaff/sdk/meta/named_sink.hpp>
 #include <quaff/core/dsl/terminal.hpp>
 #include <boost/proto/proto_typeof.hpp>
-#include <boost/type_traits/is_function.hpp>
-#include <boost/optional/optional.hpp>
 
 namespace quaff
 {
@@ -26,18 +25,36 @@ namespace quaff
   // Turn function pointer into seq skeleton usign action<>
   //////////////////////////////////////////////////////////////////////////////
   template<class InputType>
-  dsl::skeleton_terminal< meta::named_sink<InputType> >
-  sink( void(*f)(InputType),const std::string name )
+  dsl::skeleton_terminal< meta::sink<void(*)(InputType)> >
+  sink( void(*f)(InputType) )
   {
     meta::sink<void(*)(InputType)> them = f;
-    meta::named_sink<InputType> n_them = meta::named_sink<InputType>(them, name);
-    dsl::skeleton_terminal< meta::named_sink<InputType> > that( n_them );
+    dsl::skeleton_terminal< meta::sink<void(*)(InputType)> > that( them );
+    return that;
+  }
+
+  template<class InputType>
+  dsl::skeleton_terminal< meta::named_sink<void(*)(InputType)> >
+  sink( void(*f)(InputType),const std::string name )
+  {
+    meta::named_sink<void(*)(InputType)> them(f, name);
+    dsl::skeleton_terminal< meta::named_sink<void(*)(InputType)> > that( them );
     return that;
   }
 }
 
-  #define SINK(Function) \
-  sink(Function, #Function) \
-  /**/
+/////////////////////////////////////////////////////////////////////////////
+// Macro for declaring global sink object
+/////////////////////////////////////////////////////////////////////////////
+#define QUAFF_SINK(Name,Function)               \
+BOOST_PROTO_AUTO(Name, quaff::sink(Function) )  \
+/**/
+
+/////////////////////////////////////////////////////////////////////////////
+// Macro for declaring global sink object with a name
+/////////////////////////////////////////////////////////////////////////////
+#define QUAFF_NAMED_SINK(Name,Function)                                     \
+BOOST_PROTO_AUTO(Name, quaff::sink(Function,BOOST_PP_STRINGIZE(Function)) ) \
+/**/
 
 #endif

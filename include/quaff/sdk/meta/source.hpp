@@ -19,7 +19,7 @@
 
 namespace quaff { namespace meta
 {
-  template<class S> struct  source;
+  template<class S> struct source;
   
   //////////////////////////////////////////////////////////////////////////////
   //Turns a R() function into a source Concretized Function Object
@@ -53,29 +53,6 @@ namespace quaff { namespace meta
     private:
     function_type callee;
   };
-  
-  template<class R>
-  struct  named_source : source<R(*)()>
-  {
-    typedef R(*function_type)();
-
-    typedef boost::mpl::void_ input_type;
-    typedef R                 output_type;
-    
-    named_source() {}
-
-    named_source(source<R(*)()> const& s, std::string const& n) 
-    : callee(s.get_function()), name(n) {}
-    
-    inline std::string name_of() const{
-      return name;
-    }
-    
-    private :
-    std::string name;
-    function_type callee;
-  };
-
 } }
 
 #endif

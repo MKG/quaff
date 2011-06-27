@@ -7,25 +7,27 @@
  *                 See accompanying file LICENSE.txt or copy at
  *                     http://www.boost.org/LICENSE_1_0.txt
  ******************************************************************************/
-#ifndef QUAFF_CORE_BACKEND_SEQUENTIAL_INSTRUCTIONS_RECEIVE_HPP_INCLUDED
-#define QUAFF_CORE_BACKEND_SEQUENTIAL_INSTRUCTIONS_RECEIVE_HPP_INCLUDED
+#ifndef QUAFF_CORE_BACKEND_RUNTIME_HPP_INCLUDED
+#define QUAFF_CORE_BACKEND_RUNTIME_HPP_INCLUDED
 
 ////////////////////////////////////////////////////////////////////////////////
-/// @file quaff/core/backend/sequential/instructions/call.hpp
+/// @file quaff/core/backend/runtime.hpp
 ////////////////////////////////////////////////////////////////////////////////
-
-namespace quaff { namespace instruction
+namespace quaff
 {
-  template<class Sources>
-  struct receive<Sources,backend::sequential_>
+  inline void terminate()
   {
-    template<class Pid, class Input, class Output, class Context>
-    void operator()( Pid const&, Input&, Output& , Context& context) const
-    {
-      if(!boost::fusion::at_c<1>(context)[Pid::value])
-        terminate();
-    }
-  };
-} }
+    current_backend.terminate();
+  }
+
+  template<class Skeleton>
+  inline void run(Skeleton const& sk)
+  {
+    quaff::semantic::convert<quaff::tag::process_network_> mn;
+    quaff::model::empty_environment en;
+
+    quaff::current_backend.accept(mn(sk,en,quaff::current_backend).network());
+  }
+}
 
 #endif

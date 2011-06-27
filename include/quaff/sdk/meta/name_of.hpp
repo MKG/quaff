@@ -7,25 +7,41 @@
  *                 See accompanying file LICENSE.txt or copy at
  *                     http://www.boost.org/LICENSE_1_0.txt
  ******************************************************************************/
-#ifndef QUAFF_CORE_BACKEND_SEQUENTIAL_INSTRUCTIONS_RECEIVE_HPP_INCLUDED
-#define QUAFF_CORE_BACKEND_SEQUENTIAL_INSTRUCTIONS_RECEIVE_HPP_INCLUDED
+#ifndef QUAFF_SDK_META_NAME_OF_HPP_INCLUDED
+#define QUAFF_SDK_META_NAME_OF_HPP_INCLUDED
+
+#include <quaff/sdk/meta/named_sink.hpp>
+#include <quaff/sdk/meta/named_action.hpp>
+#include <quaff/sdk/meta/named_source.hpp>
 
 ////////////////////////////////////////////////////////////////////////////////
-/// @file quaff/core/backend/sequential/instructions/call.hpp
+/// @file quaff/sdk/meta/name_of.hpp
 ////////////////////////////////////////////////////////////////////////////////
-
-namespace quaff { namespace instruction
+namespace quaff { namespace meta
 {
-  template<class Sources>
-  struct receive<Sources,backend::sequential_>
+  template<class Callable>
+  inline std::string name_of(Callable const&)
   {
-    template<class Pid, class Input, class Output, class Context>
-    void operator()( Pid const&, Input&, Output& , Context& context) const
-    {
-      if(!boost::fusion::at_c<1>(context)[Pid::value])
-        terminate();
-    }
-  };
+    return "unnamed";
+  }
+
+  template<class Callable>
+  inline std::string name_of(named_action<Callable> const& c)
+  {
+    return c.name();
+  }
+
+  template<class Callable>
+  inline std::string name_of(named_sink<Callable> const& c)
+  {
+    return c.name();
+  }
+
+  template<class Callable>
+  inline std::string name_of(named_source<Callable> const& c)
+  {
+    return c.name();
+  }
 } }
 
 #endif

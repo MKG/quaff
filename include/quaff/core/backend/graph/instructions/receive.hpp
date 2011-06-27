@@ -16,31 +16,26 @@
 #include <quaff/sdk/type_id.hpp>
 #include <boost/fusion/include/io.hpp>
 #include <boost/fusion/include/as_set.hpp>
-#include <boost/fusion/algorithm/iteration/for_each.hpp>
 #include <boost/fusion/include/for_each.hpp>
-#include <iostream>
-#include <sstream>
-
 
 namespace quaff { namespace instruction
 {
- template<class Pid>
-  struct aff
+  template<class Pid, class Stream> struct display_pid
   {
-   std::ostringstream& ost;
-   Pid const& pid;
-   typedef void result_type;
-   aff(std::ostringstream& os, Pid const& p) : ost(os), pid(p) {}
-   
-      template<class T>
-      void operator()(T& t) const
-      {
-          ost << "do" << T::begin << " -- di" ;
-          ost << pid;
-          ost << " [dir=forward arrowsize=3];\n\t";
-      }
-  };
+    typedef void result_type;
 
+    display_pid(Stream& s, Pid const& p) : os(s), pid(p) {}
+   
+    template<class T> void operator()(T& t) const
+    {
+      os << "do" << T::value << " -- di" ;
+      os << pid;
+      os << " [dir=forward arrowsize=3];\n\t";
+    }
+
+    Stream&     os;
+    Pid const&  pid;
+  };
 
   template<class Sources>
   struct receive<Sources,backend::graph_>
@@ -52,10 +47,7 @@ namespace quaff { namespace instruction
                     , Context& os
                     ) const
     {
-      std::ostringstream ost;
-      aff <Pid>a(ost, p);
-      for_each(boost::fusion::as_set(Sources()), (a));
-      os << ost.str(); 
+      for_each(boost::fusion::as_set(Sources()), display_pid<Pid,Context>(os,p));
     }
   }; 
 } }

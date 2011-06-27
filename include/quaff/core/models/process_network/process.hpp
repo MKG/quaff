@@ -54,10 +54,10 @@ namespace quaff { namespace model
   //////////////////////////////////////////////////////////////////////////////
   // Build a process out of its components
   //////////////////////////////////////////////////////////////////////////////
-  template<class I, class O, class N, class P,class C >
-  process<typename model::extends<P,N>::type ,C,I,O> make_process( P const& p, C const& c )
+  template<class I, class O, class P,class C >
+  process<P,C,I,O> make_process( P const& p, C const& c )
   {
-    process<typename model::extends<P,N>::type,C,I,O> that(c);
+    process<P,C,I,O> that(c);
     return that;
   }
 } }

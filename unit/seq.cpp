@@ -7,10 +7,35 @@
  *                 See accompanying file LICENSE.txt or copy at
  *                     http://www.boost.org/LICENSE_1_0.txt
  ******************************************************************************/
-#include <boost/mpl/assert.hpp>
-#include <quaff/core/skeleton/seq.hpp>
+#include <iostream>
+#include <quaff/sdk/meta/name_of.hpp>
+#include <quaff/sdk/meta/named_action.hpp>
+
+double sample_function(int i)
+{
+  return 1./i;
+}
 
 int main()
 {
+  {
+    quaff::meta::action<double(*)(int)>
+    sample_action = sample_function;
+
+    double res = sample_action(8);
+    std::cout << res << "\n";
+    std::cout << quaff::meta::name_of(sample_action) << "\n";
+
+  }
+
+  {
+    quaff::meta::named_action<double(*)(int)>
+    sample_action(sample_function,"sample_function");
+
+    double res = sample_action(8);
+    std::cout << res << "\n";
+    std::cout << quaff::meta::name_of(sample_action) << "\n";
+  }
+
   return 0;
 }

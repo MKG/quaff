@@ -16,12 +16,12 @@
 #include <boost/mpl/set.hpp>
 #include <boost/mpl/vector.hpp>
 #include <boost/fusion/include/at.hpp>
+#include <quaff/sdk/meta/transform_if.hpp>
 #include <boost/fusion/include/vector.hpp>
 #include <boost/fusion/include/for_each.hpp>
 #include <boost/fusion/include/as_vector.hpp>
 #include <boost/fusion/include/transform.hpp>
 #include <quaff/core/models/process_network/accept.hpp>
-#include <quaff/sdk/meta/transform_if.hpp>
 
 namespace quaff { namespace model
 {
@@ -40,10 +40,10 @@ namespace quaff { namespace model
   template<class Nodes, class InputSet, class OutputSet, class DataTypes>
   struct network
   {
-    typedef Nodes                             nodes_type;
-    typedef InputSet                          input_set;
-    typedef OutputSet                         output_set;
-    typedef DataTypes  data_type;
+    typedef Nodes       nodes_type;
+    typedef InputSet    input_set;
+    typedef OutputSet   output_set;
+    typedef DataTypes   data_type;
 
     ////////////////////////////////////////////////////////////////////////////
     // Build a network form its Nodes sequence

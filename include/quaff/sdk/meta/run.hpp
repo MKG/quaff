@@ -17,13 +17,17 @@ namespace quaff { namespace meta
 {
   template<class Pid,class In, class Out,class Context> struct runner
   {
-    Pid const& pid; In& in; Out& out; Context& context;
+    Pid const&  pid;
+    In&         in;
+    Out&        out;
+    Context&    context;
+
     runner(Pid const& p,In& i, Out& o, Context& c)
-          : pid(p), in(i), out(o), context(c) {}
-    template<class Code> void operator()(Code const& op) const
-    {
-      op( pid, in, out, context );
-    }
+          : pid(p), in(i), out(o), context(c)
+    {}
+
+    template<class Code> inline
+    void operator()(Code const& op) const { op( pid, in, out, context ); }
   };
 
   template<class Pid,class I,class O,class D> inline

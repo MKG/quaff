@@ -15,23 +15,20 @@
 ////////////////////////////////////////////////////////////////////////////////
 #include <boost/mpl/identity.hpp>
 #include <quaff/sdk/meta/run.hpp>
+#include <boost/fusion/include/at.hpp>
 #include <boost/fusion/include/vector_tie.hpp>
 
 namespace quaff { namespace backend
 {
   struct debug_
   {
-    debug_() {}
-
     void terminate() const {}
 
-    // How to run a network
     template<class T> void accept( T const& n ) const
     {
       boost::fusion::at_c<0>(n).accept(*this,boost::fusion::at_c<1>(n));
     }
 
-    // How to run a process
     template<class Process, class Data>
     void accept(Process const& p,Data& os) const
     {
@@ -39,36 +36,17 @@ namespace quaff { namespace backend
       boost::mpl::identity<typename Process::input_type>  ins;
       boost::mpl::identity<typename Process::output_type> outs;
 
-      os << "[ Running process "
-         << "from " //ajout marie
-         << pid::begin 
-         << " to " << pid::end  //ajout marie
-         << "]\n";
+      os << "[ Running on " << pid() << "\n";
 
       boost::fusion::
       for_each( p.code()
               , meta::run ( pid(), ins, outs, os )
               );
-      os << "[-------------------------------]\n";
+      os << "[-----------------------------------------]\n";
     }
   };
 } }
 
-////////////////////////////////////////////////////////////////////////////////
-// Generate a debug on the standard output
-////////////////////////////////////////////////////////////////////////////////
-template<class X, class Stream> void debug(X const& xpr, Stream& os)
-{
-  quaff::semantic::convert<quaff::tag::process_network_>  converter;
-  quaff::model::empty_environment                         env;
-  quaff::backend::debug_ target;
-
-  target.accept ( boost::fusion::vector_tie ( converter(xpr,env,target).network(), os )
-                );
-}
-
-#include <quaff/core/backend/debug/instructions/call.hpp>
-#include <quaff/core/backend/debug/instructions/send.hpp>
-#include <quaff/core/backend/debug/instructions/receive.hpp>
+#include <quaff/core/backend/debug/runtime.hpp>
 
 #endif

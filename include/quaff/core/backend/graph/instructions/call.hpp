@@ -14,6 +14,7 @@
 /// @file quaff/core/backend/graph/instructions/call.hpp
 ////////////////////////////////////////////////////////////////////////////////
 #include <quaff/sdk/type_id.hpp>
+#include <quaff/sdk/meta/name_of.hpp>
 
 namespace quaff { namespace instruction
 {
@@ -26,43 +27,55 @@ namespace quaff { namespace instruction
     call(Function const& f) : mFunction(f) {}
 
     template<class Pid, class Input, class Output, class Context>
-    void operator() ( Pid const& p
-                    , Input&
-                    , Output&
-                    , Context& os
-                    ) const
+    void operator() ( Pid const& p, Input&, Output&, Context& os ) const
     {
 
-     os  << "p" << p << " [label=\"p" << p << "\\n fonction " << mFunction.name_of() << "\" ];\n\t";
-         
-     if (boost::is_same<typename Input::type,boost::mpl::void_>::value )
-          {
-           
-            os  << "dd"  << " -- p" << p << ";\n\t";
-                
-           }
-    else
-          {
-               
-            os  << "di" << p << " [shape=box label=\"" 
-                            << type_id<typename Input::type>() 
-                            << "\"];\n\t";
-            os << "di" << p << " -- p" << p << ";\n\t";
-          }
-        
-    if (boost::is_same<typename Output::type,boost::mpl::void_>::value )
-          {
-             os << "p" << p << " -- df [dir=forward arrowsize=2];\n\t";
-           }
-    else
-          {
-             os << "do" << p << " [shape=box label=\"" 
-                            << type_id<typename Output::type>()
-                            << "\"];\n\t";
-             os << "p" << p << " -- do" << p << " [dir=forward];\n\t";
-              // << "do" << p << " -- df [dir=forward arrowsize=2];\n\t";
-          }   
-         
+
+     os  << "p" << p << " [label=\"p" << p
+         << "\\n fonction " << (void*)(&mFunction) << "\" ];\n\t";
+
+     handle_input<Input>( p ,os
+                        , typename boost::is_same < typename Input::type
+                                                  , boost::mpl::void_
+                                                  >::type()
+                        );
+
+     handle_output<Output>( p ,os
+                          , typename boost::is_same < typename Output::type
+                                                    , boost::mpl::void_
+                                                    >::type()
+                          );
+    }
+
+    template<class Input, class Pid, class Context> inline void
+    handle_input( Pid const& p, Context& os, boost::mpl::true_ const& ) const
+    {
+      os  << "dd"  << " -- p" << p << ";\n\t";
+    }
+
+    template<class Input, class Pid, class Context> inline void
+    handle_input( Pid const& p, Context& os, boost::mpl::false_ const& ) const
+    {
+      os  << "di" << p << " [shape=box label=\""
+                      << type_id<typename Input::type>()
+                      << "\"];\n\t";
+      os << "di" << p << " -- p" << p << ";\n\t";
+    }
+
+    template<class Output, class Pid, class Context> inline void
+    handle_output( Pid const& p, Context& os, boost::mpl::true_ const& ) const
+    {
+        os << "p" << p << " -- df [dir=forward arrowsize=2];\n\t";
+    }
+
+    template<class Output, class Pid, class Context> inline void
+    handle_output( Pid const& p, Context& os, boost::mpl::false_ const& ) const
+    {
+      os << "do" << p << " [shape=box label=\""
+                    << type_id<typename Output::type>()
+                    << "\"];\n\t";
+      os << "p" << p << " -- do" << p << " [dir=forward];\n\t";
+
     }
 
     Function  mFunction;

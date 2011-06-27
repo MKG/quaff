@@ -18,10 +18,10 @@
 
 namespace quaff { namespace dsl
 {
-  template<class Expr> struct skeleton_expression;
+  template<class Expr> struct skeletons;
 
   struct  skeleton_domain
-        : boost::proto::domain< boost::proto::generator<skeleton_expression>
+        : boost::proto::domain< boost::proto::generator<skeletons>
                               , skeleton
                               >
   {};

@@ -7,24 +7,32 @@
  *                 See accompanying file LICENSE.txt or copy at
  *                     http://www.boost.org/LICENSE_1_0.txt
  ******************************************************************************/
-#ifndef QUAFF_CORE_BACKEND_SEQUENTIAL_INSTRUCTIONS_RECEIVE_HPP_INCLUDED
-#define QUAFF_CORE_BACKEND_SEQUENTIAL_INSTRUCTIONS_RECEIVE_HPP_INCLUDED
+#ifndef QUAFF_SDK_META_NAMED_SOURCE_HPP_INCLUDED
+#define QUAFF_SDK_META_NAMED_SOURCE_HPP_INCLUDED
+
+#include <string>
+#include <quaff/sdk/meta/source.hpp>
 
 ////////////////////////////////////////////////////////////////////////////////
-/// @file quaff/core/backend/sequential/instructions/call.hpp
+/// @file quaff/sdk/meta/named_source.hpp
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace quaff { namespace instruction
+namespace quaff { namespace meta
 {
-  template<class Sources>
-  struct receive<Sources,backend::sequential_>
+  template<class Callable>
+  struct  named_source : source<Callable>
   {
-    template<class Pid, class Input, class Output, class Context>
-    void operator()( Pid const&, Input&, Output& , Context& context) const
-    {
-      if(!boost::fusion::at_c<1>(context)[Pid::value])
-        terminate();
-    }
+    typedef source<Callable> parent;
+    
+    named_source() {}
+
+    named_source(Callable const& f, std::string const& n)
+                : parent(f), id(n) {}
+    
+    inline std::string name() const { return id; }
+    
+    private :
+    std::string id;
   };
 } }
 

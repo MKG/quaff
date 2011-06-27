@@ -7,17 +7,17 @@
  *                 See accompanying file LICENSE.txt or copy at
  *                     http://www.boost.org/LICENSE_1_0.txt
  ******************************************************************************/
-#include <boost/mpl/assert.hpp>
-#include <quaff/sdk/meta/is_output.hpp>
+#ifndef QUAFF_CORE_BACKEND_FORWARD_HPP_INCLUDED
+#define QUAFF_CORE_BACKEND_FORWARD_HPP_INCLUDED
 
-int main()
+////////////////////////////////////////////////////////////////////////////////
+/// @file quaff/core/backend/forard.hpp
+////////////////////////////////////////////////////////////////////////////////
+
+namespace quaff
 {
-  using quaff::meta::is_output;
-
-  BOOST_MPL_ASSERT_NOT((  is_output<int>        ));
-  BOOST_MPL_ASSERT    ((  is_output<int&>       ));
-  BOOST_MPL_ASSERT_NOT((  is_output<int const>  ));
-  BOOST_MPL_ASSERT_NOT((  is_output<int const&> ));
-
-  return 0;
+  inline void terminate();
+  template<class Skeleton> inline void run(Skeleton const& sk);
 }
+
+#endif

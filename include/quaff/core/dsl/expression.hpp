@@ -19,19 +19,19 @@
 namespace quaff { namespace dsl
 {
   template<class Expr>
-  struct  skeleton_expression
-        : boost::proto::extends<Expr,skeleton_expression<Expr>,skeleton_domain>
+  struct  skeletons
+        : boost::proto::extends<Expr,skeletons<Expr>,skeleton_domain>
   {
     ////////////////////////////////////////////////////////////////////////////
     // Internal typedefs
     ////////////////////////////////////////////////////////////////////////////
     typedef boost::proto
-            ::extends<Expr,skeleton_expression<Expr>,skeleton_domain> parent;
+            ::extends<Expr,skeletons<Expr>,skeleton_domain> parent;
 
     ////////////////////////////////////////////////////////////////////////////
     // Constructor & cie
     ////////////////////////////////////////////////////////////////////////////
-    explicit skeleton_expression(Expr const &expr = Expr()) : parent(expr) {}
+    explicit skeletons(Expr const &expr = Expr()) : parent(expr) {}
 
     ////////////////////////////////////////////////////////////////////////////
     // Functional interface (TODO)

@@ -9,13 +9,10 @@
 
 INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/include/)
 SET(SOURCES
-    #process_network.cpp
-    #action.cpp
-    environment.cpp
-    #grammar.cpp
-    #is_input.cpp
-    #is_output.cpp
-    #seq.cpp
+    #environment.cpp
+    seq.cpp
+    pardo.cpp
+    pipe.cpp
     )
 
 ################################################################################

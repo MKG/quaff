@@ -7,24 +7,43 @@
  *                 See accompanying file LICENSE.txt or copy at
  *                     http://www.boost.org/LICENSE_1_0.txt
  ******************************************************************************/
-#include <vector>
-#include <boost/mpl/assert.hpp>
-#include <quaff/core/skeleton/seq.hpp>
+#include <fstream>
+#include <iostream>
+#include <quaff/quaff.hpp>
 
-void g(int) {}
-
-struct foo : quaff::callable
+int h()
 {
-  void operator()() {}
-};
+  static int i(0);
+
+  if(i < 3) i++;
+  else
+  {
+    i = 0;
+    quaff::terminate();
+  }
+
+  return i;
+}
+
+int f(int i)
+{
+  return 10*i;
+}
+
+void g(int i)
+{
+  std::cout << i << "\n";
+}
 
 int main()
 {
-  boost::function<int()> f;
-  foo h;
+//  quaff::debug(  quaff::source(h) | quaff::pipe<3>(quaff::seq(f)) | quaff::sink(g)
+//              , std::cout
+//              );
+//
+//  quaff::run( quaff::source(h) | quaff::pipe<3>(quaff::seq(f)) | quaff::sink(g) );
 
-  std::vector<int> in,out;
-  (quaff::seq(f) | quaff::seq(&g) | quaff::seq(h));
-
+  std::ofstream file("graph.dot");
+  graph( quaff::source(h) | quaff::pardo<3>(quaff::seq(f)) | quaff::sink(g), file );
   return 0;
 }

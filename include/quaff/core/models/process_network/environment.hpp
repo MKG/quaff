@@ -20,9 +20,7 @@ namespace quaff { namespace model
   //////////////////////////////////////////////////////////////////////////////
   // environment is used to capture required element of the IR while being built
   //////////////////////////////////////////////////////////////////////////////
-  template< class Network
-          , class PIDState
-          >
+  template< class Network , class PIDState >
   struct environment
   {
     typedef Network   network_type;
@@ -47,15 +45,10 @@ namespace quaff { namespace model
   //////////////////////////////////////////////////////////////////////////////
   //template<class Number, class PID,class Network>
   template<class PID,class Network>
-  inline environment<Network
-                    //,typename model::extends<PID,Number>::type 
-                    , PID > 
+  inline environment<Network, PID >
   make_environment(Network const& n, PID const&)
   {
-    environment<Network
-                 //,typename model::extends<PID,Number>::type 
-               , PID
-                > that(n);
+    environment<Network, PID> that(n);
     return that;
   }
 
